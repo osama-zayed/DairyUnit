@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AssociationResource\Pages;
 use App\Filament\Resources\AssociationResource\RelationManagers;
 use App\Models\Association;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AssociationResource extends Resource
 {
-    protected static ?string $model = Association::class;
+    protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -30,6 +31,26 @@ class AssociationResource extends Resource
                     ->label('اسم الجمعية')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('phone')
+                    ->tel()
+                    ->label('رقم الموبايل')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->required()
+                    ->confirmed()
+                    ->label('الرمز')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('password_confirmation')
+                    ->password()
+                    ->required()
+                    ->label('تأكيد الرمز')
+                    ->maxLength(255),
+                Forms\Components\Toggle::make('status')
+                    ->default(1)
+                    ->label('حالة الجمعية')
+                    ->required(),
             ]);
     }
 
@@ -40,6 +61,12 @@ class AssociationResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('اسم الجمعية')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('phone')
+                    ->label('رقم الموبايل')
+                    ->searchable(),
+                Tables\Columns\IconColumn::make('status')
+                    ->label('حالة الجمعية')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->label('وقت الاضافة')

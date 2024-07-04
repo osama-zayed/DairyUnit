@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\UserCollectorResource\Pages;
 
 use App\Filament\Resources\UserCollectorResource;
-use Filament\Pages\Actions;
+use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -28,9 +28,7 @@ class ListUsers extends ListRecords
         }
     
         // Filter the table to only show users with the 'collector' role
-        $query->whereHas('roles', function ($roleQuery) {
-            $roleQuery->where('name', 'collector');
-        });
+        $query->where('user_type','collector');
     
         return $query;
     }

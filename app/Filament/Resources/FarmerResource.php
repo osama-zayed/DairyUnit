@@ -20,7 +20,7 @@ class FarmerResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 5;
     protected static ?string $modelLabel = 'اسرة منتجة';
-    protected static ?string $pluralLabel = "الاسر المنتجة";   
+    protected static ?string $pluralLabel = "الاسر المنتجة";
     public static function form(Form $form): Form
     {
         return $form
@@ -38,6 +38,10 @@ class FarmerResource extends Resource
                     ->tel()
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Toggle::make('status')
+                    ->default(1)
+                    ->label('حالة الاسرة')
+                    ->required(),
             ]);
     }
 
@@ -45,17 +49,24 @@ class FarmerResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('association_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('associations_branche_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
+                ->label('اسم الاسره')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
+                ->label('رقم الهاتف')
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('association.name')
+                    ->numeric()
+                    ->label('اسم الجمعية')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('associationsBranch.name')
+                    ->numeric()
+                    ->label('اسم الفرع')
+                    ->sortable(),
+                Tables\Columns\IconColumn::make('status')
+                    ->label('حالة الاسرة')
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->label('وقت الاضافة')
                     ->sortable()
@@ -82,14 +93,14 @@ class FarmerResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -98,5 +109,5 @@ class FarmerResource extends Resource
             'view' => Pages\ViewFarmer::route('/{record}'),
             'edit' => Pages\EditFarmer::route('/{record}/edit'),
         ];
-    }    
+    }
 }

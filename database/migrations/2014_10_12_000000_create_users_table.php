@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('phone')->unique();
+            $table->string('phone');
             $table->string('password');
             $table->boolean('status')->default(1);
-            $table->foreignId('association_id')->nullable()->references('id')->on('associations');
-            $table->foreignId('associations_branche_id')->nullable()->references('id')->on('associations_branches');
+            $table->foreignId('association_id')->nullable()->references('id')->on('users');
             $table->foreignId('factory_id')->nullable()->references('id')->on('factories');
+            $table->string('user_type');
+
             $table->rememberToken();
             $table->timestamps();
         });

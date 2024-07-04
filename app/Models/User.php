@@ -29,8 +29,8 @@ class User extends Authenticatable
         'name',
         'phone',
         'status',
+        'user_type',
         'association_id',
-        'associations_branche_id',
         'factory_id',
         'password',
     ];
@@ -56,30 +56,17 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the association associated with the user.
-     */
-    public function association()
-    {
-        return $this->belongsTo(Association::class);
-    }
-
-    /**
-     * Get the association's branch associated with the user.
-     */
-    public function associationsBranch()
-    {
-        return $this->belongsTo(AssociationsBranch::class);
-    }
-
-    /**
      * Get the factory associated with the user.
      */
     public function factory()
     {
         return $this->belongsTo(Factory::class);
     }
-    // public function setPasswordAttribute($password)
-    // {
-    //     $this->attributes['password'] = bcrypt($password);
-    // }
+    /**
+     * Get the association's branch associated with the farmer.
+     */
+    public function association()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

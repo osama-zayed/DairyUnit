@@ -25,8 +25,8 @@ class Farmer extends Model
         'id',
         'name',
         'phone',
+        'status',
         'association_id',
-        'associations_branche_id',
     ];
 
     /**
@@ -34,14 +34,7 @@ class Farmer extends Model
      */
     public function association()
     {
-        return $this->belongsTo(Association::class);
+        return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the association's branch associated with the farmer.
-     */
-    public function associationsBranch()
-    {
-        return $this->belongsTo(AssociationsBranch::class);
-    }
 }

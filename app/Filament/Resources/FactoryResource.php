@@ -18,7 +18,7 @@ class FactoryResource extends Resource
     protected static ?string $model = Factory::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
     protected static ?string $modelLabel = 'مصنع';
     protected static ?string $pluralLabel = "المصانع";
     public static function form(Form $form): Form
@@ -28,46 +28,12 @@ class FactoryResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->label('اسم المصنع')
+                    ->columnSpanFull()
                     ->maxLength(255),
-                Forms\Components\Select::make('association_id')
-                    ->relationship('association', titleAttribute: 'name')
-                    ->label('الجمعية')
-                    ->searchable()
-                    ->preload()
-                    ->live()
-                    ->required()
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('name')
-                            ->label('اسم الجمعية')
-                            ->required()
-                            ->maxLength(255),
-                    ]),
-                Forms\Components\Select::make('associations_branche_id')
-                    ->relationship('associationsBranch', titleAttribute: 'name')
-                    ->label('فرع الجمعية')
-                    ->searchable()
-                    ->preload()
-                    ->required()
-                    ->live()
-                    ->createOptionForm([
-                        Forms\Components\Select::make('association_id')
-                            ->relationship('association', titleAttribute: 'name')
-                            ->label('الجمعية')
-                            ->searchable()
-                            ->preload()
-                            ->live()
-                            ->required()
-                            ->createOptionForm([
-                                Forms\Components\TextInput::make('name')
-                                    ->label('اسم الجمعية')
-                                    ->required()
-                                    ->maxLength(255),
-                            ]),
-                        Forms\Components\TextInput::make('name')
-                            ->label('اسم الفرع')
-                            ->required()
-                            ->maxLength(255),
-                    ]),
+                Forms\Components\Toggle::make('status')
+                    ->default(1)
+                    ->label('حالة المصنع')
+                    ->required(),
             ]);
     }
 
@@ -78,6 +44,9 @@ class FactoryResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('اسم المصنع')
                     ->searchable(),
+                Tables\Columns\IconColumn::make('status')
+                    ->label('حالة المصنع')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->label('وقت الاضافة')

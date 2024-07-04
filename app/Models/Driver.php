@@ -27,7 +27,6 @@ class Driver extends Model
         'phone',
         'status',
         'association_id',
-        'associations_branche_id',
     ];
 
     /**
@@ -35,14 +34,7 @@ class Driver extends Model
      */
     public function association()
     {
-        return $this->belongsTo(Association::class);
+        return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the association's branch associated with the driver.
-     */
-    public function associationsBranch()
-    {
-        return $this->belongsTo(AssociationsBranch::class);
-    }
 }

@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('phone')->unique();
-            $table->foreignId('association_id')->references('id')->on('associations');
-            $table->foreignId('associations_branche_id')->references('id')->on('associations_branches');
+            $table->foreignId('association_id')->references('id')->on('users');
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }

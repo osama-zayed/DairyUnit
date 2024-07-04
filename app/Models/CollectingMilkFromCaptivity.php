@@ -37,7 +37,7 @@ class CollectingMilkFromCaptivity extends Model
      */
     public function association()
     {
-        return $this->belongsTo(Association::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -45,7 +45,7 @@ class CollectingMilkFromCaptivity extends Model
      */
     public function associationsBranch()
     {
-        return $this->belongsTo(AssociationsBranch::class);
+        return $this->belongsTo(User::class);
     }
 
     /**

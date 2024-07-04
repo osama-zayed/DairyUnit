@@ -26,7 +26,7 @@ class UserRepresentativeResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->label('اسم المستخدم')
+                    ->label('اسم المندوب')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
@@ -34,7 +34,7 @@ class UserRepresentativeResource extends Resource
                     ->label('رقم الموبايل')
                     ->required()
                     ->maxLength(255),
-                    Forms\Components\TextInput::make('password')
+                Forms\Components\TextInput::make('password')
                     ->password()
                     ->required()
                     ->confirmed()
@@ -46,7 +46,7 @@ class UserRepresentativeResource extends Resource
                     ->label('تأكيد الرمز')
                     ->maxLength(255),
                 Forms\Components\Select::make('factory_id')
-                    ->relationship('factory',titleAttribute: 'name')
+                    ->relationship('factory', titleAttribute: 'name')
                     ->label('المصنع')
                     ->searchable()
                     ->preload()
@@ -59,9 +59,8 @@ class UserRepresentativeResource extends Resource
                     ]),
                 Forms\Components\Toggle::make('status')
                     ->default(1)
-                    ->label('حالة المستخدم')
+                    ->label('حالة المندوب')
                     ->required(),
-
             ]);
     }
 
@@ -70,7 +69,7 @@ class UserRepresentativeResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('الاسم')
+                    ->label('اسم المندوب')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
                     ->label('رقم الموبايل')
@@ -80,7 +79,7 @@ class UserRepresentativeResource extends Resource
                     ->label('اسم المصنع')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('status')
-                    ->label('حالة المستخدم')
+                    ->label('حالة المندوب')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

@@ -17,7 +17,7 @@ use Spatie\Permission\Models\Role;
 class UserCollectorResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 3;
     protected static ?string $modelLabel = 'مجمع';
     protected static ?string $pluralLabel = "المجمعين";
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -27,7 +27,7 @@ class UserCollectorResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->label('اسم المستخدم')
+                    ->label('اسم المجمع')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
@@ -35,81 +35,31 @@ class UserCollectorResource extends Resource
                     ->label('رقم الموبايل')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Grid::make()
-                    ->schema([
-                        Forms\Components\TextInput::make('password')
-                            ->password()
-                            ->required()
-                            ->label('الرمز')
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('password_confirmation')
-                            ->password()
-                            ->required()
-                            ->label('تأكيد الرمز')
-                            ->maxLength(255)
-                            ->confirmed('password'),
-                    ]),
-                // Forms\Components\Select::make('Role.id')
-                //     ->relationship('Role', 'name', function ($query) {
-                //         return $query->whereNot('name', 'institution')
-                //             ->orderBy('name');
-                //     })
-                //     ->required()
-                //     ->label(trans('filament.resources.role.fields.name'))
-                //     ->options(function () {
-                //         return Role::whereNot('name', 'institution')
-                //             ->get()
-                //             ->mapWithKeys(function ($role) {
-                //                 return [$role->id => trans("filament.resources.role.options.$role->name")];
-                //             });
-                //     })
-                //     ->searchable()
-                //     ->preload()
-                //     ->live(),
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->required()
+                    ->confirmed()
+                    ->label('الرمز')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('password_confirmation')
+                    ->password()
+                    ->required()
+                    ->label('تأكيد الرمز')
+                    ->maxLength(255),
                 Forms\Components\Select::make('association_id')
                     ->relationship('association', titleAttribute: 'name')
                     ->label('الجمعية')
                     ->searchable()
                     ->preload()
                     ->live()
-                    ->required()
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('name')
-                            ->label('اسم الجمعية')
-                            ->required()
-                            ->maxLength(255),
-                    ]),
-                Forms\Components\Select::make('associations_branche_id')
-                    ->relationship('associationsBranch', titleAttribute: 'name')
-                    ->label('فرع الجمعية')
-                    ->searchable()
-                    ->preload()
-                    ->required()
-                    ->live()
-                    ->createOptionForm([
-                        Forms\Components\Select::make('association_id')
-                            ->relationship('association', titleAttribute: 'name')
-                            ->label('الجمعية')
-                            ->searchable()
-                            ->preload()
-                            ->live()
-                            ->required()
-                            ->createOptionForm([
-                                Forms\Components\TextInput::make('name')
-                                    ->label('اسم الجمعية')
-                                    ->required()
-                                    ->maxLength(255),
-                            ]),
-                        Forms\Components\TextInput::make('name')
-                            ->label('اسم الفرع')
-                            ->required()
-                            ->maxLength(255),
-                    ]),
+                    ->options(function () {
+                        return User::where('user_type', 'association')->pluck('name', 'id');
+                    })
+                    ->required(),
                 Forms\Components\Toggle::make('status')
                     ->default(1)
-                    ->label('حالة المستخدم')
+                    ->label('حالة المجمع')
                     ->required(),
-
             ]);
     }
 
@@ -118,7 +68,7 @@ class UserCollectorResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('الاسم')
+                    ->label('اسم المجمع')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
                     ->label('رقم الموبايل')
@@ -127,12 +77,8 @@ class UserCollectorResource extends Resource
                     ->numeric()
                     ->label('اسم الجمعية')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('associationsBranch.name')
-                    ->numeric()
-                    ->label('اسم الفرع')
-                    ->sortable(),
                 Tables\Columns\IconColumn::make('status')
-                    ->label('حالة المستخدم')
+                    ->label('حالة المجمع')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

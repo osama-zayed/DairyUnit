@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // إنشاء الأدوار
-        $institution = Role::create(['name' => 'institution']);
-        $association = Role::create(['name' => 'association']);
-        $representative = Role::create(['name' => 'representative']);
-        $collector = Role::create(['name' => 'collector']);
+        // $institution = Role::create(['name' => 'institution']);
+        // $association = Role::create(['name' => 'association']);
+        // $representative = Role::create(['name' => 'representative']);
+        // $collector = Role::create(['name' => 'collector']);
         
         // // إنشاء الصلاحيات
         // Permission::create(['name' => 'manage deliveries']);
@@ -32,12 +32,13 @@ class DatabaseSeeder extends Seeder
         $user = User::create([
             'name' => 'وحدة الالبان',
             'phone' => '777888999',
+            'user_type' => 'institution',
             'password' => bcrypt('123123123'),
         ]);
         
-        $role = Role::where('name', 'institution')->first();
+        // $role = Role::where('name', 'institution')->first();
         
-        $user->syncRoles([$role->id]);
+        // $user->syncRoles([$role->id]);
         
     }
 }

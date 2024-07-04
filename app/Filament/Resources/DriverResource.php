@@ -76,7 +76,7 @@ class DriverResource extends Resource
                     ]),
                 Forms\Components\Toggle::make('status')
                     ->default(1)
-                    ->label('حالة المستخدم')
+                    ->label('حالة السائق')
                     ->required(),
             ]);
     }
@@ -100,7 +100,7 @@ class DriverResource extends Resource
                     ->label('اسم الفرع')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('status')
-                    ->label('حالة المستخدم')
+                    ->label('حالة السائق')
                     ->boolean(),
 
                 Tables\Columns\TextColumn::make('created_at')

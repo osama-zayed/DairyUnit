@@ -17,8 +17,8 @@ return new class extends Migration
             $table->dateTime('collection_date_and_time');
             $table->string('period');
             $table->decimal('quantity', 8, 2); 
-            $table->foreignId('association_id')->references('id')->on('associations');
-            $table->foreignId('associations_branche_id')->references('id')->on('associations_branches');
+            $table->foreignId('association_id')->references('id')->on('users');
+            $table->foreignId('associations_branche_id')->references('id')->on('users');
             $table->foreignId('farmer_id')->references('id')->on('farmers');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();

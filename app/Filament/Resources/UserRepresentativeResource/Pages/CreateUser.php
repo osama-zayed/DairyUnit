@@ -7,7 +7,6 @@ use App\Models\User;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Permission\Models\Role;
 
 class CreateUser extends CreateRecord
 {
@@ -15,11 +14,8 @@ class CreateUser extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
+        $data['user_type'] = 'representative';
         $user = User::create($data);
-
-        // Attach the 'representative' role to the user
-        $representative = Role::where('name', 'representative')->firstOrFail();
-        $user->roles()->attach($representative);
 
         return $user;
     }
