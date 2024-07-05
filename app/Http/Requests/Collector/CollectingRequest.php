@@ -20,7 +20,7 @@ class CollectingRequest extends FormRequest
     public function rules()
     {
         return [
-            'collection_date_and_time' => 'required|date',
+            'collection_date_and_time' => 'required|date_format:Y-m-d H:i:s',
             'quantity' => 'required|numeric|min:1',
             'farmer_id' => 'required|exists:farmers,id',
             // يمكنك إضافة قواعد إضافية حسب حاجتك
@@ -34,7 +34,7 @@ class CollectingRequest extends FormRequest
     {
         return [
             'collection_date_and_time.required' => 'تاريخ ووقت الجمع مطلوب',
-            'collection_date_and_time.date' => 'يجب أن يكون تاريخ ووقت الجمع صالحًا',
+            'collection_date_and_time.date_format' => 'يجب أن يكون تاريخ ووقت الجمع صالحًا',
             'quantity.required' => 'الكمية مطلوبة',
             'quantity.numeric' => 'الكمية يجب أن تكون رقمية',
             'quantity.min' => 'الكمية يجب أن تكون على الأقل 1',
