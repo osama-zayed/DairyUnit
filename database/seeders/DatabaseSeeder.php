@@ -36,9 +36,9 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('123123123'),
         ]);
         
-        // $role = Role::where('name', 'institution')->first();
+        $role = Role::where('name', 'institution')->first();
         
-        // $user->syncRoles([$role->id]);
+        $user->syncRoles([$role->id]);
         
     }
 }
