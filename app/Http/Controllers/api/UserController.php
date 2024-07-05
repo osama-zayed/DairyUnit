@@ -3,20 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\EditUserRequest;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class UserController extends Controller
 {
-    
-    public function login(Request $request)
+
+    public function login(LoginRequest $request)
     {
         // Validate the login request
-        $credentials = $request->validate([
-            'phone' => 'required',
-            'password' => 'required',
-        ]);
+        $credentials = $request->validated();
 
         // Attempt to authenticate the user
         if (Auth::attempt($credentials)) {
@@ -36,7 +35,7 @@ class UserController extends Controller
         }
 
         // If authentication fails, return a 401 Unauthorized response
-        return response()->json(['error' => 'Unauthorized'], 401);
+        return response()->json(['error' => 'رقم الهاتف او كلمة السر غير صحيح'], 401);
     }
     public function logout(Request $request)
     {
@@ -45,16 +44,13 @@ class UserController extends Controller
 
         // Return a success response
         return response()->json([
-            'message' => 'Successfully logged out'
+            'message' => 'تم تسجيل الخروج بنجاح'
         ]);
     }
-    public function editUser(Request $request)
+    public function editUser(EditUserRequest $request)
     {
-        // Validate the update request
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|integer|max:255|unique:users,phone,' . auth()->id(),
-        ]);
+        // Use validated data from EditUserRequest
+        $data = $request->validated();
 
         // Get the authenticated user
         $user = auth('sanctum')->user();
@@ -67,7 +63,7 @@ class UserController extends Controller
 
         // Return a success response
         return response()->json([
-            'message' => 'User updated successfully',
+            'message' => 'تم تعديل البيانات بنجاح',
             'user' => $user
         ]);
     }
@@ -76,5 +72,4 @@ class UserController extends Controller
         $data = auth('sanctum')->user();
         return self::responseSuccess($data);
     }
-    
 }
