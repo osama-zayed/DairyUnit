@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('period');
             $table->decimal('quantity', 8, 2); 
             $table->foreignId('association_id')->references('id')->on('users');
-            $table->foreignId('associations_branche_id')->references('id')->on('users');
             $table->foreignId('farmer_id')->references('id')->on('farmers');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
