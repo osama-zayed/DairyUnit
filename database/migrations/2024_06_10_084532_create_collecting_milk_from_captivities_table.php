@@ -15,11 +15,11 @@ return new class extends Migration
         Schema::create('collecting_milk_from_captivities', function (Blueprint $table) {
             $table->id();
             $table->dateTime('collection_date_and_time');
-            $table->string('period');
             $table->decimal('quantity', 8, 2); 
             $table->foreignId('association_id')->references('id')->on('users');
             $table->foreignId('farmer_id')->references('id')->on('farmers');
             $table->foreignId('user_id')->references('id')->on('users');
+            $table->text('nots');
             $table->timestamps();
         });
     }

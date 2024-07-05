@@ -16,3 +16,7 @@ Route::prefix('farmers')->middleware(['auth:sanctum', 'Permission:collector'])->
     Route::get('by-association', "CollectorFarmerController@showByAssociation");
     Route::post('add', "CollectorFarmerController@add");
 });
+Route::prefix('milk')->middleware(['auth:sanctum', 'Permission:collector'])->group(function () {
+    Route::get('show/all', "MilkCollectionController@showAll");
+    Route::post('collecting', "MilkCollectionController@collecting");
+});

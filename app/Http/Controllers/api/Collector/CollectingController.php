@@ -8,7 +8,7 @@ use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 
 
-class CollectorFarmerController extends FarmerController
+class CollectingController extends FarmerController
 {
 
 }

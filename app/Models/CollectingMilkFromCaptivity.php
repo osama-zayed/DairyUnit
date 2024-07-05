@@ -24,10 +24,9 @@ class CollectingMilkFromCaptivity extends Model
     protected $fillable = [
         'id',
         'collection_date_and_time',
-        'period',
+        'nots',
         'quantity',
         'association_id',
-        'associations_branche_id',
         'farmer_id',
         'user_id',
     ];
