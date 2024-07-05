@@ -15,7 +15,7 @@ class Permission
      */
     public function handle(Request $request, Closure $next, $role): Response
     {
-        if ($request->user()->hasRole($role)) {
+        if ($request->user()->user_type == $role) {
             return $next($request);
         } else {
             $request->user()->currentAccessToken()->delete();
