@@ -7,14 +7,17 @@ use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
+
 class CreateAssociation extends CreateRecord
 {
     protected static string $resource = AssociationResource::class;
-    protected function handleRecordCreation(array $data): Model
+    protected function afterCreate(): void
     {
-        $data['user_type'] = 'association';
-        $user = User::create($data);
-
-        return $user;
+        $user = $this->record;
+        $role = Role::where('name', 'association')->first();
+        if ($role) {
+            $user->syncRoles([$role->id]);
+        }
     }
 }
