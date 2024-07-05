@@ -31,6 +31,6 @@ class FarmerController extends Controller
             'association_id' => auth('sanctum')->user()->association_id,
         ]);
 
-        return self::responseSuccess('تمت العملية بنجاح');
+        return self::responseSuccess([],'تمت العملية بنجاح');
     }
 }

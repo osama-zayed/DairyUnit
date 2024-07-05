@@ -28,14 +28,14 @@ class UserController extends Controller
                 $token = $request->user()->createToken('auth_token');
             }
 
-            return response()->json([
+            return self::responseSuccess([
                 'access_token' => $token->plainTextToken,
                 'token_type' => 'Bearer',
-            ]);
+            ],'تم تسجيل الدخول بنجاح'); 
         }
 
         // If authentication fails, return a 401 Unauthorized response
-        return response()->json(['error' => 'رقم الهاتف او كلمة السر غير صحيح'], 401);
+        return self::responseError('رقم الهاتف او كلمة السر غير صحيح',401); 
     }
     public function logout(Request $request)
     {
@@ -43,9 +43,7 @@ class UserController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         // Return a success response
-        return response()->json([
-            'message' => 'تم تسجيل الخروج بنجاح'
-        ]);
+        return self::responseSuccess([],'تم تسجيل الخروج بنجاح'); 
     }
     public function editUser(EditUserRequest $request)
     {
@@ -61,11 +59,8 @@ class UserController extends Controller
             'phone' => $request->phone,
         ]);
 
+        return self::responseSuccess($user,'تم تعديل البيانات بنجاح'); 
         // Return a success response
-        return response()->json([
-            'message' => 'تم تعديل البيانات بنجاح',
-            'user' => $user
-        ]);
     }
     public function me()
     {

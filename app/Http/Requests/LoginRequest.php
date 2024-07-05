@@ -26,7 +26,7 @@ class LoginRequest extends FormRequest
         $mergedMessage = implode(" و ", $errorMessages);
 
         throw new HttpResponseException(response()->json([
-            'success' => false,
+            'status' => false,
             'message' => $mergedMessage,
         ], 422));
     }
