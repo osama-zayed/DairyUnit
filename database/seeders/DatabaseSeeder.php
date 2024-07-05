@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // إنشاء الأدوار
-        // $institution = Role::create(['name' => 'institution']);
-        // $association = Role::create(['name' => 'association']);
-        // $representative = Role::create(['name' => 'representative']);
-        // $collector = Role::create(['name' => 'collector']);
+        $institution = Role::create(['name' => 'institution']);
+        $association = Role::create(['name' => 'association']);
+        $representative = Role::create(['name' => 'representative']);
+        $collector = Role::create(['name' => 'collector']);
         
         // // إنشاء الصلاحيات
         // Permission::create(['name' => 'manage deliveries']);
