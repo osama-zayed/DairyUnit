@@ -21,6 +21,11 @@ class UserRepresentativeResource extends Resource
     protected static ?string $pluralLabel = "المناديب";
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static string | array $routeMiddleware = [
+        'auth:web',
+        'Permission:institution',
+    ];
+    
     public static function form(Form $form): Form
     {
         return $form

@@ -7,18 +7,16 @@ use App\Models\User;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Permission\Models\Role;
 
 class CreateUser extends CreateRecord
 {
     protected static string $resource = UserRepresentativeResource::class;
 
-    protected function afterCreate(): void
+    protected function handleRecordCreation(array $data): Model
     {
-        $user = $this->record;
-        $role = Role::where('name', 'representative')->first();
-        if ($role) {
-            $user->syncRoles([$role->id]);
-        }
+        $data['user_type'] = 'representative';
+        $user = User::create($data);
+
+        return $user;
     }
 }

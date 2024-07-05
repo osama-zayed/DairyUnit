@@ -17,9 +17,9 @@ class DatabaseSeeder extends Seeder
     {
         // إنشاء الأدوار
         $institution = Role::create(['name' => 'institution']);
-        $association = Role::create(['name' => 'association']);
-        $representative = Role::create(['name' => 'representative']);
-        $collector = Role::create(['name' => 'collector']);
+        $association = Role::create(['name' => 'association','guard_name'=>'sanctum']);
+        $representative = Role::create(['name' => 'representative','guard_name'=>'sanctum']);
+        $collector = Role::create(['name' => 'collector','guard_name'=>'sanctum']);
         
         // // إنشاء الصلاحيات
         // Permission::create(['name' => 'manage deliveries']);

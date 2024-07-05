@@ -23,35 +23,43 @@ class AssociationResource extends Resource
     protected static ?int $navigationSort = 1;
     protected static ?string $modelLabel = 'جمعية';
     protected static ?string $pluralLabel = 'الجمعيات';
+    protected static string | array $routeMiddleware = [
+        'auth:web',
+        'Permission:institution',
+    ];
+    public static function  associationForm()
+    {
+        return [
+            Forms\Components\TextInput::make('name')
+                ->label('اسم الجمعية')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('phone')
+                ->tel()
+                ->label('رقم الموبايل')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('password')
+                ->password()
+                ->required()
+                ->confirmed()
+                ->label('الرمز')
+                ->maxLength(255),
+            Forms\Components\TextInput::make('password_confirmation')
+                ->password()
+                ->required()
+                ->label('تأكيد الرمز')
+                ->maxLength(255),
+            Forms\Components\Toggle::make('status')
+                ->default(1)
+                ->label('حالة الجمعية')
+                ->required(),
+        ];
+    }
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('اسم الجمعية')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->label('رقم الموبايل')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->confirmed()
-                    ->label('الرمز')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('password_confirmation')
-                    ->password()
-                    ->required()
-                    ->label('تأكيد الرمز')
-                    ->maxLength(255),
-                Forms\Components\Toggle::make('status')
-                    ->default(1)
-                    ->label('حالة الجمعية')
-                    ->required(),
-            ]);
+            ->schema(self::associationForm());
     }
 
     public static function table(Table $table): Table

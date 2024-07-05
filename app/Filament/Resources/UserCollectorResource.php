@@ -22,6 +22,11 @@ class UserCollectorResource extends Resource
     protected static ?string $pluralLabel = "المجمعين";
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static string | array $routeMiddleware = [
+        'auth:web',
+        'Permission:institution',
+    ];
+
     public static function form(Form $form): Form
     {
         return $form
@@ -52,9 +57,11 @@ class UserCollectorResource extends Resource
                     ->searchable()
                     ->preload()
                     ->live()
+
                     ->options(function () {
                         return User::where('user_type', 'association')->pluck('name', 'id');
                     })
+                    ->createOptionForm(AssociationResource::associationForm())
                     ->required(),
                 Forms\Components\Toggle::make('status')
                     ->default(1)
