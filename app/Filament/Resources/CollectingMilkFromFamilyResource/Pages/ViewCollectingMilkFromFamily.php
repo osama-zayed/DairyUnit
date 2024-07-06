@@ -13,7 +13,7 @@ class ViewCollectingMilkFromFamily extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            // Actions\EditAction::make(),
         ];
     }
 }

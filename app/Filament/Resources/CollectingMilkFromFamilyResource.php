@@ -103,7 +103,7 @@ class CollectingMilkFromFamilyResource extends Resource
                     ->label('الجمعية')
                     ->multiple()
                     ->options(function () {
-                        return User::pluck('name', 'id');
+                        return User::where('user_type', 'association')->pluck('name', 'id');
                     })
                     ->relationship('association', 'name'),
                 SelectFilter::make('user_id')
@@ -115,15 +115,15 @@ class CollectingMilkFromFamilyResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //      Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
+                // Tables\Actions\CreateAction::make(),
             ]);
     }
 
@@ -138,9 +138,8 @@ class CollectingMilkFromFamilyResource extends Resource
     {
         return [
             'index' => Pages\ListCollectingMilkFromCaptivities::route('/'),
-            'create' => Pages\CreateCollectingMilkFromFamily::route('/create'),
             'view' => Pages\ViewCollectingMilkFromFamily::route('/{record}'),
-            'edit' => Pages\EditCollectingMilkFromFamily::route('/{record}/edit'),
+            // 'edit' => Pages\EditCollectingMilkFromFamily::route('/{record}/edit'),
         ];
     }
 }
