@@ -18,6 +18,7 @@ class FamilyController extends Controller
             'name',
         )
             ->where('status', 1)
+            ->where('association_id',auth('sanctum')->user()->association_id)
             ->get();
         return self::responseSuccess($Family);
     }
