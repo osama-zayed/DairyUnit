@@ -23,7 +23,7 @@ class AddFamilyRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'phone' => 'required|regex:/^[0-9]{9}$/|unique:familys,phone',
+            'phone' => 'required|regex:/^[0-9]{9}$/|unique:families,phone',
         ];
     }
 

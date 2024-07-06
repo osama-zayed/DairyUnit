@@ -20,7 +20,6 @@ return new class extends Migration
             $table->foreignId('association_id')->nullable()->references('id')->on('users');
             $table->foreignId('factory_id')->nullable()->references('id')->on('factories');
             $table->string('user_type');
-
             $table->rememberToken();
             $table->timestamps();
         });
