@@ -18,10 +18,19 @@ class FamilyController extends Controller
             'name',
         )
             ->where('status', 1)
-            ->where('association_id',auth('sanctum')->user()->association_id)
+            ->where('association_id', auth('sanctum')->user()->association_id)
             ->get();
         return self::responseSuccess($Family);
     }
 
+    public function add(AddFamilyRequest $request)
+    {
+        Family::create([
+            'name' => $request->input('name'),
+            'phone' => $request->input('phone'),
+            'association_id' => auth('sanctum')->user()->association_id,
+        ]);
 
+        return self::responseSuccess([], 'تمت العملية بنجاح');
+    }
 }
