@@ -49,11 +49,13 @@ class Controller extends BaseController
             "body" => $message . " الوقت والتاريخ " . now()
         ]));
     }
-    public static function userActivity($event, $opration, $message,)
+    public static function userActivity($event, $opration, $message, $userType = 'المستخدم')
     {
-        activity()->performedOn($opration)->event($event)->causedBy(auth('sanctum')->user())
+        $user = auth('sanctum')->user();
+
+        activity()->performedOn($opration)->event($event)->causedBy($user)
             ->log(
-                $message . " الوقت والتاريخ " . now()
+                'لقد قام' . $userType .' '. $user->name .  $message . " الوقت والتاريخ " . now()
             );
     }
     public static function getDayPeriodArabic($dayPeriod)

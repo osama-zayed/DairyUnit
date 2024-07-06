@@ -14,7 +14,7 @@ class MilkCollectionController extends Controller
 {
     public function collecting(CollectingRequest $request)
     {
-        CollectingMilkFromFamily::create([
+        $collectingMilkFromFamily = CollectingMilkFromFamily::create([
             'collection_date_and_time' => $request->input('date_and_time'),
             'quantity' => $request->input('quantity'),
             'association_id' => auth('sanctum')->user()->association_id,
@@ -22,6 +22,20 @@ class MilkCollectionController extends Controller
             'user_id' => auth('sanctum')->user()->id,
             'nots' => $request->input('nots') ?? '',
         ]);
+        self::userActivity(
+            'اضافة عملية تجميع حليب',
+            $collectingMilkFromFamily,
+            ' جمعية ' . $collectingMilkFromFamily->association->name .
+                'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
+                ' الكمية ' . $collectingMilkFromFamily->quantity,
+            'فرع الجمعية'
+        );
+        self::userNotification(
+            auth('sanctum')->user(),
+            'لقد قمت ب' .
+                'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
+                ' الكمية ' . $collectingMilkFromFamily->quantity,
+        );
         return self::responseSuccess('تمت العملية بنجاح');
     }
 
@@ -102,7 +116,7 @@ class MilkCollectionController extends Controller
             'nots' => $CollectingMilkFromFamily->nots,
         ];
     }
- 
+
     public static function formatCollectingMilkFromFamilyDataForDisplay($collectingMilkFromFamily)
     {
         return array_map(function ($collectingMilkFromFamily) {
