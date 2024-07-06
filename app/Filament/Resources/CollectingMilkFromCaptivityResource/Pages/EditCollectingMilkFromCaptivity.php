@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\CollectingMilkFromCaptivityResource\Pages;
+namespace App\Filament\Resources\CollectingMilkFromFamilyResource\Pages;
 
-use App\Filament\Resources\CollectingMilkFromCaptivityResource;
+use App\Filament\Resources\CollectingMilkFromFamilyResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditCollectingMilkFromCaptivity extends EditRecord
+class EditCollectingMilkFromFamily extends EditRecord
 {
-    protected static string $resource = CollectingMilkFromCaptivityResource::class;
+    protected static string $resource = CollectingMilkFromFamilyResource::class;
 
     protected function getHeaderActions(): array
     {

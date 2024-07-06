@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\CollectingMilkFromCaptivityResource\Widgets;
+namespace App\Filament\Resources\CollectingMilkFromFamilyResource\Widgets;
 
 use Filament\Widgets\ChartWidget;
 

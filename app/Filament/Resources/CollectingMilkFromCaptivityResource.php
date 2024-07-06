@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CollectingMilkFromCaptivityResource\Pages;
-use App\Filament\Resources\CollectingMilkFromCaptivityResource\RelationManagers;
-use App\Models\CollectingMilkFromCaptivity;
+use App\Filament\Resources\CollectingMilkFromFamilyResource\Pages;
+use App\Filament\Resources\CollectingMilkFromFamilyResource\RelationManagers;
+use App\Models\CollectingMilkFromFamily;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CollectingMilkFromCaptivityResource extends Resource
+class CollectingMilkFromFamilyResource extends Resource
 {
-    protected static ?string $model = CollectingMilkFromCaptivity::class;
+    protected static ?string $model = CollectingMilkFromFamily::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 7;
@@ -111,9 +111,9 @@ class CollectingMilkFromCaptivityResource extends Resource
     {
         return [
             'index' => Pages\ListCollectingMilkFromCaptivities::route('/'),
-            'create' => Pages\CreateCollectingMilkFromCaptivity::route('/create'),
-            'view' => Pages\ViewCollectingMilkFromCaptivity::route('/{record}'),
-            'edit' => Pages\EditCollectingMilkFromCaptivity::route('/{record}/edit'),
+            'create' => Pages\CreateCollectingMilkFromFamily::route('/create'),
+            'view' => Pages\ViewCollectingMilkFromFamily::route('/{record}'),
+            'edit' => Pages\EditCollectingMilkFromFamily::route('/{record}/edit'),
         ];
     }    
 }

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Collector\CollectingRequest;
 use App\Http\Requests\EditUserRequest;
 use App\Http\Requests\LoginRequest;
-use App\Models\CollectingMilkFromCaptivity;
+use App\Models\CollectingMilkFromFamily;
 use Illuminate\Http\Request;
 
 
@@ -14,7 +14,7 @@ class MilkCollectionController extends Controller
 {
     public function collecting(CollectingRequest $request)
     {
-        CollectingMilkFromCaptivity::create([
+        CollectingMilkFromFamily::create([
             'collection_date_and_time' => $request->input('collection_date_and_time'),
             'quantity' => $request->input('quantity'),
             'association_id' => auth('sanctum')->user()->association_id,
@@ -27,7 +27,7 @@ class MilkCollectionController extends Controller
 
     public function showAll()
     {
-        $collectingMilkFromCaptivity = CollectingMilkFromCaptivity::select(
+        $CollectingMilkFromFamily = CollectingMilkFromFamily::select(
             'id',
             'collection_date_and_time',
             'quantity',
@@ -35,6 +35,6 @@ class MilkCollectionController extends Controller
             'family_id',
             'user_id',
         )->get();
-        return self::responseSuccess($collectingMilkFromCaptivity);
+        return self::responseSuccess($CollectingMilkFromFamily);
     }
 }

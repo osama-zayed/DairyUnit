@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\CollectingMilkFromCaptivityResource\Pages;
+namespace App\Filament\Resources\CollectingMilkFromFamilyResource\Pages;
 
-use App\Filament\Resources\CollectingMilkFromCaptivityResource;
+use App\Filament\Resources\CollectingMilkFromFamilyResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreateCollectingMilkFromCaptivity extends CreateRecord
+class CreateCollectingMilkFromFamily extends CreateRecord
 {
-    protected static string $resource = CollectingMilkFromCaptivityResource::class;
+    protected static string $resource = CollectingMilkFromFamilyResource::class;
 }
