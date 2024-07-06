@@ -70,7 +70,7 @@ class UserController extends Controller
             }
             return self::responseSuccess($data);
         } catch (Exception $e) {
-            return self::responseError();
+            return self::responseError($e);
         }
     }
     
