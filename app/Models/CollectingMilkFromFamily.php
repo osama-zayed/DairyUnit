@@ -40,14 +40,6 @@ class CollectingMilkFromFamily extends Model
     }
 
     /**
-     * Get the association's branch associated with the milk collection.
-     */
-    public function associationsBranch()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
      * Get the Family associated with the milk collection.
      */
     public function family()

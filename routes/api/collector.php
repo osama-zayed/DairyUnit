@@ -10,13 +10,16 @@ Route::prefix('auth')->group(function () {
         Route::post('logout', "AuthController@logout");
         Route::get('me', "AuthController@me");
         Route::put('editUser', "AuthController@editUser");
+        Route::get('notification', "AuthController@notification");
     });
 });
+
 Route::prefix('family')->middleware(['auth:sanctum', 'Permission:collector'])->group(function () {
     Route::get('by-association', "CollectorFamilyController@showByAssociation");
     Route::post('add', "CollectorFamilyController@add");
 });
 Route::prefix('milk')->middleware(['auth:sanctum', 'Permission:collector'])->group(function () {
     Route::get('show/all', "MilkCollectionController@showAll");
+    Route::get('show/{id}', "MilkCollectionController@showById");
     Route::post('collecting', "MilkCollectionController@collecting");
 });

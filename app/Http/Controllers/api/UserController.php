@@ -8,20 +8,18 @@ use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Exception;
 
 class UserController extends Controller
 {
 
     public function login(LoginRequest $request)
     {
-        // Validate the login request
         $credentials = $request->validated();
 
-        // Attempt to authenticate the user
         if (Auth::attempt($credentials)) {
             $token = null;
 
-            // Check if a token name is provided in the request
             if ($request->has('token_name') && !is_null($request->token_name)) {
                 $token = $request->user()->createToken($request->token_name);
             } else {
@@ -31,40 +29,49 @@ class UserController extends Controller
             return self::responseSuccess([
                 'access_token' => $token->plainTextToken,
                 'token_type' => 'Bearer',
-            ],'تم تسجيل الدخول بنجاح'); 
+            ], 'تم تسجيل الدخول بنجاح');
         }
 
-        // If authentication fails, return a 401 Unauthorized response
-        return self::responseError('رقم الهاتف او كلمة السر غير صحيح',401); 
+        return self::responseError('رقم الهاتف او كلمة السر غير صحيح', 401);
     }
     public function logout(Request $request)
     {
-        // Revoke the current user's token
         $request->user()->currentAccessToken()->delete();
-
-        // Return a success response
-        return self::responseSuccess([],'تم تسجيل الخروج بنجاح'); 
+        return self::responseSuccess([], 'تم تسجيل الخروج بنجاح');
     }
     public function editUser(EditUserRequest $request)
     {
-        // Use validated data from EditUserRequest
         $data = $request->validated();
-
-        // Get the authenticated user
         $user = auth('sanctum')->user();
-
-        // Update the user's information
         $user->update([
             'name' => $request->name,
             'phone' => $request->phone,
         ]);
 
-        return self::responseSuccess($user,'تم تعديل البيانات بنجاح'); 
-        // Return a success response
+        return self::responseSuccess($user, 'تم تعديل البيانات بنجاح');
     }
     public function me()
     {
         $data = auth('sanctum')->user();
         return self::responseSuccess($data);
     }
+    public function notification()
+    {
+        try {
+            $user = Auth::user();
+            $notifications = $user->notifications()->take(2000)->get()->toArray();
+            $data = [];
+            foreach ($notifications as $notification) {
+                $notificationData = [
+                    "description" => $notification['data']['data'],
+                    "created_at" => date('H:i Y-m-d', strtotime($notification['created_at'])),
+                ];
+                $data[] = $notificationData;
+            }
+            return self::responseSuccess($data);
+        } catch (Exception $e) {
+            return self::responseError();
+        }
+    }
+    
 }

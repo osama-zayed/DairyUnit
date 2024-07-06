@@ -41,4 +41,19 @@ class Controller extends BaseController
             'total' => $paginatedData->total(),
         ];
     }
+    // $user->notify(new Notifications([
+    //     "body" => " لقد قمت بتعديل عملية توريد برقم " . $updataWarehouseSupply->id .
+    //         " موجود في محافظة " . $province->province_name .
+    //         " مديرية " . $directorate->directorate_name .
+    //         " الوقت والتاريخ " . $date,
+    // ]));
+    // activity()->performedOn($updataWarehouseSupply)->event("تعديل عملية توريد")->causedBy($user)
+    //     ->log(
+    //         " تم تعديل عملية توريد برقم " . $updataWarehouseSupply->id .
+    //             " موجود في محافظة " . $province->province_name .
+    //             " مديرية " . $directorate->directorate_name .
+    //             " محطة " . $Station->station_name .
+    //             " بواسطة المستخدم " . $user->name .
+    //             " الوقت والتاريخ " . $date,
+    //     );
 }
