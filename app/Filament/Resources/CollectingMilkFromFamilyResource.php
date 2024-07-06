@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -72,7 +73,7 @@ class CollectingMilkFromFamilyResource extends Resource
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
                     ->sortable(),
-                    Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->label('وقت الاضافة')
                     ->sortable()
@@ -84,7 +85,9 @@ class CollectingMilkFromFamilyResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('association_id')
+                    ->label('الجمعية')
+                    ->relationship('Association', 'name')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -99,14 +102,14 @@ class CollectingMilkFromFamilyResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -115,5 +118,5 @@ class CollectingMilkFromFamilyResource extends Resource
             'view' => Pages\ViewCollectingMilkFromFamily::route('/{record}'),
             'edit' => Pages\EditCollectingMilkFromFamily::route('/{record}/edit'),
         ];
-    }    
+    }
 }
