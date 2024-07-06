@@ -37,8 +37,8 @@ class CollectingRequest extends FormRequest
             'quantity.required' => 'الكمية مطلوبة',
             'quantity.numeric' => 'الكمية يجب أن تكون رقمية',
             'quantity.min' => 'الكمية يجب أن تكون على الأقل 1',
-            'family_id.required' => 'معرف المزارع مطلوب',
-            'family_id.exists' => 'المزارع المحدد غير موجود',
+            'family_id.required' => 'معرف الاسرة مطلوب',
+            'family_id.exists' => 'الاسرة المحددة غير موجودة',
         ];
     }
 
