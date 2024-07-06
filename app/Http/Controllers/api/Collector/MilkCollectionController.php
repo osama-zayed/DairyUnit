@@ -15,12 +15,12 @@ class MilkCollectionController extends Controller
     public function collecting(CollectingRequest $request)
     {
         CollectingMilkFromFamily::create([
-            'collection_date_and_time' => $request->input('collection_date_and_time'),
+            'collection_date_and_time' => $request->input('date_and_time'),
             'quantity' => $request->input('quantity'),
             'association_id' => auth('sanctum')->user()->association_id,
             'family_id' => $request->input('family_id'),
             'user_id' => auth('sanctum')->user()->id,
-            'nots' => $request->input('nots'),
+            'nots' => $request->input('nots') ??'',
         ]);
         return self::responseSuccess('تمت العملية بنجاح');
     }

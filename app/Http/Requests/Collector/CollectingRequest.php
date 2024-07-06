@@ -20,10 +20,9 @@ class CollectingRequest extends FormRequest
     public function rules()
     {
         return [
-            'collection_date_and_time' => 'required|date_format:Y-m-d H:i:s',
+            'date_and_time' => 'required|date_format:Y-m-d H:i:s',
             'quantity' => 'required|numeric|min:1',
             'family_id' => 'required|exists:families,id',
-            // يمكنك إضافة قواعد إضافية حسب حاجتك
         ];
     }
 
@@ -33,14 +32,13 @@ class CollectingRequest extends FormRequest
     public function messages()
     {
         return [
-            'collection_date_and_time.required' => 'تاريخ ووقت الجمع مطلوب',
-            'collection_date_and_time.date_format' => 'يجب أن يكون تاريخ ووقت الجمع صالحًا',
+            'date_and_time.required' => 'تاريخ ووقت الجمع مطلوب',
+            'date_and_time.date_format' => 'يجب أن يكون تاريخ ووقت الجمع صالحًا',
             'quantity.required' => 'الكمية مطلوبة',
             'quantity.numeric' => 'الكمية يجب أن تكون رقمية',
             'quantity.min' => 'الكمية يجب أن تكون على الأقل 1',
             'family_id.required' => 'معرف المزارع مطلوب',
             'family_id.exists' => 'المزارع المحدد غير موجود',
-            // يمكنك إضافة رسائل أخرى حسب الحاجة
         ];
     }
 
