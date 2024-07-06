@@ -6,5 +6,4 @@ use App\Http\Controllers\Api\FamilyController;
 
 class CollectorFamilyController extends FamilyController
 {
- 
 }

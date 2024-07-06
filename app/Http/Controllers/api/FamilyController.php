@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 
 class FamilyController extends Controller
 {
+    // protected static ?string $userType = '';
+
     public function showByAssociation()
     {
         $Family  = Family::select(
@@ -25,12 +27,22 @@ class FamilyController extends Controller
 
     public function add(AddFamilyRequest $request)
     {
-        Family::create([
+        $family = Family::create([
             'name' => $request->input('name'),
             'phone' => $request->input('phone'),
             'association_id' => auth('sanctum')->user()->association_id,
         ]);
-
+        self::userActivity(
+            'اضافة اسره جديدة',
+            $family,
+            'اضافة اسرة جديدة ' . $family->name .
+             ' جمعية ' . $family->association->name,
+            'فرع الجمعية'
+        );
+        self::userNotification(
+            auth('sanctum')->user(),
+            'لقد قمت باضافة اسرة جديدة باسم ' . $family->name
+        );
         return self::responseSuccess([], 'تمت العملية بنجاح');
     }
 }
