@@ -9,7 +9,6 @@ use App\Http\Requests\LoginRequest;
 use App\Models\Farmer;
 use Illuminate\Http\Request;
 
-
 class FarmerController extends Controller
 {
     public function showByAssociation()
@@ -23,14 +22,5 @@ class FarmerController extends Controller
         return self::responseSuccess($farmer);
     }
 
-    public function add(AddFarmerRequest $request)
-    {
-        Farmer::create([
-            'name' => $request->input('name'),
-            'phone' => $request->input('phone'),
-            'association_id' => auth('sanctum')->user()->association_id,
-        ]);
 
-        return self::responseSuccess([],'تمت العملية بنجاح');
-    }
 }
