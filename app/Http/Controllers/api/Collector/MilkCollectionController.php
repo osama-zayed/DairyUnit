@@ -102,24 +102,7 @@ class MilkCollectionController extends Controller
             'nots' => $CollectingMilkFromFamily->nots,
         ];
     }
-    private static function getDayPeriodArabic($dayPeriod)
-    {
-        return $dayPeriod === 'AM' ? 'صباحًا' : 'مساءً';
-    }
-    private static function getDayOfWeekArabic($dayOfWeek)
-    {
-        $daysOfWeekArabic = [
-            'Monday' => 'الاثنين',
-            'Tuesday' => 'الثلاثاء',
-            'Wednesday' => 'الأربعاء',
-            'Thursday' => 'الخميس',
-            'Friday' => 'الجمعة',
-            'Saturday' => 'السبت',
-            'Sunday' => 'الأحد',
-        ];
-
-        return $daysOfWeekArabic[$dayOfWeek];
-    }
+ 
     public static function formatCollectingMilkFromFamilyDataForDisplay($collectingMilkFromFamily)
     {
         return array_map(function ($collectingMilkFromFamily) {

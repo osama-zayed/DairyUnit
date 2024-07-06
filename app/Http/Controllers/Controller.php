@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\Notifications;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
@@ -41,19 +42,36 @@ class Controller extends BaseController
             'total' => $paginatedData->total(),
         ];
     }
-    // $user->notify(new Notifications([
-    //     "body" => " لقد قمت بتعديل عملية توريد برقم " . $updataWarehouseSupply->id .
-    //         " موجود في محافظة " . $province->province_name .
-    //         " مديرية " . $directorate->directorate_name .
-    //         " الوقت والتاريخ " . $date,
-    // ]));
-    // activity()->performedOn($updataWarehouseSupply)->event("تعديل عملية توريد")->causedBy($user)
-    //     ->log(
-    //         " تم تعديل عملية توريد برقم " . $updataWarehouseSupply->id .
-    //             " موجود في محافظة " . $province->province_name .
-    //             " مديرية " . $directorate->directorate_name .
-    //             " محطة " . $Station->station_name .
-    //             " بواسطة المستخدم " . $user->name .
-    //             " الوقت والتاريخ " . $date,
-    //     );
+
+    public static function userNotification($user, $message)
+    {
+        $user->notify(new Notifications([
+            "body" => $message . " الوقت والتاريخ " . now()
+        ]));
+    }
+    public static function userActivity($event, $opration, $message,)
+    {
+        activity()->performedOn($opration)->event($event)->causedBy(auth('sanctum')->user())
+            ->log(
+                $message . " الوقت والتاريخ " . now()
+            );
+    }
+    public static function getDayPeriodArabic($dayPeriod)
+    {
+        return $dayPeriod === 'AM' ? 'صباحًا' : 'مساءً';
+    }
+    public static function getDayOfWeekArabic($dayOfWeek)
+    {
+        $daysOfWeekArabic = [
+            'Monday' => 'الاثنين',
+            'Tuesday' => 'الثلاثاء',
+            'Wednesday' => 'الأربعاء',
+            'Thursday' => 'الخميس',
+            'Friday' => 'الجمعة',
+            'Saturday' => 'السبت',
+            'Sunday' => 'الأحد',
+        ];
+
+        return $daysOfWeekArabic[$dayOfWeek];
+    }
 }
