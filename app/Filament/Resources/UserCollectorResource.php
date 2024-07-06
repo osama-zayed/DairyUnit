@@ -58,7 +58,6 @@ class UserCollectorResource extends Resource
                     ->searchable()
                     ->preload()
                     ->live()
-
                     ->options(function () {
                         return User::where('user_type', 'association')->pluck('name', 'id');
                     })

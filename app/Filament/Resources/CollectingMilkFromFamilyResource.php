@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CollectingMilkFromFamilyResource\Pages;
 use App\Filament\Resources\CollectingMilkFromFamilyResource\RelationManagers;
 use App\Models\CollectingMilkFromFamily;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -26,25 +27,38 @@ class CollectingMilkFromFamilyResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('association_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('associations_branche_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('family_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\DateTimePicker::make('collection_date_and_time')
+                Forms\Components\Select::make('association_id')
+                    ->relationship('association', titleAttribute: 'name')
+                    ->label('الجمعية')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->options(function () {
+                        return User::where('user_type', 'association')->pluck('name', 'id');
+                    })
                     ->required(),
-                Forms\Components\TextInput::make('period')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', titleAttribute: 'name')
+                    ->label('فرع الجمعية')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->options(function () {
+                        return User::where('user_type', 'collector')->pluck('name', 'id');
+                    })
+                    ->required(),
+                Forms\Components\Select::make('family_id')
+                    ->relationship('family', titleAttribute: 'name')
+                    ->searchable()
+                    ->preload()
+                    ->label('اسم الاسرة')
+                    ->live(),
+                Forms\Components\DateTimePicker::make('collection_date_and_time')
+                    ->label('وقت التجميع')
+                    ->required(),
                 Forms\Components\TextInput::make('quantity')
                     ->required()
+                    ->label('الكمية')
                     ->numeric(),
             ]);
     }
@@ -53,25 +67,25 @@ class CollectingMilkFromFamilyResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('association_id')
+                Tables\Columns\TextColumn::make('association.name')
                     ->numeric()
+                    ->label('اسم الجمعية')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('associations_branche_id')
+                Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
+                    ->label('فرع الجمعية')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('family_id')
+                Tables\Columns\TextColumn::make('family.name')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
+                    ->label('اسم الاسرة')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('collection_date_and_time')
                     ->dateTime()
+                    ->label('وقت التجميع')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('period')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
+                    ->label('الكمية')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -87,7 +101,17 @@ class CollectingMilkFromFamilyResource extends Resource
             ->filters([
                 SelectFilter::make('association_id')
                     ->label('الجمعية')
-                    ->relationship('Association', 'name')
+                    ->multiple()
+                    ->options(function () {
+                        return User::pluck('name', 'id');
+                    })
+                    ->relationship('association', 'name'),
+                SelectFilter::make('user_id')
+                    ->label('فرع الجمعية')
+                    ->options(function () {
+                        return User::where('user_type', 'collector')->pluck('name', 'id');
+                    })
+                    ->relationship('user', 'name')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
