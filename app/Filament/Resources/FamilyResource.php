@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\FamilyResource\Pages;
 use App\Filament\Resources\FamilyResource\RelationManagers;
 use App\Models\Family;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -25,19 +26,27 @@ class FamilyResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('association_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('associations_branche_id')
-                    ->required()
-                    ->numeric(),
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->label('اسم الاسرة')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
                     ->tel()
                     ->required()
+                    ->label('رقم الهاتف')
                     ->maxLength(255),
+                Forms\Components\Select::make('association_id')
+                    ->relationship('association', titleAttribute: 'name')
+                    ->label('الجمعية')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+
+                    ->options(function () {
+                        return User::where('user_type', 'association')->pluck('name', 'id');
+                    })
+                    ->createOptionForm(AssociationResource::associationForm())
+                    ->required(),
                 Forms\Components\Toggle::make('status')
                     ->default(1)
                     ->label('حالة الاسرة')
@@ -50,18 +59,14 @@ class FamilyResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                ->label('اسم الاسره')
+                    ->label('اسم الاسره')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
-                ->label('رقم الهاتف')
+                    ->label('رقم الهاتف')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('association.name')
                     ->numeric()
                     ->label('اسم الجمعية')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('associationsBranch.name')
-                    ->numeric()
-                    ->label('اسم الفرع')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('status')
                     ->label('حالة الاسرة')

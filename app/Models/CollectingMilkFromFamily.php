@@ -14,7 +14,7 @@ class CollectingMilkFromFamily extends Model
      *
      * @var string
      */
-    protected $table = 'collecting_milk_from_captivities';
+    // protected $table = 'collecting_milk_from_families';
 
     /**
      * The attributes that are mass assignable.
