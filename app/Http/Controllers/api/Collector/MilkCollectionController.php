@@ -18,7 +18,7 @@ class MilkCollectionController extends Controller
             'collection_date_and_time' => $request->input('collection_date_and_time'),
             'quantity' => $request->input('quantity'),
             'association_id' => auth('sanctum')->user()->association_id,
-            'farmer_id' => $request->input('farmer_id'),
+            'family_id' => $request->input('family_id'),
             'user_id' => auth('sanctum')->user()->id,
             'nots' => $request->input('nots'),
         ]);
@@ -32,7 +32,7 @@ class MilkCollectionController extends Controller
             'collection_date_and_time',
             'quantity',
             'association_id',
-            'farmer_id',
+            'family_id',
             'user_id',
         )->get();
         return self::responseSuccess($collectingMilkFromCaptivity);

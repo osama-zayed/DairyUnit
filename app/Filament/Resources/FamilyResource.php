@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\FarmerResource\Pages;
-use App\Filament\Resources\FarmerResource\RelationManagers;
-use App\Models\Farmer;
+use App\Filament\Resources\FamilyResource\Pages;
+use App\Filament\Resources\FamilyResource\RelationManagers;
+use App\Models\Family;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class FarmerResource extends Resource
+class FamilyResource extends Resource
 {
-    protected static ?string $model = Farmer::class;
+    protected static ?string $model = Family::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 5;
@@ -104,10 +104,10 @@ class FarmerResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListFarmers::route('/'),
-            'create' => Pages\CreateFarmer::route('/create'),
-            'view' => Pages\ViewFarmer::route('/{record}'),
-            'edit' => Pages\EditFarmer::route('/{record}/edit'),
+            'index' => Pages\ListFamilies::route('/'),
+            'create' => Pages\CreateFamily::route('/create'),
+            'view' => Pages\ViewFamily::route('/{record}'),
+            'edit' => Pages\EditFamily::route('/{record}/edit'),
         ];
     }
 }

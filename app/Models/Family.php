@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Farmer extends Model
+class Family extends Model
 {
     use HasFactory;
 
@@ -14,7 +14,7 @@ class Farmer extends Model
      *
      * @var string
      */
-    protected $table = 'farmers';
+    protected $table = 'families';
 
     /**
      * The attributes that are mass assignable.
@@ -30,7 +30,7 @@ class Farmer extends Model
     ];
 
     /**
-     * Get the association associated with the farmer.
+     * Get the association associated with the Family.
      */
     public function association()
     {

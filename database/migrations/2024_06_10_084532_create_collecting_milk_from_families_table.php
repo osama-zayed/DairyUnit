@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         //معلومات تجميع الحليب 
-        Schema::create('collecting_milk_from_captivities', function (Blueprint $table) {
+        Schema::create('collecting_milk_from_families', function (Blueprint $table) {
             $table->id();
             $table->dateTime('collection_date_and_time');
             $table->decimal('quantity', 8, 2); 
             $table->foreignId('association_id')->references('id')->on('users');
-            $table->foreignId('farmer_id')->references('id')->on('farmers');
+            $table->foreignId('family_id')->references('id')->on('families');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->text('nots');
             $table->timestamps();

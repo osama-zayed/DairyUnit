@@ -31,7 +31,7 @@ class CollectingMilkFromCaptivityResource extends Resource
                 Forms\Components\TextInput::make('associations_branche_id')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('farmer_id')
+                Forms\Components\TextInput::make('family_id')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('user_id')
@@ -58,7 +58,7 @@ class CollectingMilkFromCaptivityResource extends Resource
                 Tables\Columns\TextColumn::make('associations_branche_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('farmer_id')
+                Tables\Columns\TextColumn::make('family_id')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user_id')

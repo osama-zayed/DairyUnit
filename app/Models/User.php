@@ -63,7 +63,7 @@ class User extends Authenticatable
         return $this->belongsTo(Factory::class);
     }
     /**
-     * Get the association's branch associated with the farmer.
+     * Get the association's branch associated with the Family.
      */
     public function association()
     {

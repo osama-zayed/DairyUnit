@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CollectingMilkFromCaptivity extends Model
+class CollectingMilkFromFamily extends Model
 {
     use HasFactory;
 
@@ -27,7 +27,7 @@ class CollectingMilkFromCaptivity extends Model
         'nots',
         'quantity',
         'association_id',
-        'farmer_id',
+        'family_id',
         'user_id',
     ];
 
@@ -48,11 +48,11 @@ class CollectingMilkFromCaptivity extends Model
     }
 
     /**
-     * Get the farmer associated with the milk collection.
+     * Get the Family associated with the milk collection.
      */
-    public function farmer()
+    public function family()
     {
-        return $this->belongsTo(Farmer::class);
+        return $this->belongsTo(Family::class);
     }
 
     /**

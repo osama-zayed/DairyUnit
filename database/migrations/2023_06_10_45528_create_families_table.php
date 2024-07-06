@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         //معلومات عن الأسر المنتجة للألبان.
-        Schema::create('farmers', function (Blueprint $table) {
+        Schema::create('families', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('phone')->unique();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('farmers');
+        Schema::dropIfExists('families');
     }
 };

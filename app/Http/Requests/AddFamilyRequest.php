@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class AddFarmerRequest extends FormRequest
+class AddFamilyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,7 @@ class AddFarmerRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'phone' => 'required|regex:/^[0-9]{9}$/|unique:farmers,phone',
+            'phone' => 'required|regex:/^[0-9]{9}$/|unique:familys,phone',
         ];
     }
 

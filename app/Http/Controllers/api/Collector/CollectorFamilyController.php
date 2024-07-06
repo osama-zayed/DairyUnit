@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Api\Collector;
 
-use App\Http\Controllers\Api\FarmerController;
-use App\Http\Requests\AddFarmerRequest;
-use App\Models\Farmer;
+use App\Http\Controllers\Api\FamilyController;
+use App\Http\Requests\AddFamilyRequest;
+use App\Models\Family;
 
-class CollectorFarmerController extends FarmerController
+class CollectorFamilyController extends FamilyController
 {
-    public function add(AddFarmerRequest $request)
+    public function add(AddFamilyRequest $request)
     {
-        Farmer::create([
+        Family::create([
             'name' => $request->input('name'),
             'phone' => $request->input('phone'),
             'association_id' => auth('sanctum')->user()->association_id,

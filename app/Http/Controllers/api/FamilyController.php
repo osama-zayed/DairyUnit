@@ -3,23 +3,23 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AddFarmerRequest;
+use App\Http\Requests\AddFamilyRequest;
 use App\Http\Requests\EditUserRequest;
 use App\Http\Requests\LoginRequest;
-use App\Models\Farmer;
+use App\Models\Family;
 use Illuminate\Http\Request;
 
-class FarmerController extends Controller
+class FamilyController extends Controller
 {
     public function showByAssociation()
     {
-        $farmer  = Farmer::select(
+        $Family  = Family::select(
             'id',
             'name',
         )
             ->where('status', 1)
             ->get();
-        return self::responseSuccess($farmer);
+        return self::responseSuccess($Family);
     }
 
 

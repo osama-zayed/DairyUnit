@@ -22,7 +22,7 @@ class CollectingRequest extends FormRequest
         return [
             'collection_date_and_time' => 'required|date_format:Y-m-d H:i:s',
             'quantity' => 'required|numeric|min:1',
-            'farmer_id' => 'required|exists:farmers,id',
+            'family_id' => 'required|exists:families,id',
             // يمكنك إضافة قواعد إضافية حسب حاجتك
         ];
     }
@@ -38,8 +38,8 @@ class CollectingRequest extends FormRequest
             'quantity.required' => 'الكمية مطلوبة',
             'quantity.numeric' => 'الكمية يجب أن تكون رقمية',
             'quantity.min' => 'الكمية يجب أن تكون على الأقل 1',
-            'farmer_id.required' => 'معرف المزارع مطلوب',
-            'farmer_id.exists' => 'المزارع المحدد غير موجود',
+            'family_id.required' => 'معرف المزارع مطلوب',
+            'family_id.exists' => 'المزارع المحدد غير موجود',
             // يمكنك إضافة رسائل أخرى حسب الحاجة
         ];
     }
