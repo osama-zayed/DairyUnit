@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Collector;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Collector\CollectingRequest;
-
+use App\Http\Requests\Collector\UpdateCollectingRequest;
 use App\Models\CollectingMilkFromFamily;
 use DateTime;
 use Illuminate\Http\Request;
@@ -37,6 +37,44 @@ class MilkCollectionController extends Controller
                 ' الكمية ' . $collectingMilkFromFamily->quantity,
         );
         return self::responseSuccess('تمت العملية بنجاح');
+    }
+    public function update(UpdateCollectingRequest $request)
+    {
+
+        $collectingMilkFromFamily = CollectingMilkFromFamily::findOrFail($request->input("id"));
+    
+        // Check if the user is trying to update the record after 2 hours of creation
+        $createdAt = $collectingMilkFromFamily->created_at;
+        $now = now();
+        $diffInHours = $now->diffInHours($createdAt);
+        if ($diffInHours >= 2) {
+            return self::responseError('لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
+        }
+    
+        $collectingMilkFromFamily->update([
+            'collection_date_and_time' => $request->input('date_and_time'),
+            'quantity' => $request->input('quantity'),
+            'family_id' => $request->input('family_id'),
+            'nots' => $request->input('nots') ?? '',
+        ]);
+    
+        self::userActivity(
+            'تعديل عملية تجميع حليب',
+            $collectingMilkFromFamily,
+            ' جمعية ' . $collectingMilkFromFamily->association->name .
+            'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
+            ' الكمية ' . $collectingMilkFromFamily->quantity,
+            'فرع الجمعية'
+        );
+    
+        self::userNotification(
+            auth('sanctum')->user(),
+            'لقد قمت بتعديل' .
+            'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
+            ' الكمية ' . $collectingMilkFromFamily->quantity,
+        );
+    
+        return self::responseSuccess('تم التعديل بنجاح');
     }
 
     public static function showAll(Request $request)

@@ -23,4 +23,5 @@ Route::prefix('milk')->middleware(['auth:sanctum', 'Permission:collector'])->gro
     Route::get('show/all', "MilkCollectionController@showAll");
     Route::get('show/{id}', "MilkCollectionController@showById");
     Route::post('collecting', "MilkCollectionController@collecting");
+    Route::put('update', "MilkCollectionController@update");
 });
