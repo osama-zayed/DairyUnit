@@ -16,6 +16,7 @@ Route::prefix('auth')->group(function () {
 
 Route::prefix('family')->middleware(['auth:sanctum', 'Permission:collector'])->group(function () {
     Route::get('by-association', "FamilyController@showByAssociationBranche");
+    Route::get('show/{id}', "FamilyController@showById");
     Route::post('add', "FamilyController@add");
     Route::put('update', "FamilyController@update");
 });

@@ -28,6 +28,8 @@ class Family extends Model
         'status',
         'association_id',
         'associations_branche_id',
+        'number_of_cows_produced',
+        'number_of_cows_unproductive',
     ];
 
     /**

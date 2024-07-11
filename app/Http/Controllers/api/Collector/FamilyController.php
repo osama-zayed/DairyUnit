@@ -24,14 +24,33 @@ class FamilyController extends Controller
         return self::responseSuccess($Family);
     }
 
+    public function showById($id)
+    {
+        $Family  = Family::select(
+            'id',
+            'name',
+            'phone',
+            'number_of_cows_produced',
+            'number_of_cows_unproductive',
+        )
+            ->where("id", $id)
+            ->where('association_id', auth('sanctum')->user()->association_id)
+            ->where('associations_branche_id', auth('sanctum')->user()->id)
+            ->get();
+        return self::responseSuccess($Family);
+    }
+
     public function add(AddFamilyRequest $request)
     {
         $family = Family::create([
             'name' => $request->input('name'),
             'phone' => $request->input('phone'),
+            'number_of_cows_produced' => $request->input('number_of_cows_produced'),
+            'number_of_cows_unproductive' => $request->input('number_of_cows_unproductive'),
             'association_id' => auth('sanctum')->user()->association_id,
             'associations_branche_id' => auth('sanctum')->user()->id,
         ]);
+        
         self::userActivity(
             'اضافة اسره جديدة',
             $family,
@@ -39,32 +58,36 @@ class FamilyController extends Controller
                 ' جمعية ' . $family->association->name,
             'فرع الجمعية' . auth('sanctum')->user()->name
         );
+
         self::userNotification(
             auth('sanctum')->user(),
             'لقد قمت باضافة اسرة جديدة باسم ' . $family->name
         );
+        
         return self::responseSuccess([], 'تمت العملية بنجاح');
     }
     public function update(UpdateFamilyRequest $request)
     {
-        $family = Family::where('id',$request->input('id'))
+        $family = Family::where('id', $request->input('id'))
             ->where('associations_branche_id', auth('sanctum')->user()->id)
             ->first();
-    
+
         $family->update([
             'name' => $request->input('name'),
             'phone' => $request->input('phone'),
+            'number_of_cows_produced' => $request->input('number_of_cows_produced'),
+            'number_of_cows_unproductive' => $request->input('number_of_cows_unproductive'),
             'association_id' => auth('sanctum')->user()->association_id,
             'associations_branche_id' => auth('sanctum')->user()->id,
         ]);
-    
+
         $this->userActivity(
             'تعديل اسرة',
             $family,
             'تم تعديل بيانات اسرة ' . $family->name . ' جمعية ' . $family->association->name,
             'فرع الجمعية ' . auth('sanctum')->user()->name
         );
-    
+
         $this->userNotification(
             auth('sanctum')->user(),
             'لقد قمت بتعديل بيانات اسرة باسم ' . $family->name
