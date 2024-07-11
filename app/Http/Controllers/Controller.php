@@ -42,7 +42,6 @@ class Controller extends BaseController
             'total' => $paginatedData->total(),
         ];
     }
-
     public static function userNotification($user, $message)
     {
         $user->notify(new Notifications([

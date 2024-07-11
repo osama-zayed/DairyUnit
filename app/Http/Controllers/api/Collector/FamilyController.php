@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Api\Collector;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AddFamilyRequest;
-use App\Http\Requests\EditUserRequest;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\UpdateFamilyRequest;
+use App\Http\Requests\Family\AddFamilyRequest;
+use App\Http\Requests\Family\UpdateFamilyRequest;
 use App\Models\Family;
 use Illuminate\Http\Request;
 
