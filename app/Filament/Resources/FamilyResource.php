@@ -77,6 +77,10 @@ class FamilyResource extends Resource
                     ->numeric()
                     ->label('اسم الجمعية')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('associationsBranche.name')
+                    ->numeric()
+                    ->label('اسم الفرع')
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('status')
                     ->label('حالة الاسرة')
                     ->boolean(),
@@ -94,11 +98,14 @@ class FamilyResource extends Resource
             ->filters([
                 SelectFilter::make('association_id')
                 ->label('الجمعية')
-                ->relationship('Association', 'name')
+                ->relationship('Association', 'name'),
+                SelectFilter::make('associations_branche_id')
+                ->label('فرع الجمعية')
+                ->relationship('associationsBranche', 'name'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\ViewAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -106,7 +113,7 @@ class FamilyResource extends Resource
                 ]),
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
+                // Tables\Actions\CreateAction::make(),
             ]);
     }
 
@@ -121,9 +128,9 @@ class FamilyResource extends Resource
     {
         return [
             'index' => Pages\ListFamilies::route('/'),
-            'create' => Pages\CreateFamily::route('/create'),
+            // 'create' => Pages\CreateFamily::route('/create'),
             'view' => Pages\ViewFamily::route('/{record}'),
-            'edit' => Pages\EditFamily::route('/{record}/edit'),
+            // 'edit' => Pages\EditFamily::route('/{record}/edit'),
         ];
     }
 }

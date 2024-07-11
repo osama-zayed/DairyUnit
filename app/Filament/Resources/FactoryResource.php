@@ -86,7 +86,7 @@ class FactoryResource extends Resource
     {
         return [
             'index' => Pages\ListFactories::route('/'),
-            'create' => Pages\CreateFactory::route('/create'),
+            // 'create' => Pages\CreateFactory::route('/create'),
             'view' => Pages\ViewFactory::route('/{record}'),
             'edit' => Pages\EditFactory::route('/{record}/edit'),
         ];

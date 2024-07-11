@@ -12,7 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use Filament\Tables\Filters\SelectFilter;
 class DriverResource extends Resource
 {
     protected static ?string $model = Driver::class;
@@ -42,13 +42,6 @@ class DriverResource extends Resource
                     ->preload()
                     ->live()
                     ->required(),
-                Forms\Components\Select::make('associations_branche_id')
-                    ->relationship('associationsBranch', titleAttribute: 'name')
-                    ->label('فرع الجمعية')
-                    ->searchable()
-                    ->preload()
-                    ->required()
-                    ->live(),
                 Forms\Components\Toggle::make('status')
                     ->default(1)
                     ->label('حالة السائق')
@@ -70,10 +63,6 @@ class DriverResource extends Resource
                     ->numeric()
                     ->label('اسم الجمعية')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('associationsBranch.name')
-                    ->numeric()
-                    ->label('اسم الفرع')
-                    ->sortable(),
                 Tables\Columns\IconColumn::make('status')
                     ->label('حالة السائق')
                     ->boolean(),
@@ -90,19 +79,21 @@ class DriverResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('association_id')
+                ->label('الجمعية')
+                ->relationship('Association', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
+                // Tables\Actions\CreateAction::make(),
             ]);
     }
 
@@ -117,9 +108,9 @@ class DriverResource extends Resource
     {
         return [
             'index' => Pages\ListDrivers::route('/'),
-            'create' => Pages\CreateDriver::route('/create'),
+            // 'create' => Pages\CreateDriver::route('/create'),
             'view' => Pages\ViewDriver::route('/{record}'),
-            'edit' => Pages\EditDriver::route('/{record}/edit'),
+            // 'edit' => Pages\EditDriver::route('/{record}/edit'),
         ];
     }
 }
