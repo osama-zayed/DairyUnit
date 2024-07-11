@@ -27,12 +27,17 @@ class Family extends Model
         'phone',
         'status',
         'association_id',
+        'associations_branche_id',
     ];
 
     /**
      * Get the association associated with the Family.
      */
     public function association()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function associationsBranche()
     {
         return $this->belongsTo(User::class);
     }

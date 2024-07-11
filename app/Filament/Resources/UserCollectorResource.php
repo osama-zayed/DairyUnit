@@ -61,7 +61,6 @@ class UserCollectorResource extends Resource
                     ->options(function () {
                         return User::where('user_type', 'association')->pluck('name', 'id');
                     })
-                    ->createOptionForm(AssociationResource::associationForm())
                     ->required(),
                 Forms\Components\Toggle::make('status')
                     ->default(1)

@@ -45,7 +45,16 @@ class FamilyResource extends Resource
                     ->options(function () {
                         return User::where('user_type', 'association')->pluck('name', 'id');
                     })
-                    ->createOptionForm(AssociationResource::associationForm())
+                    ->required(),
+                Forms\Components\Select::make('associations_branche_id')
+                    ->relationship('associationsBranche', titleAttribute: 'name')
+                    ->label('فرع الجمعية')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->options(function () {
+                        return User::where('user_type', 'collector')->pluck('name', 'id');
+                    })
                     ->required(),
                 Forms\Components\Toggle::make('status')
                     ->default(1)

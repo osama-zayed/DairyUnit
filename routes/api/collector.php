@@ -15,8 +15,8 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::prefix('family')->middleware(['auth:sanctum', 'Permission:collector'])->group(function () {
-    Route::get('by-association', "CollectorFamilyController@showByAssociation");
-    Route::post('add', "CollectorFamilyController@add");
+    Route::get('by-association', "FamilyController@showByAssociationBranche");
+    Route::post('add', "FamilyController@add");
 });
 Route::prefix('milk')->middleware(['auth:sanctum', 'Permission:collector'])->group(function () {
     Route::get('show/all', "MilkCollectionController@showAll");

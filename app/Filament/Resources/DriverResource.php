@@ -41,39 +41,14 @@ class DriverResource extends Resource
                     ->searchable()
                     ->preload()
                     ->live()
-                    ->required()
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('name')
-                            ->label('اسم الجمعية')
-                            ->required()
-                            ->maxLength(255),
-                    ]),
+                    ->required(),
                 Forms\Components\Select::make('associations_branche_id')
                     ->relationship('associationsBranch', titleAttribute: 'name')
                     ->label('فرع الجمعية')
                     ->searchable()
                     ->preload()
                     ->required()
-                    ->live()
-                    ->createOptionForm([
-                        Forms\Components\Select::make('association_id')
-                            ->relationship('association', titleAttribute: 'name')
-                            ->label('الجمعية')
-                            ->searchable()
-                            ->preload()
-                            ->live()
-                            ->required()
-                            ->createOptionForm([
-                                Forms\Components\TextInput::make('name')
-                                    ->label('اسم الجمعية')
-                                    ->required()
-                                    ->maxLength(255),
-                            ]),
-                        Forms\Components\TextInput::make('name')
-                            ->label('اسم الفرع')
-                            ->required()
-                            ->maxLength(255),
-                    ]),
+                    ->live(),
                 Forms\Components\Toggle::make('status')
                     ->default(1)
                     ->label('حالة السائق')
