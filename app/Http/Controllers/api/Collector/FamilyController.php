@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AddFamilyRequest;
 use App\Http\Requests\EditUserRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\UpdateFamilyRequest;
 use App\Models\Family;
 use Illuminate\Http\Request;
 
@@ -45,5 +46,31 @@ class FamilyController extends Controller
             'لقد قمت باضافة اسرة جديدة باسم ' . $family->name
         );
         return self::responseSuccess([], 'تمت العملية بنجاح');
+    }
+    public function update(UpdateFamilyRequest $request)
+    {
+        $family = Family::where('id',$request->input('id'))
+            ->where('associations_branche_id', auth('sanctum')->user()->id)
+            ->first();
+    
+        $family->update([
+            'name' => $request->input('name'),
+            'phone' => $request->input('phone'),
+            'association_id' => auth('sanctum')->user()->association_id,
+            'associations_branche_id' => auth('sanctum')->user()->id,
+        ]);
+    
+        $this->userActivity(
+            'تعديل اسرة',
+            $family,
+            'تم تعديل بيانات اسرة ' . $family->name . ' جمعية ' . $family->association->name,
+            'فرع الجمعية ' . auth('sanctum')->user()->name
+        );
+    
+        $this->userNotification(
+            auth('sanctum')->user(),
+            'لقد قمت بتعديل بيانات اسرة باسم ' . $family->name
+        );
+        return $this->responseSuccess([], 'تمت العملية بنجاح');
     }
 }

@@ -41,15 +41,14 @@ class UserController extends Controller
     }
     public function editUser(EditUserRequest $request)
     {
-        $data = $request->validated();
         $user = auth('sanctum')->user();
         $user->update([
-            'name' => $request->name,
-            'phone' => $request->phone,
+            'password' => bcrypt($request->input('new_password')),
         ]);
 
-        return self::responseSuccess($user, 'تم تعديل البيانات بنجاح');
+        return self::responseSuccess([], 'تم تعديل البيانات بنجاح');
     }
+    
     public function me()
     {
         $data = auth('sanctum')->user();
