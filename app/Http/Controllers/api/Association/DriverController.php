@@ -18,7 +18,7 @@ class DriverController extends Controller
             'name',
         )
             ->where('status', 1)
-            ->where('association_id', auth('sanctum')->user()->association_id)
+            ->where('association_id', auth('sanctum')->user()->id)
             ->get();
         return self::responseSuccess($Driver);
     }
@@ -32,7 +32,7 @@ class DriverController extends Controller
             'status',
         )
             ->where("id", $id)
-            ->where('association_id', auth('sanctum')->user()->association_id)
+            ->where('association_id', auth('sanctum')->user()->id)
             ->first();
         return self::responseSuccess($Driver);
     }
@@ -42,20 +42,20 @@ class DriverController extends Controller
         $Driver = Driver::create([
             'name' => $request->input('name'),
             'phone' => $request->input('phone'),
-            'association_id' => auth('sanctum')->user()->association_id,
+            'association_id' => auth('sanctum')->user()->id,
         ]);
         
         self::userActivity(
-            'اضافة اسره جديدة',
+            'اضافة سائق جديد',
             $Driver,
-            'اضافة اسرة جديدة ' . $Driver->name .
+            'اضافة سائق جديد ' . $Driver->name .
                 ' جمعية ' . $Driver->association->name,
             'فرع الجمعية' . auth('sanctum')->user()->name
         );
 
         self::userNotification(
             auth('sanctum')->user(),
-            'لقد قمت باضافة اسرة جديدة باسم ' . $Driver->name
+            'لقد قمت باضافة سائق جديد باسم ' . $Driver->name
         );
         
         return self::responseSuccess([], 'تمت العملية بنجاح');
@@ -63,28 +63,24 @@ class DriverController extends Controller
     public function update(UpdateDriverRequest $request)
     {
         $Driver = Driver::where('id', $request->input('id'))
-            ->where('associations_branche_id', auth('sanctum')->user()->id)
+            ->where('association_id', auth('sanctum')->user()->id)
             ->first();
 
         $Driver->update([
             'name' => $request->input('name'),
             'phone' => $request->input('phone'),
-            'number_of_cows_produced' => $request->input('number_of_cows_produced'),
-            'number_of_cows_unproductive' => $request->input('number_of_cows_unproductive'),
-            'association_id' => auth('sanctum')->user()->association_id,
-            'associations_branche_id' => auth('sanctum')->user()->id,
+            'association_id' => auth('sanctum')->user()->id,
         ]);
 
         $this->userActivity(
-            'تعديل اسرة',
+            'تعديل سائق',
             $Driver,
-            'تم تعديل بيانات اسرة ' . $Driver->name . ' جمعية ' . $Driver->association->name,
-            'فرع الجمعية ' . auth('sanctum')->user()->name
+            'تم تعديل بيانات سائق ' . $Driver->name . ' جمعية ' . $Driver->association->name,
         );
 
         $this->userNotification(
             auth('sanctum')->user(),
-            'لقد قمت بتعديل بيانات اسرة باسم ' . $Driver->name
+            'لقد قمت بتعديل بيانات سائق باسم ' . $Driver->name
         );
         return $this->responseSuccess([], 'تمت العملية بنجاح');
     }

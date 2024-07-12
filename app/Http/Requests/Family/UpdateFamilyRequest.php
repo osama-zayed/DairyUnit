@@ -29,7 +29,7 @@ class UpdateFamilyRequest extends FormRequest
         return [
             'id' => 'required|integer|exists:families,id',
             'name' => 'required|string|max:255',
-            'phone' => 'required|regex:/^[0-9]{9}$/|unique:families,phone',
+            'phone' => 'required|regex:/^[0-9]{9}$/|unique:families,phone,'.$this->id,
             'number_of_cows_produced' => 'required|integer',
             'number_of_cows_unproductive' => 'required|integer',
         ];

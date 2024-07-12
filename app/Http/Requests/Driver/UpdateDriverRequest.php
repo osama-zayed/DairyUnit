@@ -29,7 +29,7 @@ class UpdateDriverRequest extends FormRequest
         return [
             'id' => 'required|integer|exists:families,id',
             'name' => 'required|string|max:255',
-            'phone' => 'required|regex:/^[0-9]{9}$/|unique:drivers,phone',
+            'phone' => 'required|regex:/^[0-9]{9}$/|unique:drivers,phone,'.$this->id,
         ];
     }
 
