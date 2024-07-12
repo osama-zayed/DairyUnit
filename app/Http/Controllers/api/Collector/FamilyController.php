@@ -36,7 +36,7 @@ class FamilyController extends Controller
             ->where("id", $id)
             ->where('association_id', auth('sanctum')->user()->association_id)
             ->where('associations_branche_id', auth('sanctum')->user()->id)
-            ->get();
+            ->first();
         return self::responseSuccess($Family);
     }
 

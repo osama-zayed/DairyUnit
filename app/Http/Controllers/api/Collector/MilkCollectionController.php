@@ -143,11 +143,13 @@ class MilkCollectionController extends Controller
 
         return [
             'id' => $CollectingMilkFromFamily->id,
+            'collection_date_and_time' => $CollectingMilkFromFamily->collection_date_and_time,
             'date' => $formattedDate,
             'time' => $formattedTime,
             'period' => $dayPeriod,
             'day' => $dayOfWeek,
             'quantity' => $CollectingMilkFromFamily->quantity,
+            'family_id' => $CollectingMilkFromFamily->Family->id,
             'family_name' => $CollectingMilkFromFamily->Family->name,
             'association_name' => $CollectingMilkFromFamily->association->name,
             'association_branch_name' => $CollectingMilkFromFamily->user->name,
