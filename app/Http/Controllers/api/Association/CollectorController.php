@@ -70,30 +70,35 @@ class CollectorController extends Controller
             ->where('association_id', auth('sanctum')->user()->id)
             ->where('user_type', 'collector')
             ->first();
-            
+    
         if (empty($Collector)) {
             return $this->responseError('المجمع غير موجود');
         }
-
-        $Collector->update([
+    
+        $data = [
             'name' => $request->input('name'),
             'phone' => $request->input('phone'),
-            'association_id' => auth('sanctum')->user()->id,
-            'user_type' => 'collector',
-            'password' => bcrypt($request->input('password')),
-        ]);
-
+        ];
+    
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->input('password'));
+        } else {
+            $data['password'] = $Collector->password;
+        }
+    
+        $Collector->update($data);
+    
         $this->userActivity(
             'تعديل مجمع',
             $Collector,
             'تم تعديل بيانات مجمع ' . $Collector->name . ' جمعية ' . $Collector->association->name,
         );
-
+    
         $this->userNotification(
             auth('sanctum')->user(),
             'لقد قمت بتعديل بيانات مجمع باسم ' . $Collector->name
         );
-        
+    
         return $this->responseSuccess([], 'تمت العملية بنجاح');
     }
     public function updateStatus(StatusRequest $request)
