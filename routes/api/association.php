@@ -14,3 +14,10 @@ Route::prefix('auth')->group(function () {
         Route::get('notification', "AuthController@notification");
     });
 });
+
+Route::prefix('driver')->middleware(['auth:sanctum', 'Permission:association'])->group(function () {
+    Route::get('by-association', "DriverController@showByAssociation");
+    Route::get('show/{id}', "DriverController@showById");
+    Route::post('add', "DriverController@add");
+    Route::put('update', "DriverController@update");
+});
