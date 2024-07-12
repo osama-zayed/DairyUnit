@@ -92,6 +92,7 @@ class CollectorController extends Controller
             auth('sanctum')->user(),
             'لقد قمت بتعديل بيانات مجمع باسم ' . $Collector->name
         );
+        
         return $this->responseSuccess([], 'تمت العملية بنجاح');
     }
 }
