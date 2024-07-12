@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Association;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Collector\AddCollectorRequest;
 use App\Http\Requests\Collector\UpdateCollectorRequest;
+use App\Http\Requests\StatusRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -91,6 +92,34 @@ class CollectorController extends Controller
         $this->userNotification(
             auth('sanctum')->user(),
             'لقد قمت بتعديل بيانات مجمع باسم ' . $Collector->name
+        );
+        
+        return $this->responseSuccess([], 'تمت العملية بنجاح');
+    }
+    public function updateStatus(StatusRequest $request)
+    {
+        $Collector = User::where('id', $request->input('id'))
+            ->where('association_id', auth('sanctum')->user()->id)
+            ->where('user_type', 'collector')
+            ->first();
+            
+        if (empty($Collector)) {
+            return $this->responseError('المجمع غير موجود');
+        }
+
+        $Collector->update([
+            'status' => $request->input('status'),
+        ]);
+
+        $this->userActivity(
+            'تعديل حالة مجمع',
+            $Collector,
+            'تم تعديل حالة المجمع ' . $Collector->name . ' جمعية ' . $Collector->association->name,
+        );
+
+        $this->userNotification(
+            auth('sanctum')->user(),
+            'لقد قمت بتعديل حالة المجمع باسم ' . $Collector->name
         );
         
         return $this->responseSuccess([], 'تمت العملية بنجاح');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Collector;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Family\AddFamilyRequest;
 use App\Http\Requests\Family\UpdateFamilyRequest;
+use App\Http\Requests\StatusRequest;
 use App\Models\Family;
 use Illuminate\Http\Request;
 
@@ -16,8 +17,8 @@ class FamilyController extends Controller
         $Family  = Family::select(
             'id',
             'name',
+            'status',
         )
-            ->where('status', 1)
             ->where('association_id', auth('sanctum')->user()->association_id)
             ->where('associations_branche_id', auth('sanctum')->user()->id)
             ->get();
@@ -92,6 +93,34 @@ class FamilyController extends Controller
             auth('sanctum')->user(),
             'لقد قمت بتعديل بيانات اسرة باسم ' . $family->name
         );
+        return $this->responseSuccess([], 'تمت العملية بنجاح');
+    }
+    public function updateStatus(StatusRequest $request)
+    {
+        $family = Family::where('id', $request->input('id'))
+        ->where('associations_branche_id', auth('sanctum')->user()->id)
+        ->first();
+            
+        if (empty($family)) {
+            return $this->responseError('الاسرة غير موجود');
+        }
+
+    
+        $family->update([
+            'status' => $request->input('status'),
+        ]);
+
+        $this->userActivity(
+            'تعديل حالة اسرة',
+            $family,
+            'تم تعديل حالة الاسرة ' . $family->name . ' جمعية ' . $family->association->name,
+        );
+
+        $this->userNotification(
+            auth('sanctum')->user(),
+            'لقد قمت بتعديل حالة الاسرة باسم ' . $family->name
+        );
+        
         return $this->responseSuccess([], 'تمت العملية بنجاح');
     }
 }

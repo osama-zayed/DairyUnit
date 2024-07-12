@@ -19,6 +19,8 @@ Route::prefix('family')->middleware(['auth:sanctum', 'Permission:collector'])->g
     Route::get('show/{id}', "FamilyController@showById");
     Route::post('add', "FamilyController@add");
     Route::put('update', "FamilyController@update");
+    Route::put('update/status', "FamilyController@updateStatus");
+
 });
 Route::prefix('milk')->middleware(['auth:sanctum', 'Permission:collector'])->group(function () {
     Route::get('show/all', "MilkCollectionController@showAll");

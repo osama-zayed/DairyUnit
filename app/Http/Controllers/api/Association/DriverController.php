@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Association;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Driver\AddDriverRequest;
 use App\Http\Requests\Driver\UpdateDriverRequest;
+use App\Http\Requests\StatusRequest;
 use App\Models\Driver;
 use Illuminate\Http\Request;
 
@@ -81,6 +82,34 @@ class DriverController extends Controller
             auth('sanctum')->user(),
             'لقد قمت بتعديل بيانات سائق باسم ' . $Driver->name
         );
+        return $this->responseSuccess([], 'تمت العملية بنجاح');
+    }
+    public function updateStatus(StatusRequest $request)
+    {
+        $Driver = Driver::where('id', $request->input('id'))
+            ->where('association_id', auth('sanctum')->user()->id)
+            ->first();
+            
+        if (empty($Driver)) {
+            return $this->responseError('السائق غير موجود');
+        }
+
+    
+        $Driver->update([
+            'status' => $request->input('status'),
+        ]);
+
+        $this->userActivity(
+            'تعديل حالة سائق',
+            $Driver,
+            'تم تعديل حالة السائق ' . $Driver->name . ' جمعية ' . $Driver->association->name,
+        );
+
+        $this->userNotification(
+            auth('sanctum')->user(),
+            'لقد قمت بتعديل حالة السائق باسم ' . $Driver->name
+        );
+        
         return $this->responseSuccess([], 'تمت العملية بنجاح');
     }
 }
