@@ -21,7 +21,7 @@ class AuthController extends UserController
             ->selectRaw('SUM(quantity) as total_quantity_day')
             ->whereDate('collection_date_and_time', \Carbon\Carbon::today()->toDateString())
             ->first();
-        $exchangeSummary = ReceiptInvoiceFromStore::where('associations_branche_id', $request->input('associations_branche_id'))
+        $exchangeSummary = ReceiptInvoiceFromStore::where('associations_branche_id', $user->id)
             ->selectRaw('SUM(quantity) as total_delivered_quantity')
             ->first()->total_delivered_quantity;
 
