@@ -31,3 +31,10 @@ Route::prefix('collector')->middleware(['auth:sanctum', 'Permission:association'
     Route::put('update', "CollectorController@update");
     Route::put('update/status', "CollectorController@updateStatus");
 });
+
+Route::prefix('milk')->middleware(['auth:sanctum', 'Permission:association'])->group(function () {
+    Route::get('show/all', "MilkCollectionController@showAll");
+    Route::get('show/{id}', "MilkCollectionController@showById");
+    Route::post('collecting', "MilkCollectionController@collecting");
+    Route::put('update', "MilkCollectionController@update");
+});
