@@ -30,8 +30,6 @@ class UpdateDriverRequest extends FormRequest
             'id' => 'required|integer|exists:families,id',
             'name' => 'required|string|max:255',
             'phone' => 'required|regex:/^[0-9]{9}$/|unique:drivers,phone',
-            'number_of_cows_produced' => 'required|integer',
-            'number_of_cows_unproductive' => 'required|integer',
         ];
     }
 
@@ -51,10 +49,6 @@ class UpdateDriverRequest extends FormRequest
             'phone.required' => 'رقم الهاتف مطلوب',
             'phone.regex' => 'رقم الهاتف يجب أن يكون 9 أرقام',
             'phone.unique' => 'رقم الهاتف مستخدم بالفعل',
-            'number_of_cows_produced.required' => 'عدد الابقار المنتجة مطلوب',
-            'number_of_cows_produced.integer' =>  'عدد الابقار المنتجة يجب ان يكون رقم',
-            'number_of_cows_unproductive.required' =>  'عدد الابقار الغير منتجة مطلوب',
-            'number_of_cows_unproductive.integer' =>  'عدد الابقار الغير منتجة يجب ان يكون رقم',
         ];
     }
     protected function failedValidation(Validator $validator)
