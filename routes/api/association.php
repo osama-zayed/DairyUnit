@@ -21,3 +21,10 @@ Route::prefix('driver')->middleware(['auth:sanctum', 'Permission:association'])-
     Route::post('add', "DriverController@add");
     Route::put('update', "DriverController@update");
 });
+
+Route::prefix('collector')->middleware(['auth:sanctum', 'Permission:association'])->group(function () {
+    Route::get('by-association', "CollectorController@showByAssociation");
+    Route::get('show/{id}', "CollectorController@showById");
+    Route::post('add', "CollectorController@add");
+    Route::put('update', "CollectorController@update");
+});

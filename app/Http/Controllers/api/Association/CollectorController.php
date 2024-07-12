@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Http\Controllers\Api\Association;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Collector\AddCollectorRequest;
+use App\Http\Requests\Collector\UpdateCollectorRequest;
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class CollectorController extends Controller
+{
+
+    public function showByAssociation()
+    {
+        $Collector  = User::select(
+            'id',
+            'name',
+            'status',
+        )
+            ->where('user_type', 'collector')
+            ->where('association_id', auth('sanctum')->user()->id)
+            ->get();
+        return self::responseSuccess($Collector);
+    }
+
+    public function showById($id)
+    {
+        $Collector  = User::select(
+            'id',
+            'name',
+            'phone',
+            'status',
+        )
+            ->where("id", $id)
+            ->where('user_type', 'collector')
+            ->where('association_id', auth('sanctum')->user()->id)
+            ->first();
+        return self::responseSuccess($Collector);
+    }
+
+    public function add(AddCollectorRequest $request)
+    {
+        $Collector = User::create([
+            'name' => $request->input('name'),
+            'phone' => $request->input('phone'),
+            'association_id' => auth('sanctum')->user()->id,
+            'user_type' => 'collector',
+            'password' => bcrypt($request->input('password')),
+        ]);
+
+        self::userActivity(
+            'اضافة مجمع جديد',
+            $Collector,
+            'اضافة مجمع جديد ' . $Collector->name .
+                ' جمعية ' . $Collector->association->name,
+        );
+
+        self::userNotification(
+            auth('sanctum')->user(),
+            'لقد قمت باضافة مجمع جديد باسم ' . $Collector->name
+        );
+
+        return self::responseSuccess([], 'تمت العملية بنجاح');
+    }
+    public function update(UpdateCollectorRequest $request)
+    {
+        $Collector = User::where('id', $request->input('id'))
+            ->where('association_id', auth('sanctum')->user()->id)
+            ->where('user_type', 'collector')
+            ->first();
+            
+        if (empty($Collector)) {
+            return $this->responseError('المجمع غير موجود');
+        }
+
+        $Collector->update([
+            'name' => $request->input('name'),
+            'phone' => $request->input('phone'),
+            'association_id' => auth('sanctum')->user()->id,
+            'user_type' => 'collector',
+            'password' => bcrypt($request->input('password')),
+        ]);
+
+        $this->userActivity(
+            'تعديل مجمع',
+            $Collector,
+            'تم تعديل بيانات مجمع ' . $Collector->name . ' جمعية ' . $Collector->association->name,
+        );
+
+        $this->userNotification(
+            auth('sanctum')->user(),
+            'لقد قمت بتعديل بيانات مجمع باسم ' . $Collector->name
+        );
+        return $this->responseSuccess([], 'تمت العملية بنجاح');
+    }
+}

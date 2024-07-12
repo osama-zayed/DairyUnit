@@ -46,11 +46,10 @@ class DriverController extends Controller
         ]);
         
         self::userActivity(
-            'اضافة سائق جديد',
+            'اضافة سائق',
             $Driver,
             'اضافة سائق جديد ' . $Driver->name .
                 ' جمعية ' . $Driver->association->name,
-            'فرع الجمعية' . auth('sanctum')->user()->name
         );
 
         self::userNotification(
