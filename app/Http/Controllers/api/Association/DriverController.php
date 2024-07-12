@@ -16,8 +16,8 @@ class DriverController extends Controller
         $Driver  = Driver::select(
             'id',
             'name',
+            'status',
         )
-            ->where('status', 1)
             ->where('association_id', auth('sanctum')->user()->id)
             ->get();
         return self::responseSuccess($Driver);
