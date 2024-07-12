@@ -15,41 +15,41 @@ use Illuminate\Support\Facades\DB;
 class ReceiptInvoiceFromStoresController extends Controller
 {
     public function AddReceiptInvoiceFromCollector(AddReceiptInvoiceFromStoresRequest $request)
-{
-    $warehouseSummary = CollectingMilkFromFamily::where('user_id', $request->input('associations_branche_id'))
-        ->selectRaw('SUM(quantity) as total_quantity')
-        ->first();
+    {
+        $warehouseSummary = CollectingMilkFromFamily::where('user_id', $request->input('associations_branche_id'))
+            ->selectRaw('SUM(quantity) as total_quantity')
+            ->first();
 
-    $totalDeliveredQuantity = ReceiptInvoiceFromStore::where('associations_branche_id', $request->input('associations_branche_id'))
-        ->selectRaw('SUM(quantity) as total_delivered_quantity')
-        ->first()->total_delivered_quantity;
+        $totalDeliveredQuantity = ReceiptInvoiceFromStore::where('associations_branche_id', $request->input('associations_branche_id'))
+            ->selectRaw('SUM(quantity) as total_delivered_quantity')
+            ->first()->total_delivered_quantity;
 
-    $availableQuantity = $warehouseSummary->total_quantity - $totalDeliveredQuantity;
+        $availableQuantity = $warehouseSummary->total_quantity - $totalDeliveredQuantity;
 
-    // Check if the user has enough quantity available
-    if ($availableQuantity < $request->input('quantity')) {
-        return $this->responseError('لا يوجد لديك الكمية المطلوبة في المخزن');
-    }
+        // Check if the user has enough quantity available
+        if ($availableQuantity < $request->input('quantity')) {
+            return $this->responseError('لا يوجد لديك الكمية المطلوبة في المخزن');
+        }
 
-    $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::create([
-        'date_and_time' => $request->input('date_and_time'),
-        'quantity' => $request->input('quantity'),
-        'association_id' => auth('sanctum')->user()->id,
-        'associations_branche_id' => $request->input('associations_branche_id'),
-        'notes' => $request->input('notes') ?? '',
-    ]);
-
-    $assemblyStore = AssemblyStore::updateOrCreate(
-        [
+        $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::create([
+            'date_and_time' => $request->input('date_and_time'),
+            'quantity' => $request->input('quantity'),
             'association_id' => auth('sanctum')->user()->id,
-        ],
-        [
-            'quantity' => DB::raw('quantity + ' . $request->input('quantity')),
-        ]
-    );
+            'associations_branche_id' => $request->input('associations_branche_id'),
+            'notes' => $request->input('notes') ?? '',
+        ]);
 
-    return $this->responseSuccess('تمت العملية بنجاح');
-}
+        $assemblyStore = AssemblyStore::updateOrCreate(
+            [
+                'association_id' => auth('sanctum')->user()->id,
+            ],
+            [
+                'quantity' => DB::raw('quantity + ' . $request->input('quantity')),
+            ]
+        );
+
+        return $this->responseSuccess('تمت العملية بنجاح');
+    }
     public function update(UpdateReceiptInvoiceFromStoresRequest $request)
     {
 
