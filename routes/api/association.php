@@ -33,8 +33,8 @@ Route::prefix('collector')->middleware(['auth:sanctum', 'Permission:association'
 });
 
 Route::prefix('milk')->middleware(['auth:sanctum', 'Permission:association'])->group(function () {
-    Route::get('show/all', "MilkCollectionController@showAll");
-    Route::get('show/{id}', "MilkCollectionController@showById");
-    Route::post('collecting', "MilkCollectionController@collecting");
-    Route::put('update', "MilkCollectionController@update");
+    Route::get('show/all', "ReceiptInvoiceFromStoresController@showAll");
+    Route::get('show/{id}', "ReceiptInvoiceFromStoresController@showById");
+    Route::post('AddReceiptInvoiceFromCollector', "ReceiptInvoiceFromStoresController@AddReceiptInvoiceFromCollector");
+    Route::put('update', "ReceiptInvoiceFromStoresController@update");
 });

@@ -24,8 +24,7 @@ class AssemblyStore extends Model
     protected $fillable = [
         'id',
         'association_id',
-        'quantity',
-       
+        'quantity',  
     ];
 
     /**

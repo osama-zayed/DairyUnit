@@ -22,7 +22,8 @@ class AddReceiptInvoiceFromStoresRequest extends FormRequest
         return [
             'date_and_time' => 'required|date_format:Y-m-d H:i:s',
             'quantity' => 'required|numeric|min:1',
-            'family_id' => 'required|exists:families,id',
+            'associations_branche_id' => 'required|exists:users,id',
+            'nots' => 'nullable',
         ];
     }
 
@@ -37,8 +38,8 @@ class AddReceiptInvoiceFromStoresRequest extends FormRequest
             'quantity.required' => 'الكمية مطلوبة',
             'quantity.numeric' => 'الكمية يجب أن تكون رقمية',
             'quantity.min' => 'الكمية يجب أن تكون على الأقل 1',
-            'family_id.required' => 'معرف الاسرة مطلوب',
-            'family_id.exists' => 'الاسرة المحددة غير موجودة',
+            'associations_branche_id.required' => 'معرف فرع الشركة مطلوب',
+            'associations_branche_id.exists' => 'فرع الشركة المحددة غير موجودة',
         ];
     }
 

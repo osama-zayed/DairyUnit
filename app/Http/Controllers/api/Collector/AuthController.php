@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Collector;
 
 use App\Http\Controllers\Api\UserController;
 use App\Models\CollectingMilkFromFamily;
+use App\Models\ReceiptInvoiceFromStore;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -20,10 +21,9 @@ class AuthController extends UserController
             ->selectRaw('SUM(quantity) as total_quantity_day')
             ->whereDate('collection_date_and_time', \Carbon\Carbon::today()->toDateString())
             ->first();
-        $exchangeSummary = 0;
-        // $exchangeSummary = MilkTransfer::where('controller_id', $user->id)
-        //     ->selectRaw('SUM(quantity) as total_quantity_expensed')
-        //     ->first();
+        $exchangeSummary = ReceiptInvoiceFromStore::where('associations_branche_id', $request->input('associations_branche_id'))
+            ->selectRaw('SUM(quantity) as total_delivered_quantity')
+            ->first()->total_delivered_quantity;
 
         $totalQuantity = $warehouseSummary->total_quantity - $exchangeSummary;
 
