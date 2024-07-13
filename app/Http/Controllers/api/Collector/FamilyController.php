@@ -19,6 +19,7 @@ class FamilyController extends Controller
             'name',
             'status',
         )
+        ->orderByDesc('id')
             ->where('association_id', auth('sanctum')->user()->association_id)
             ->where('associations_branche_id', auth('sanctum')->user()->id)
             ->get();

@@ -114,12 +114,12 @@ class ReceiptInvoiceFromStoresController extends Controller
 
         $query = ReceiptInvoiceFromStore::select(
             'id',
-            'collection_date_and_time',
             'quantity',
-            'family_id',
+            'date_and_time',
+            'associations_branche_id',
         )
-            ->where('association_id',  $user->association_id)
-            ->where('user_id',  $user->id);
+        ->orderByDesc('id')
+            ->where('association_id',  $user->id);
 
 
         $ReceiptInvoiceFromStore = $query->paginate($perPage, "", "current_page", $page);
@@ -131,15 +131,14 @@ class ReceiptInvoiceFromStoresController extends Controller
 
         $query = ReceiptInvoiceFromStore::select(
             'id',
-            'collection_date_and_time',
-            'nots',
-            'quantity',
             'association_id',
-            'family_id',
-            'user_id',
+            'associations_branche_id',
+            'quantity',
+            'date_and_time',
+            'notes',
+    
         )
-            ->where('association_id',  $user->association_id)
-            ->where('user_id',  $user->id)
+            ->where('association_id',  $user->id)
             ->where('id', $id)
             ->first();
 
@@ -147,24 +146,23 @@ class ReceiptInvoiceFromStoresController extends Controller
     }
     private static function formatCollectingData($ReceiptInvoiceFromStore)
     {
-        $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $ReceiptInvoiceFromStore->collection_date_and_time);
+        $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $ReceiptInvoiceFromStore->date_and_time);
         $formattedDate = $dateTime->format('d/m/Y');
         $formattedTime = $dateTime->format('h:i A');
         $dayPeriod = self::getDayPeriodArabic($dateTime->format('A'));
         $dayOfWeek = self::getDayOfWeekArabic($dateTime->format('l'));
-
         return [
             'id' => $ReceiptInvoiceFromStore->id,
-            'collection_date_and_time' => $ReceiptInvoiceFromStore->collection_date_and_time,
+            'date_and_time' => $ReceiptInvoiceFromStore->date_and_time,
             'date' => $formattedDate,
             'time' => $formattedTime,
             'period' => $dayPeriod,
             'day' => $dayOfWeek,
             'quantity' => $ReceiptInvoiceFromStore->quantity,
-            'family_id' => $ReceiptInvoiceFromStore->family_id,
-            'family_name' => $ReceiptInvoiceFromStore->Family->name,
+            'association_id' => $ReceiptInvoiceFromStore->association->id,
             'association_name' => $ReceiptInvoiceFromStore->association->name,
-            'association_branch_name' => $ReceiptInvoiceFromStore->user->name,
+            'association_branch_id' => $ReceiptInvoiceFromStore->associationsBranche->id,
+            'association_branch_name' => $ReceiptInvoiceFromStore->associationsBranche->name,
             'nots' => $ReceiptInvoiceFromStore->nots,
         ];
     }
@@ -174,9 +172,9 @@ class ReceiptInvoiceFromStoresController extends Controller
         return array_map(function ($ReceiptInvoiceFromStore) {
             return [
                 'id' => $ReceiptInvoiceFromStore->id,
-                // 'date_and_time' => $ReceiptInvoiceFromStore->collection_date_and_time,
+                'date_and_time' => $ReceiptInvoiceFromStore->date_and_time,
                 'quantity' => $ReceiptInvoiceFromStore->quantity,
-                'family_name' => $ReceiptInvoiceFromStore->Family->name,
+                // 'associations_branche_name' => $ReceiptInvoiceFromStore->associationsBranche->name,
             ];
         }, $ReceiptInvoiceFromStore);
     }

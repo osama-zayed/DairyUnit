@@ -19,6 +19,7 @@ class CollectorController extends Controller
             'name',
             'status',
         )
+        ->orderByDesc('id')
             ->where('user_type', 'collector')
             ->where('association_id', auth('sanctum')->user()->id)
             ->get();

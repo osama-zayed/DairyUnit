@@ -19,6 +19,7 @@ class DriverController extends Controller
             'name',
             'status',
         )
+        ->orderByDesc('id')
             ->where('association_id', auth('sanctum')->user()->id)
             ->get();
         return self::responseSuccess($Driver);

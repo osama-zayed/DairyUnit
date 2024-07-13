@@ -106,6 +106,7 @@ class MilkCollectionController extends Controller
             'quantity',
             'family_id',
         )
+        ->orderByDesc('id')
             ->where('association_id',  $user->association_id)
             ->where('user_id',  $user->id);
 
@@ -126,6 +127,7 @@ class MilkCollectionController extends Controller
             'family_id',
             'user_id',
         )
+        
             ->where('association_id',  $user->association_id)
             ->where('user_id',  $user->id)
             ->where('id', $id)

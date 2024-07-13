@@ -18,7 +18,7 @@ class Permission
         if ($request->user()->user_type == $role) {
             return $next($request);
         } else {
-            $request->user()->currentAccessToken()->delete();
+            // $request->user()->currentAccessToken()->delete();
             if (auth('sanctum')->check()) {
                 return response()->json([
                     'status' => 'false',
