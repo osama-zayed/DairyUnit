@@ -44,25 +44,25 @@ class MilkCollectionController extends Controller
     {
 
         $collectingMilkFromFamily = CollectingMilkFromFamily::findOrFail($request->input("id"));
-        $createdAtReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('associations_branche_id', auth('sanctum')->user()->id)
-            ->orderByDesc('id')
-            ->first()->created_at;
+        // $createdAtReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('associations_branche_id', auth('sanctum')->user()->id)
+        //     ->orderByDesc('id')
+        //     ->first()->created_at;
 
-        // Check if the user is trying to update the record after 2 hours of creation
-        $createdAt = $collectingMilkFromFamily->created_at;
-        if (!isNull($createdAtReceiptInvoiceFromStore)) {
-            if ($createdAtReceiptInvoiceFromStore >= $createdAt) {
-                return self::responseError('لا يمكن تعديل السجل لانه حصل عملية في وقت لاحق');
-            }
-        }
-        if (!empty($collectingMilkFromFamily)) {
-            $createdAt = $collectingMilkFromFamily->created_at;
-            $now = now();
-            $diffInHours = $now->diffInHours($createdAt);
-            if ($diffInHours >= 2) {
-                return self::responseError('لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
-            }
-        }
+        // // Check if the user is trying to update the record after 2 hours of creation
+        // $createdAt = $collectingMilkFromFamily->created_at;
+        // if (!isNull($createdAtReceiptInvoiceFromStore)) {
+        //     if ($createdAtReceiptInvoiceFromStore >= $createdAt) {
+        //         return self::responseError('لا يمكن تعديل السجل لانه حصل عملية في وقت لاحق');
+        //     }
+        // }
+        // if (!empty($collectingMilkFromFamily)) {
+        //     $createdAt = $collectingMilkFromFamily->created_at;
+        //     $now = now();
+        //     $diffInHours = $now->diffInHours($createdAt);
+        //     if ($diffInHours >= 2) {
+        //         return self::responseError('لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
+        //     }
+        // }
        
 
 
