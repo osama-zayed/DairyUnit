@@ -15,6 +15,7 @@ use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use App\Filament\Pages\Auth\Login;
 use App\Http\Middleware\Permission;
+use App\Http\Middleware\userStatus;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -60,6 +61,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
                 Permission::class . ":institution",
+                userStatus::class ,
             ]);
     }
 }

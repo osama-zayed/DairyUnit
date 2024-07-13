@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
     Route::post('login', "AuthController@login");
-    Route::middleware(['auth:sanctum', 'Permission:collector'])->group(function () {
+    Route::middleware(['auth:sanctum', 'Permission:collector','userStatus'])->group(function () {
         Route::post('logout', "AuthController@logout");
         Route::get('me', "AuthController@me");
         Route::put('editUser', "AuthController@editUser");
@@ -14,7 +14,7 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-Route::prefix('family')->middleware(['auth:sanctum', 'Permission:collector'])->group(function () {
+Route::prefix('family')->middleware(['auth:sanctum', 'Permission:collector','userStatus'])->group(function () {
     Route::get('by-association', "FamilyController@showByAssociationBranche");
     Route::get('show/{id}', "FamilyController@showById");
     Route::post('add', "FamilyController@add");
@@ -22,7 +22,7 @@ Route::prefix('family')->middleware(['auth:sanctum', 'Permission:collector'])->g
     Route::put('update/status', "FamilyController@updateStatus");
 
 });
-Route::prefix('milk')->middleware(['auth:sanctum', 'Permission:collector'])->group(function () {
+Route::prefix('milk')->middleware(['auth:sanctum', 'Permission:collector','userStatus'])->group(function () {
     Route::get('show/all', "MilkCollectionController@showAll");
     Route::get('show/{id}', "MilkCollectionController@showById");
     Route::post('collecting', "MilkCollectionController@collecting");
