@@ -43,8 +43,9 @@ class MilkCollectionController extends Controller
     {
 
         $collectingMilkFromFamily = CollectingMilkFromFamily::findOrFail($request->input("id"));
-        $createdAtReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('associations_branche_id', $request->input('associations_branche_id'))
-            ->first()->created_at;
+        $createdAtReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('associations_branche_id', auth('sanctum')->user()->id)
+        ->orderByDesc('id')
+        ->first()->created_at;
 
         // Check if the user is trying to update the record after 2 hours of creation
         $createdAt = $collectingMilkFromFamily->created_at;
@@ -81,7 +82,7 @@ class MilkCollectionController extends Controller
                 ' الكمية ' . $collectingMilkFromFamily->quantity,
         );
 
-        return self::responseSuccess('تم التعديل بنجاح');
+        return self::responseSuccess([], 'تم التعديل بنجاح');
     }
 
     public static function showAll(Request $request)

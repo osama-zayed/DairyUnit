@@ -28,7 +28,7 @@ class ReceiptInvoiceFromStoresController extends Controller
 
         // Check if the user has enough quantity available
         if ($availableQuantity < $request->input('quantity')) {
-            return $this->responseError('لا يوجد لديك الكمية المطلوبة في المخزن');
+            return $this->responseError('لا يوجد لدى المجمع الكمية المطلوبة');
         }
 
         $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::create([
@@ -48,7 +48,7 @@ class ReceiptInvoiceFromStoresController extends Controller
             ]
         );
 
-        return $this->responseSuccess('تمت العملية بنجاح');
+        return $this->responseSuccess([],'تمت العملية بنجاح');
     }
     public function update(UpdateReceiptInvoiceFromStoresRequest $request)
     {
@@ -118,7 +118,7 @@ class ReceiptInvoiceFromStoresController extends Controller
             'date_and_time',
             'associations_branche_id',
         )
-        ->orderByDesc('id')
+            ->orderByDesc('id')
             ->where('association_id',  $user->id);
 
 
@@ -136,7 +136,7 @@ class ReceiptInvoiceFromStoresController extends Controller
             'quantity',
             'date_and_time',
             'notes',
-    
+
         )
             ->where('association_id',  $user->id)
             ->where('id', $id)
