@@ -88,7 +88,6 @@ class ReceiptInvoiceFromStoresController extends Controller
 
         return self::responseSuccess('تم التعديل بنجاح');
     }
-
     public static function showAll(Request $request)
     {
         try {
@@ -166,7 +165,6 @@ class ReceiptInvoiceFromStoresController extends Controller
             'nots' => $ReceiptInvoiceFromStore->nots,
         ];
     }
-
     public static function formatReceiptInvoiceFromStoreDataForDisplay($ReceiptInvoiceFromStore)
     {
         return array_map(function ($ReceiptInvoiceFromStore) {
