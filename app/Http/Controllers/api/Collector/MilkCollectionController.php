@@ -10,6 +10,7 @@ use App\Models\ReceiptInvoiceFromStore;
 use DateTime;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\isNull;
 
 class MilkCollectionController extends Controller
 {
@@ -49,7 +50,7 @@ class MilkCollectionController extends Controller
 
         // Check if the user is trying to update the record after 2 hours of creation
         $createdAt = $collectingMilkFromFamily->created_at;
-        if (!empty($createdAtReceiptInvoiceFromStore))
+        if (!isNull($createdAtReceiptInvoiceFromStore))
             if ($createdAtReceiptInvoiceFromStore >= $createdAt) {
                 return self::responseError('لا يمكن تعديل السجل لانه حصل عملية في وقت لاحق');
             }
