@@ -19,7 +19,7 @@ class FamilyController extends Controller
             'name',
             'status',
         )
-        ->orderByDesc('id')
+            ->orderByDesc('id')
             ->where('association_id', auth('sanctum')->user()->association_id)
             ->where('associations_branche_id', auth('sanctum')->user()->id)
             ->get();
@@ -52,7 +52,7 @@ class FamilyController extends Controller
             'association_id' => auth('sanctum')->user()->association_id,
             'associations_branche_id' => auth('sanctum')->user()->id,
         ]);
-        
+
         self::userActivity(
             'اضافة اسره جديدة',
             $family,
@@ -65,7 +65,7 @@ class FamilyController extends Controller
             auth('sanctum')->user(),
             'لقد قمت باضافة اسرة جديدة باسم ' . $family->name
         );
-        
+
         return self::responseSuccess([], 'تمت العملية بنجاح');
     }
     public function update(UpdateFamilyRequest $request)
@@ -99,14 +99,14 @@ class FamilyController extends Controller
     public function updateStatus(StatusRequest $request)
     {
         $family = Family::where('id', $request->input('id'))
-        ->where('associations_branche_id', auth('sanctum')->user()->id)
-        ->first();
-            
+            ->where('associations_branche_id', auth('sanctum')->user()->id)
+            ->first();
+
         if (empty($family)) {
             return $this->responseError('الاسرة غير موجود');
         }
 
-    
+
         $family->update([
             'status' => $request->input('status'),
         ]);
@@ -121,7 +121,7 @@ class FamilyController extends Controller
             auth('sanctum')->user(),
             'لقد قمت بتعديل حالة الاسرة باسم ' . $family->name
         );
-        
+
         return $this->responseSuccess([], 'تمت العملية بنجاح');
     }
 }

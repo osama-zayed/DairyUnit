@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Collector\CollectingRequest;
 use App\Http\Requests\Collector\UpdateCollectingRequest;
 use App\Models\CollectingMilkFromFamily;
+use App\Models\ReceiptInvoiceFromStore;
 use DateTime;
 use Illuminate\Http\Request;
 
@@ -42,38 +43,44 @@ class MilkCollectionController extends Controller
     {
 
         $collectingMilkFromFamily = CollectingMilkFromFamily::findOrFail($request->input("id"));
-    
+        $createdAtReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('associations_branche_id', $request->input('associations_branche_id'))
+            ->first()->created_at;
+
         // Check if the user is trying to update the record after 2 hours of creation
         $createdAt = $collectingMilkFromFamily->created_at;
+        if ($createdAtReceiptInvoiceFromStore >= $createdAt) {
+            return self::responseError('لا يمكن تعديل السجل لانه حصل عملية في وقت لاحق');
+        }
         $now = now();
         $diffInHours = $now->diffInHours($createdAt);
         if ($diffInHours >= 2) {
             return self::responseError('لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
         }
-    
+
+
         $collectingMilkFromFamily->update([
             'collection_date_and_time' => $request->input('date_and_time'),
             'quantity' => $request->input('quantity'),
             'family_id' => $request->input('family_id'),
             'nots' => $request->input('nots') ?? '',
         ]);
-    
+
         self::userActivity(
             'تعديل عملية تجميع حليب',
             $collectingMilkFromFamily,
             ' جمعية ' . $collectingMilkFromFamily->association->name .
-            'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
-            ' الكمية ' . $collectingMilkFromFamily->quantity,
+                'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
+                ' الكمية ' . $collectingMilkFromFamily->quantity,
             'فرع الجمعية'
         );
-    
+
         self::userNotification(
             auth('sanctum')->user(),
             'لقد قمت بتعديل' .
-            'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
-            ' الكمية ' . $collectingMilkFromFamily->quantity,
+                'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
+                ' الكمية ' . $collectingMilkFromFamily->quantity,
         );
-    
+
         return self::responseSuccess('تم التعديل بنجاح');
     }
 
@@ -106,7 +113,7 @@ class MilkCollectionController extends Controller
             'quantity',
             'family_id',
         )
-        ->orderByDesc('id')
+            ->orderByDesc('id')
             ->where('association_id',  $user->association_id)
             ->where('user_id',  $user->id);
 
@@ -127,7 +134,7 @@ class MilkCollectionController extends Controller
             'family_id',
             'user_id',
         )
-        
+
             ->where('association_id',  $user->association_id)
             ->where('user_id',  $user->id)
             ->where('id', $id)
