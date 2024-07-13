@@ -23,6 +23,9 @@ Route::prefix('driver')->middleware(['auth:sanctum', 'Permission:association','u
     Route::put('update/status', "DriverController@updateStatus");
 
 });
+Route::prefix('factory')->middleware(['auth:sanctum', 'Permission:association','userStatus'])->group(function () {
+    Route::get('by-association', "FactoryController@showByAssociation");
+});
 
 Route::prefix('collector')->middleware(['auth:sanctum', 'Permission:association','userStatus'])->group(function () {
     Route::get('by-association', "CollectorController@showByAssociation");
