@@ -49,9 +49,10 @@ class MilkCollectionController extends Controller
 
         // Check if the user is trying to update the record after 2 hours of creation
         $createdAt = $collectingMilkFromFamily->created_at;
-        if ($createdAtReceiptInvoiceFromStore >= $createdAt) {
-            return self::responseError('لا يمكن تعديل السجل لانه حصل عملية في وقت لاحق');
-        }
+        if (!empty($createdAtReceiptInvoiceFromStore))
+            if ($createdAtReceiptInvoiceFromStore >= $createdAt) {
+                return self::responseError('لا يمكن تعديل السجل لانه حصل عملية في وقت لاحق');
+            }
         $now = now();
         $diffInHours = $now->diffInHours($createdAt);
         if ($diffInHours >= 2) {
