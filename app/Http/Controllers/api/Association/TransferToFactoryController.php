@@ -125,7 +125,7 @@ class TransferToFactoryController extends Controller
             'notes' => $request->input('notes') ?? '',
 
         ]);
-        $AssemblyStore::updateOrCreate(
+        $AssemblyStore->updateOrCreate(
             [
                 'association_id' => $user->id,
             ],
