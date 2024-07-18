@@ -30,11 +30,11 @@ class AddTransferToFactoryRequest extends FormRequest
                     $twoDaysAgo = \Carbon\Carbon::now()->subDays(2);
 
                     if ($requestDateTime->greaterThan($now)) {
-                        $fail('يجب أن لا يكون تاريخ ووقت الجمع في المستقبل (بعد الوقت الحالي).');
+                        $fail('يجب أن لا يكون تاريخ ووقت التحويل في المستقبل (بعد الوقت الحالي).');
                     }
 
                     if ($requestDateTime->lt($twoDaysAgo)) {
-                        $fail('يجب أن لا يكون تاريخ ووقت الجمع قبل يومين.');
+                        $fail('يجب أن لا يكون تاريخ ووقت التحويل قبل يومين.');
                     }
                 },
             ],
