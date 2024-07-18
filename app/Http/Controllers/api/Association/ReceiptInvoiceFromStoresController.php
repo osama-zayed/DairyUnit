@@ -107,7 +107,7 @@ class ReceiptInvoiceFromStoresController extends Controller
                 'association_id' => $user->id,
             ],
             [
-                'quantity' => DB::raw('quantity - ' . $request->input('quantity')),
+                'quantity' => DB::raw('quantity - ' . $ReceiptInvoiceFromStore->quantity),
             ]
         );
         $ReceiptInvoiceFromStore->update([
