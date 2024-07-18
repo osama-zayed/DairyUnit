@@ -22,7 +22,7 @@ class AuthController extends UserController
         $totalQuantity = ReceiptInvoiceFromStore::where('association_id', $user->id)
             ->selectRaw('SUM(quantity) as total_quantity')
             ->first();
-        $ruantityDisbursed = 0;
+        $TransferToFactory = 0;
         $numberOfCollectors = User::where('association_id', $user->id)->count();
 
         return self::responseSuccess([
@@ -30,7 +30,7 @@ class AuthController extends UserController
             'name' => $user->name,
             'phone_number' => $user->phone,
             'total_quantity' => $totalQuantity->total_quantity ?? 0,
-            'ruantity_disbursed' => $ruantityDisbursed ?? 0,
+            'ruantity_disbursed' => $TransferToFactory ?? 0,
             'residual_quantity' => $residualQuantity->total_quantity ?? 0,
             'number_of_compilers' => $numberOfCollectors,
         ]);
