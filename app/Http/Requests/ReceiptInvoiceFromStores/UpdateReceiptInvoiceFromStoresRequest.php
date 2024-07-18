@@ -29,7 +29,7 @@ class UpdateReceiptInvoiceFromStoresRequest extends FormRequest
         return [
             'id' => 'required|integer|exists:families,id',
             'name' => 'required|string|max:255',
-            'phone' => 'required|regex:/^[0-9]{9}$/|unique:users,phone,'.$this->id,
+            'phone' => 'required|regex:/^[0-9]{9}$/|unique:users,phone,' . $this->id,
             'password' => 'nullable|string|min:8|confirmed|max:255',
 
         ];

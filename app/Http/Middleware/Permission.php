@@ -19,13 +19,13 @@ class Permission
             return $next($request);
         } else {
             // $request->user()->currentAccessToken()->delete();
-            if (auth('sanctum')->check()) {
+            if ($request->is('api/*')) {
                 return response()->json([
                     'status' => 'false',
                     'message' => 'غير مصرح لك',
                 ], 403);
             }
-            $request->user()->logout();
+            auth()->logout();
             return abort(403);
         }
     }
