@@ -23,7 +23,7 @@ class TransferToFactoryController extends Controller
             return self::responseError($th);
         }
     }
-    
+
     public static function show($id)
     {
         try {
@@ -35,58 +35,56 @@ class TransferToFactoryController extends Controller
     public function store(AddTransferToFactoryRequest $request)
     {
         $user = auth('sanctum')->user();
-        $warehouseSummary = CollectingMilkFromFamily::where('user_id', $request->input('associations_branche_id'))
-            ->selectRaw('SUM(quantity) as total_quantity')
-            ->first();
+        $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
 
-        $totalDeliveredQuantity = TransferToFactory::where('associations_branche_id', $request->input('associations_branche_id'))
-            ->selectRaw('SUM(quantity) as total_delivered_quantity')
-            ->first()->total_delivered_quantity;
-
-        $availableQuantity = $warehouseSummary->total_quantity - $totalDeliveredQuantity;
-
-        // Check if the user has enough quantity available
-        if ($availableQuantity < $request->input('quantity')) {
-            return $this->responseError('لا يوجد لدى المجمع الكمية المطلوبة');
+        if ($AssemblyStore->quantity  < $request->input('quantity')) {
+            return $this->responseError('لا يوجد لديك الكمية المطلوبة');
         }
 
         $TransferToFactory = TransferToFactory::create([
             'date_and_time' => $request->input('date_and_time'),
             'quantity' => $request->input('quantity'),
             'association_id' => $user->id,
-            'associations_branche_id' => $request->input('associations_branche_id'),
+            'driver_id' => $request->input('driver_id'),
+            'factory_id' => $request->input('factory_id'),
+            'means_of_transportation' => $request->input('means_of_transportation'),
             'notes' => $request->input('notes') ?? '',
         ]);
 
-        $assemblyStore = AssemblyStore::updateOrCreate(
+        $AssemblyStore::updateOrCreate(
             [
                 'association_id' => $user->id,
             ],
             [
-                'quantity' => DB::raw('quantity + ' . $request->input('quantity')),
+                'quantity' => DB::raw('quantity - ' . $request->input('quantity')),
             ]
         );
+
         self::userActivity(
-            'اضافة عملية توريد حليب ',
+            'اضافة عملية تحويل حليب ',
             $TransferToFactory,
-            ' جمعية ' . $user->name .
-                'توريد حليب من فرع الجمعية ' . $TransferToFactory->associationsBranche->name .
+            ' تم ' .
+                'تحويل حليب من الجمعية ' . $user->name .
+                'الى المصنع ' . $TransferToFactory->factory->name .
                 ' الكمية ' . $TransferToFactory->quantity,
             'الجمعية'
         );
+
         self::userNotification(
             auth('sanctum')->user(),
             'لقد قمت ب' .
-                'توريد حليب من فرع الجمعية ' . $TransferToFactory->associationsBranche->name .
+                'تحويل حليب الى المصنع ' . $TransferToFactory->factory->name .
                 ' الكمية ' . $TransferToFactory->quantity
         );
-        $user = User::find($request->input('associations_branche_id'));
-        self::userNotification(
-            $user,
-            'لقد قامت الجمعية ب' .
-                ' توريد حليب منك' .
-                ' الكمية ' . $TransferToFactory->quantity
-        );
+        $users = User::where('factory_id', $TransferToFactory->factory_id)->get();
+        foreach ($users as $key => $value) {
+            self::userNotification(
+                $value,
+                'لقد قامت الجمعية ' . $user->name .
+                    ' بتحويل حليب الى المصنع' .
+                    ' الكمية ' . $TransferToFactory->quantity
+            );
+        }
         return $this->responseSuccess([], 'تمت العملية بنجاح');
     }
     public function update(UpdateTransferToFactoryRequest $request)
@@ -143,10 +141,10 @@ class TransferToFactoryController extends Controller
             ]
         );
         self::userActivity(
-            'تعديل عملية توريد الحليب ',
+            'تعديل عملية تحويل الحليب ',
             $TransferToFactory,
             ' جمعية ' . $user->name .
-                'توريد الحليب من المجمع ' . $TransferToFactory->associationsBranche->name .
+                'تحويل الحليب من المجمع ' . $TransferToFactory->associationsBranche->name .
                 ' الكمية ' . $TransferToFactory->quantity,
             'الجمعية'
         );
@@ -154,14 +152,14 @@ class TransferToFactoryController extends Controller
         self::userNotification(
             $user,
             'لقد قمت بتعديل ' .
-                'توريد حليب من المجمع ' . $TransferToFactory->associationsBranche->name .
+                'تحويل حليب من المجمع ' . $TransferToFactory->associationsBranche->name .
                 ' الكمية ' . $TransferToFactory->quantity,
         );
         $user = User::find($request->input('associations_branche_id'));
         self::userNotification(
             $user,
             'لقد قامت الجمعية ب' .
-                ' تعديل توريد حليب منك' .
+                ' تعديل تحويل حليب منك' .
                 ' الكمية ' . $TransferToFactory->quantity
         );
         return self::responseSuccess([], 'تم التعديل بنجاح');
