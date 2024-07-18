@@ -20,9 +20,30 @@ class AddReceiptInvoiceFromStoresRequest extends FormRequest
     public function rules()
     {
         return [
-            'date_and_time' => 'required|date_format:Y-m-d H:i:s',
+            'date_and_time' => [
+                'required',
+                'date_format:Y-m-d H:i:s',
+                function ($attribute, $value, $fail) {
+                    $requestDateTime = \Carbon\Carbon::parse($value);
+                    $now = \Carbon\Carbon::now();
+                    $twoDaysAgo = \Carbon\Carbon::now()->subDays(2);
+
+                    if ($requestDateTime->greaterThan($now)) {
+                        $fail('يجب أن لا يكون تاريخ ووقت الجمع في المستقبل (بعد الوقت الحالي).');
+                    }
+
+                    if ($requestDateTime->lt($twoDaysAgo)) {
+                        $fail('يجب أن لا يكون تاريخ ووقت الجمع قبل يومين.');
+                    }
+                },
+            ],
             'quantity' => 'required|numeric|min:1',
             'associations_branche_id' => 'required|exists:users,id',
+            // 'associations_branche_id' => ['required', 'exists:users,id', function ($attribute, $value, $fail) {
+            //     if ($value != auth('sanctum')->user()->id) {
+            //         $fail('لم تقم أنت بإضافة هذا المجمع');
+            //     }
+            // }],
             'nots' => 'nullable',
         ];
     }
