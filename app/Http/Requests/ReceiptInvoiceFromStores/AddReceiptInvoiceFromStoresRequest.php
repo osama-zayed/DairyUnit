@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\ReceiptInvoiceFromStores;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AddReceiptInvoiceFromStoresRequest extends FormRequest
@@ -38,12 +39,13 @@ class AddReceiptInvoiceFromStoresRequest extends FormRequest
                 },
             ],
             'quantity' => 'required|numeric|min:1',
-            'associations_branche_id' => 'required|exists:users,id',
-            // 'associations_branche_id' => ['required', 'exists:users,id', function ($attribute, $value, $fail) {
-            //     if ($value != auth('sanctum')->user()->id) {
-            //         $fail('لم تقم أنت بإضافة هذا المجمع');
-            //     }
-            // }],
+            // 'associations_branche_id' => 'required|exists:users,id',
+            'associations_branche_id' => ['required', 'exists:users,id', function ($attribute, $value, $fail) {
+                $associationsBrancheId = User::findOrFail($value);
+                if ($associationsBrancheId->association_id != auth('sanctum')->user()->id) {
+                    $fail('لم تقم أنت بإضافة هذا المجمع');
+                }
+            }],
             'nots' => 'nullable',
         ];
     }
