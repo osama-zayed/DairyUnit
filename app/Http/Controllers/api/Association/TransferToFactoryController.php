@@ -173,7 +173,8 @@ class TransferToFactoryController extends Controller
             'id',
             'quantity',
             'date_and_time',
-            'associations_branche_id',
+            'factory_id',
+            'status',
         )
             ->orderByDesc('id')
             ->where('association_id',  $user->id);
@@ -189,11 +190,13 @@ class TransferToFactoryController extends Controller
         $query = TransferToFactory::select(
             'id',
             'association_id',
-            'associations_branche_id',
+            'driver_id',
+            'factory_id',
+            'means_of_transportation',
             'quantity',
             'date_and_time',
+            'status',
             'notes',
-
         )
             ->where('association_id',  $user->id)
             ->where('id', $id)
@@ -218,9 +221,15 @@ class TransferToFactoryController extends Controller
             'quantity' => $TransferToFactory->quantity,
             'association_id' => $TransferToFactory->association->id,
             'association_name' => $TransferToFactory->association->name,
-            'association_branch_id' => $TransferToFactory->associationsBranche->id,
-            'association_branch_name' => $TransferToFactory->associationsBranche->name,
+            'driver_id' => $TransferToFactory->driver_id,
+            'driver_name' => $TransferToFactory->driver->name,
+            'factory_id' => $TransferToFactory->driver_id,
+            'factory_name' => $TransferToFactory->factory->name,
+            'means_of_transportation'=>$TransferToFactory->means_of_transportation,
             'notes' => $TransferToFactory->notes,
+            'status' => $TransferToFactory->status,
+
+
         ];
     }
     public static function formatTransferToFactoryDataForDisplay($TransferToFactory)
@@ -230,7 +239,8 @@ class TransferToFactoryController extends Controller
                 'id' => $TransferToFactory->id,
                 'date_and_time' => $TransferToFactory->date_and_time,
                 'quantity' => $TransferToFactory->quantity,
-                'associations_branche_name' => $TransferToFactory->associationsBranche->name,
+                'factory_name' => $TransferToFactory->factory->name,
+                'status' => $TransferToFactory->status,
             ];
         }, $TransferToFactory);
     }
