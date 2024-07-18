@@ -26,7 +26,7 @@ class MilkCollectionController extends Controller
             'nots' => $request->input('nots') ?? '',
         ]);
         self::userActivity(
-            'اضافة عملية تجميع حليب',
+            'اضافة عملية تجميع حليب ',
             $collectingMilkFromFamily,
             ' جمعية ' . $collectingMilkFromFamily->association->name .
                 'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
@@ -35,7 +35,7 @@ class MilkCollectionController extends Controller
         );
         self::userNotification(
             auth('sanctum')->user(),
-            'لقد قمت ب' .
+            'لقد قمت ب ' .
                 'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
                 ' الكمية ' . $collectingMilkFromFamily->quantity,
         );
@@ -70,7 +70,7 @@ class MilkCollectionController extends Controller
         ]);
 
         self::userActivity(
-            'تعديل عملية تجميع حليب',
+            'تعديل عملية تجميع حليب ',
             $collectingMilkFromFamily,
             ' جمعية ' . $collectingMilkFromFamily->association->name .
                 'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
@@ -80,7 +80,7 @@ class MilkCollectionController extends Controller
 
         self::userNotification(
             auth('sanctum')->user(),
-            'لقد قمت بتعديل' .
+            'لقد قمت بتعديل ' .
                 'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
                 ' الكمية ' . $collectingMilkFromFamily->quantity,
         );

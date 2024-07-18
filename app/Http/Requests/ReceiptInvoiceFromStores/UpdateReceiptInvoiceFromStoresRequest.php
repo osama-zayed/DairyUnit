@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\ReceiptInvoiceFromStores;
 
+use App\Models\ReceiptInvoiceFromStore;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -27,11 +29,43 @@ class UpdateReceiptInvoiceFromStoresRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required|integer|exists:families,id',
-            'name' => 'required|string|max:255',
-            'phone' => 'required|regex:/^[0-9]{9}$/|unique:users,phone,' . $this->id,
-            'password' => 'nullable|string|min:8|confirmed|max:255',
+            'id' => [
+                'required',
+                'integer',
+                'exists:receipt_invoice_from_stores,id',
+                function ($attribute, $value, $fail) {
+                    $collectingMilkFromFamily = ReceiptInvoiceFromStore::findOrFail($value);
+                    if ($collectingMilkFromFamily->association_id !== auth('sanctum')->user()->id) {
+                        $fail('لم تقم انت باضافة هذه العملية');
+                    }
+                },
+            ],
+            'date_and_time' => [
+                'required',
+                'date_format:Y-m-d H:i:s',
+                function ($attribute, $value, $fail) {
+                    $requestDateTime = \Carbon\Carbon::parse($value);
+                    $now = \Carbon\Carbon::now();
+                    $twoDaysAgo = \Carbon\Carbon::now()->subDays(2);
 
+                    if ($requestDateTime->greaterThan($now)) {
+                        $fail('يجب أن لا يكون تاريخ ووقت الجمع في المستقبل (بعد الوقت الحالي).');
+                    }
+
+                    if ($requestDateTime->lt($twoDaysAgo)) {
+                        $fail('يجب أن لا يكون تاريخ ووقت الجمع قبل يومين.');
+                    }
+                },
+            ],
+            'quantity' => 'required|numeric|min:1',
+            // 'associations_branche_id' => 'required|exists:users,id',
+            'associations_branche_id' => ['required', 'exists:users,id', function ($attribute, $value, $fail) {
+                $associationsBrancheId = User::findOrFail($value);
+                if ($associationsBrancheId->association_id != auth('sanctum')->user()->id) {
+                    $fail('لم تقم أنت بإضافة هذا المجمع');
+                }
+            }],
+            'nots' => 'nullable',
         ];
     }
 

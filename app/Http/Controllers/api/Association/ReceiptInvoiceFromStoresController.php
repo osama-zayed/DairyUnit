@@ -8,6 +8,7 @@ use App\Http\Requests\ReceiptInvoiceFromStores\UpdateReceiptInvoiceFromStoresReq
 use App\Models\AssemblyStore;
 use App\Models\CollectingMilkFromFamily;
 use App\Models\ReceiptInvoiceFromStore;
+use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,7 @@ class ReceiptInvoiceFromStoresController extends Controller
 {
     public function AddReceiptInvoiceFromCollector(AddReceiptInvoiceFromStoresRequest $request)
     {
+        $user = auth('sanctum')->user();
         $warehouseSummary = CollectingMilkFromFamily::where('user_id', $request->input('associations_branche_id'))
             ->selectRaw('SUM(quantity) as total_quantity')
             ->first();
@@ -34,21 +36,41 @@ class ReceiptInvoiceFromStoresController extends Controller
         $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::create([
             'date_and_time' => $request->input('date_and_time'),
             'quantity' => $request->input('quantity'),
-            'association_id' => auth('sanctum')->user()->id,
+            'association_id' => $user->id,
             'associations_branche_id' => $request->input('associations_branche_id'),
             'notes' => $request->input('notes') ?? '',
         ]);
 
         $assemblyStore = AssemblyStore::updateOrCreate(
             [
-                'association_id' => auth('sanctum')->user()->id,
+                'association_id' => $user->id,
             ],
             [
                 'quantity' => DB::raw('quantity + ' . $request->input('quantity')),
             ]
         );
-
-        return $this->responseSuccess([],'تمت العملية بنجاح');
+        self::userActivity(
+            'اضافة عملية توريد حليب ',
+            $ReceiptInvoiceFromStore,
+            ' جمعية ' . $user->name .
+                'توريد حليب من فرع الجمعية ' . $ReceiptInvoiceFromStore->associationsBranche->name .
+                ' الكمية ' . $ReceiptInvoiceFromStore->quantity,
+            'الجمعية'
+        );
+        self::userNotification(
+            auth('sanctum')->user(),
+            'لقد قمت ب' .
+                'توريد حليب من فرع الجمعية ' . $ReceiptInvoiceFromStore->associationsBranche->name .
+                ' الكمية ' . $ReceiptInvoiceFromStore->quantity
+        );
+        $user = User::find($request->input('associations_branche_id'));
+        self::userNotification(
+            $user,
+            'لقد قامت الجمعية ب' .
+                ' توريد حليب منك' .
+                ' الكمية ' . $ReceiptInvoiceFromStore->quantity
+        );
+        return $this->responseSuccess([], 'تمت العملية بنجاح');
     }
     public function update(UpdateReceiptInvoiceFromStoresRequest $request)
     {
@@ -162,7 +184,7 @@ class ReceiptInvoiceFromStoresController extends Controller
             'association_name' => $ReceiptInvoiceFromStore->association->name,
             'association_branch_id' => $ReceiptInvoiceFromStore->associationsBranche->id,
             'association_branch_name' => $ReceiptInvoiceFromStore->associationsBranche->name,
-            'nots' => $ReceiptInvoiceFromStore->nots,
+            'notes' => $ReceiptInvoiceFromStore->notes,
         ];
     }
     public static function formatReceiptInvoiceFromStoreDataForDisplay($ReceiptInvoiceFromStore)
@@ -172,7 +194,7 @@ class ReceiptInvoiceFromStoresController extends Controller
                 'id' => $ReceiptInvoiceFromStore->id,
                 'date_and_time' => $ReceiptInvoiceFromStore->date_and_time,
                 'quantity' => $ReceiptInvoiceFromStore->quantity,
-                // 'associations_branche_name' => $ReceiptInvoiceFromStore->associationsBranche->name,
+                'associations_branche_name' => $ReceiptInvoiceFromStore->associationsBranche->name,
             ];
         }, $ReceiptInvoiceFromStore);
     }
