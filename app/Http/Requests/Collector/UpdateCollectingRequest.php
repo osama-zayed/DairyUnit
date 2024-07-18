@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Collector;
 
+use App\Models\CollectingMilkFromFamily;
+use App\Models\Family;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCollectingRequest extends FormRequest
@@ -17,10 +19,20 @@ class UpdateCollectingRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'id' => 'required|integer|exists:collecting_milk_from_families,id',
+            'id' => [
+                'required',
+                'integer',
+                'exists:collecting_milk_from_families,id',
+                function ($attribute, $value, $fail) {
+                    $collectingMilkFromFamily = CollectingMilkFromFamily::findOrFail($value);
+                    if ($collectingMilkFromFamily->user_id !== auth('sanctum')->user()->id) {
+                        $fail('لم تقم انت باضافة هذه العملية');
+                    }
+                },
+            ],
             'date_and_time' => [
                 'required',
                 'date_format:Y-m-d H:i:s',
@@ -28,22 +40,31 @@ class UpdateCollectingRequest extends FormRequest
                     $requestDateTime = \Carbon\Carbon::parse($value);
                     $now = \Carbon\Carbon::now();
                     $twoDaysAgo = \Carbon\Carbon::now()->subDays(2);
-
+    
                     if ($requestDateTime->greaterThan($now)) {
                         $fail('يجب أن لا يكون تاريخ ووقت الجمع في المستقبل (بعد الوقت الحالي).');
                     }
-
-                    if ($requestDateTime->lt($twoDaysAgo)) {
+    
+                    if ($requestDateTime->lessThan($twoDaysAgo)) {
                         $fail('يجب أن لا يكون تاريخ ووقت الجمع قبل يومين.');
                     }
                 },
             ],
-            'quantity' => 'required|numeric|min:1',
-            'family_id' => ['required', 'exists:families,id', function ($attribute, $value, $fail) {
-                if ($value != auth('sanctum')->user()->id) {
-                    $fail('لم تقم أنت بإضافة هذه الأسرة');
-                }
-            }],
+            'quantity' => [
+                'required',
+                'numeric',
+                'min:1',
+            ],
+            'family_id' => [
+                'required',
+                'exists:families,id',
+                function ($attribute, $value, $fail) {
+                    $family =Family::findOrFail($value)->associations_branche_id;
+                    if ( $family !== auth('sanctum')->user()->id) {
+                        $fail('لم تقم أنت بإضافة هذه الأسرة');
+                    }
+                },
+            ],
         ];
     }
 
