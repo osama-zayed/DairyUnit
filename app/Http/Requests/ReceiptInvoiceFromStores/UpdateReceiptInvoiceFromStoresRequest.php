@@ -77,18 +77,15 @@ class UpdateReceiptInvoiceFromStoresRequest extends FormRequest
     public function messages()
     {
         return [
-            'id.required' => 'معرف الاسرة مطلوب',
-            'id.exists' => 'الاسرة المحددة غير موجودة',
-            'name.required' => 'اسم العائلة مطلوب',
-            'name.string' => 'اسم العائلة يجب ان يكون نص',
-            'name.max' => 'اسم العائلة يجب الا يتجاوز 255 حرف',
-            'phone.required' => 'رقم الهاتف مطلوب',
-            'phone.regex' => 'رقم الهاتف يجب أن يكون 9 أرقام',
-            'phone.unique' => 'رقم الهاتف مستخدم بالفعل',
-            "password.required" => "ادخل الرمز الجديد",
-            "password.min" => "الحد الأدنى للرمز الجديد 8 خانات",
-            "password.max" => "الحد الأقصى للرمز 255 خانة",
-            "password.confirmed" => "الرمز الجديد غير متطابق",
+            'id.required' => 'معرف  العملية مطلوب',
+            'id.exists' => ' العملية المحددة غير موجودة',
+            'date_and_time.required' => 'تاريخ ووقت الجمع مطلوب',
+            'date_and_time.date_format' => 'يجب أن يكون تاريخ ووقت الجمع صالحًا',
+            'quantity.required' => 'الكمية مطلوبة',
+            'quantity.numeric' => 'الكمية يجب أن تكون رقمية',
+            'quantity.min' => 'الكمية يجب أن تكون على الأقل 1',
+            'associations_branche_id.required' => 'معرف فرع الشركة مطلوب',
+            'associations_branche_id.exists' => 'فرع الشركة المحددة غير موجودة',
         ];
     }
     protected function failedValidation(Validator $validator)
