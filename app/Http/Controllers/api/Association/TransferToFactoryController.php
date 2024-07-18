@@ -89,7 +89,9 @@ class TransferToFactoryController extends Controller
     public function update(UpdateTransferToFactoryRequest $request)
     {
         $user = auth('sanctum')->user();
-        $TransferToFactory = TransferToFactory::where('association_id', $user->id)->first();
+        $TransferToFactory = TransferToFactory::where('id', $request->input('id'))->first();
+
+        
         if ($TransferToFactory->status) {
             return self::responseError('لا يمكن التعديل لانه تم الاستلام');
         }
@@ -113,7 +115,7 @@ class TransferToFactoryController extends Controller
                 'quantity' => DB::raw('quantity + ' . $TransferToFactory->quantity),
             ]
         );
-        $TransferToFactory::update([
+        $TransferToFactory->update([
             'date_and_time' => $request->input('date_and_time'),
             'quantity' => $request->input('quantity'),
             'association_id' => $user->id,
@@ -121,6 +123,7 @@ class TransferToFactoryController extends Controller
             'factory_id' => $request->input('factory_id'),
             'means_of_transportation' => $request->input('means_of_transportation'),
             'notes' => $request->input('notes') ?? '',
+
         ]);
         $AssemblyStore::updateOrCreate(
             [

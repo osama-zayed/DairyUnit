@@ -22,6 +22,7 @@ class TransferToFactory extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'association_id',
         'driver_id',
         'factory_id',
@@ -37,11 +38,7 @@ class TransferToFactory extends Model
      *
      * @var array<string, string>
      */
-    protected $casts = [
-        'date_and_time' => 'datetime',
-        'quantity' => 'decimal:2',
-        'status' => 'boolean',
-    ];
+
 
     /**
      * Get the association that owns the transfer.
