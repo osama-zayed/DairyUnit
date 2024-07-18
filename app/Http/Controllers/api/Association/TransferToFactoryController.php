@@ -225,7 +225,7 @@ class TransferToFactoryController extends Controller
             'association_name' => $TransferToFactory->association->name,
             'driver_id' => $TransferToFactory->driver_id,
             'driver_name' => $TransferToFactory->driver->name,
-            'factory_id' => $TransferToFactory->driver_id,
+            'factory_id' => $TransferToFactory->factory_id,
             'factory_name' => $TransferToFactory->factory->name,
             'means_of_transportation'=>$TransferToFactory->means_of_transportation,
             'notes' => $TransferToFactory->notes,
