@@ -7,7 +7,6 @@ use App\Http\Requests\Driver\AddDriverRequest;
 use App\Http\Requests\Driver\UpdateDriverRequest;
 use App\Http\Requests\StatusRequest;
 use App\Models\Driver;
-use Illuminate\Http\Request;
 
 class DriverController extends Controller
 {

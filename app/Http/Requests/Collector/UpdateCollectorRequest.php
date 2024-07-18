@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Collector;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -27,9 +28,14 @@ class UpdateCollectorRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required|integer|exists:families,id',
+            'id' => ['required', 'integer', 'exists:users,id', function ($attribute, $value, $fail) {
+                $associationsBrancheId = User::findOrFail($value);
+                if ($associationsBrancheId->association_id != auth('sanctum')->user()->id) {
+                    $fail('لم تقم أنت بإضافة هذا المجمع');
+                }
+            }],
             'name' => 'required|string|max:255',
-            'phone' => 'required|regex:/^[0-9]{9}$/|unique:users,phone,'.$this->id,
+            'phone' => 'required|regex:/^[0-9]{9}$/|unique:users,phone,' . $this->id,
             'password' => 'nullable|string|min:8|confirmed|max:255',
 
         ];

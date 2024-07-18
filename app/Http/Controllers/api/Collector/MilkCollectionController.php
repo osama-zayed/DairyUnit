@@ -10,7 +10,6 @@ use App\Models\ReceiptInvoiceFromStore;
 use DateTime;
 use Illuminate\Http\Request;
 
-use function PHPUnit\Framework\isNull;
 
 class MilkCollectionController extends Controller
 {

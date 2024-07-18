@@ -7,7 +7,6 @@ use App\Http\Requests\Family\AddFamilyRequest;
 use App\Http\Requests\Family\UpdateFamilyRequest;
 use App\Http\Requests\StatusRequest;
 use App\Models\Family;
-use Illuminate\Http\Request;
 
 class FamilyController extends Controller
 {

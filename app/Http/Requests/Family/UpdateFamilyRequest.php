@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Family;
 
+use App\Models\Family;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -27,7 +28,16 @@ class UpdateFamilyRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required|integer|exists:families,id',
+            'id' => [
+                'required','integer',
+                'exists:families,id',
+                function ($attribute, $value, $fail) {
+                    $family =Family::findOrFail($value)->associations_branche_id;
+                    if ( $family !== auth('sanctum')->user()->id) {
+                        $fail('لم تقم أنت بإضافة هذه الأسرة');
+                    }
+                },
+            ],
             'name' => 'required|string|max:255',
             'phone' => 'required|regex:/^[0-9]{9}$/|unique:families,phone,'.$this->id,
             'number_of_cows_produced' => 'required|integer',

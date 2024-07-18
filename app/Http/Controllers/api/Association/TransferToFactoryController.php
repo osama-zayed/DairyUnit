@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TransferToFactory\AddTransferToFactoryRequest;
 use App\Http\Requests\TransferToFactory\UpdateTransferToFactoryRequest;
 use App\Models\AssemblyStore;
-use App\Models\CollectingMilkFromFamily;
 use App\Models\TransferToFactory;
 use App\Models\User;
 use DateTime;

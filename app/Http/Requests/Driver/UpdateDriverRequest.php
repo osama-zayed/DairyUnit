@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Driver;
 
+use App\Models\Driver;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -27,9 +28,14 @@ class UpdateDriverRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required|integer|exists:families,id',
+            'id' => ['required', 'integer', 'exists:drivers,id', function ($attribute, $value, $fail) {
+                $driver = Driver::findOrFail($value);
+                if ($driver->association_id !== auth('sanctum')->user()->id) {
+                    $fail('لم تقم أنت بإضافة هذه السائق.');
+                }
+            }],
             'name' => 'required|string|max:255',
-            'phone' => 'required|regex:/^[0-9]{9}$/|unique:drivers,phone,'.$this->id,
+            'phone' => 'required|regex:/^[0-9]{9}$/|unique:drivers,phone,' . $this->id,
         ];
     }
 

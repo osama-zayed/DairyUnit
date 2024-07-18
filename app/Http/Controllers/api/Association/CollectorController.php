@@ -7,7 +7,6 @@ use App\Http\Requests\Collector\AddCollectorRequest;
 use App\Http\Requests\Collector\UpdateCollectorRequest;
 use App\Http\Requests\StatusRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class CollectorController extends Controller
 {

@@ -3,11 +3,7 @@
 namespace App\Http\Controllers\Api\Association;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Factory\AddFactoryRequest;
-use App\Http\Requests\Factory\UpdateFactoryRequest;
-use App\Http\Requests\StatusRequest;
 use App\Models\Factory;
-use Illuminate\Http\Request;
 
 class FactoryController extends Controller
 {

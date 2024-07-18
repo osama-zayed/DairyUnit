@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers\Api\association;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\UserController;
 use App\Models\AssemblyStore;
 use App\Models\ReceiptInvoiceFromStore;
 use App\Models\TransferToFactory;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class AuthController extends UserController
