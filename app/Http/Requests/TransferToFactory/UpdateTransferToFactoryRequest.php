@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\TransferToFactory;
 
+use App\Models\Driver;
 use App\Models\ReceiptInvoiceFromStore;
+use App\Models\TransferToFactory;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
@@ -29,12 +31,13 @@ class UpdateTransferToFactoryRequest extends FormRequest
     public function rules()
     {
         return [
+
             'id' => [
                 'required',
                 'integer',
-                'exists:receipt_invoice_from_stores,id',
+                'exists:transfer_to_factories,id',
                 function ($attribute, $value, $fail) {
-                    $collectingMilkFromFamily = ReceiptInvoiceFromStore::findOrFail($value);
+                    $collectingMilkFromFamily = TransferToFactory::findOrFail($value);
                     if ($collectingMilkFromFamily->association_id !== auth('sanctum')->user()->id) {
                         $fail('لم تقم انت باضافة هذه العملية');
                     }
@@ -58,13 +61,15 @@ class UpdateTransferToFactoryRequest extends FormRequest
                 },
             ],
             'quantity' => 'required|numeric|min:1',
-            'associations_branche_id' => ['required', 'exists:users,id', function ($attribute, $value, $fail) {
-                $associationsBrancheId = User::findOrFail($value);
-                if ($associationsBrancheId->association_id != auth('sanctum')->user()->id) {
-                    $fail('لم تقم أنت بإضافة هذا المجمع');
+            'factory_id' => ['required', 'exists:factories,id'],
+            'means_of_transportation' => 'required|string',
+            'driver_id' => ['required', 'exists:drivers,id', function ($attribute, $value, $fail) {
+                $driver = Driver::findOrFail($value);
+                if ($driver->association_id !== auth('sanctum')->user()->id) {
+                    $fail('لم تقم أنت بإضافة هذه السائق.');
                 }
             }],
-            'nots' => 'nullable',
+            'notes' => 'nullable|string',
         ];
     }
 
@@ -78,13 +83,18 @@ class UpdateTransferToFactoryRequest extends FormRequest
         return [
             'id.required' => 'معرف  العملية مطلوب',
             'id.exists' => ' العملية المحددة غير موجودة',
-            'date_and_time.required' => 'تاريخ ووقت الجمع مطلوب',
-            'date_and_time.date_format' => 'يجب أن يكون تاريخ ووقت الجمع صالحًا',
+            'date_and_time.required' => 'تاريخ ووقت التحويل مطلوب',
+            'date_and_time.date_format' => 'يجب أن يكون تاريخ ووقت التحويل بتنسيق صالح (Y-m-d H:i:s)',
             'quantity.required' => 'الكمية مطلوبة',
             'quantity.numeric' => 'الكمية يجب أن تكون رقمية',
             'quantity.min' => 'الكمية يجب أن تكون على الأقل 1',
-            'associations_branche_id.required' => 'معرف فرع الشركة مطلوب',
-            'associations_branche_id.exists' => 'فرع الشركة المحددة غير موجودة',
+            'factory_id.required' => 'معرف المصنع مطلوب',
+            'factory_id.exists' => 'المصنع المحدد غير موجود',
+            'means_of_transportation.required' => 'وسيلة النقل مطلوبة',
+            'means_of_transportation.string' => 'وسيلة النقل يجب أن تكون نص',
+            'driver_id.required' => 'معرف السائق مطلوب',
+            'driver_id.exists' => 'السائق المحدد غير موجود',
+            'notes.string' => 'الملاحظات يجب أن تكون نص',
         ];
     }
     protected function failedValidation(Validator $validator)

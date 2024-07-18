@@ -81,7 +81,7 @@ class TransferToFactoryController extends Controller
             self::userNotification(
                 $value,
                 'لقد قامت الجمعية ' . $user->name .
-                    ' بتحويل حليب الى المصنع' .
+                    ' بتحويل حليب ' .
                     ' الكمية ' . $TransferToFactory->quantity
             );
         }
@@ -94,15 +94,18 @@ class TransferToFactoryController extends Controller
         if ($TransferToFactory->status) {
             return self::responseError('لا يمكن التعديل لانه تم الاستلام');
         }
-       
+
         $createdAt = $TransferToFactory->created_at;
         $now = now();
         $diffInHours = $now->diffInHours($createdAt);
         if ($diffInHours >= 2) {
             return self::responseError('لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
         }
-        
+
         $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
+        if ($AssemblyStore->quantity + $TransferToFactory->quantity  < $request->input('quantity')) {
+            return $this->responseError('لا يوجد لديك الكمية المطلوبة');
+        }
         $AssemblyStore::updateOrCreate(
             [
                 'association_id' => $user->id,
@@ -111,11 +114,7 @@ class TransferToFactoryController extends Controller
                 'quantity' => DB::raw('quantity + ' . $TransferToFactory->quantity),
             ]
         );
-        if ($AssemblyStore->quantity  < $request->input('quantity')) {
-            return $this->responseError('لا يوجد لديك الكمية المطلوبة');
-        }
-
-        $TransferToFactory = TransferToFactory::create([
+        $TransferToFactory::update([
             'date_and_time' => $request->input('date_and_time'),
             'quantity' => $request->input('quantity'),
             'association_id' => $user->id,
@@ -124,21 +123,21 @@ class TransferToFactoryController extends Controller
             'means_of_transportation' => $request->input('means_of_transportation'),
             'notes' => $request->input('notes') ?? '',
         ]);
-
         $AssemblyStore::updateOrCreate(
             [
                 'association_id' => $user->id,
             ],
             [
-                'quantity' => DB::raw('quantity - ' . $request->input('quantity')),
+                'quantity' => DB::raw('quantity - ' . $TransferToFactory->quantity),
             ]
         );
 
+
         self::userActivity(
-            'اضافة عملية تحويل حليب ',
+            'تعديل عملية تحويل حليب ',
             $TransferToFactory,
             ' تم ' .
-                'تحويل حليب من الجمعية ' . $user->name .
+                'تعديل عملية تحويل حليب من الجمعية ' . $user->name .
                 'الى المصنع ' . $TransferToFactory->factory->name .
                 ' الكمية ' . $TransferToFactory->quantity,
             'الجمعية'
@@ -147,7 +146,7 @@ class TransferToFactoryController extends Controller
         self::userNotification(
             auth('sanctum')->user(),
             'لقد قمت ب' .
-                'تحويل حليب الى المصنع ' . $TransferToFactory->factory->name .
+                'تعديل بيانات عملية تحويل حليب الى المصنع ' . $TransferToFactory->factory->name .
                 ' الكمية ' . $TransferToFactory->quantity
         );
         $users = User::where('factory_id', $TransferToFactory->factory_id)->get();
@@ -155,7 +154,7 @@ class TransferToFactoryController extends Controller
             self::userNotification(
                 $value,
                 'لقد قامت الجمعية ' . $user->name .
-                    ' بتحويل حليب الى المصنع' .
+                    ' بتعديل بيانات عملية تحويل حليب ' .
                     ' الكمية ' . $TransferToFactory->quantity
             );
         }

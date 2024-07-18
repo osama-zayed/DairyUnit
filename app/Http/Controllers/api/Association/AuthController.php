@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\UserController;
 use App\Models\AssemblyStore;
 use App\Models\ReceiptInvoiceFromStore;
+use App\Models\TransferToFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -22,7 +23,11 @@ class AuthController extends UserController
         $totalQuantity = ReceiptInvoiceFromStore::where('association_id', $user->id)
             ->selectRaw('SUM(quantity) as total_quantity')
             ->first();
-        $TransferToFactory = 0;
+
+        $TransferToFactory = TransferToFactory::where('association_id', $user->id)
+            ->selectRaw('SUM(quantity) as total_quantity')
+            ->first();
+
         $numberOfCollectors = User::where('association_id', $user->id)->count();
 
         return self::responseSuccess([
@@ -30,7 +35,7 @@ class AuthController extends UserController
             'name' => $user->name,
             'phone_number' => $user->phone,
             'total_quantity' => $totalQuantity->total_quantity ?? 0,
-            'ruantity_disbursed' => $TransferToFactory ?? 0,
+            'ruantity_disbursed' => $TransferToFactory->total_quantity ?? 0,
             'residual_quantity' => $residualQuantity->total_quantity ?? 0,
             'number_of_compilers' => $numberOfCollectors,
         ]);
