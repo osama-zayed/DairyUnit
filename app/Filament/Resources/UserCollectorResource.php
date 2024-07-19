@@ -40,6 +40,7 @@ class UserCollectorResource extends Resource
                     ->tel()
                     ->label('رقم الموبايل')
                     ->required()
+                    ->unique('users', 'phone')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('password')
                     ->password()
