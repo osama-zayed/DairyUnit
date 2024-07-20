@@ -34,11 +34,11 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(Login::class)
             ->colors([
-                'primary' => Color::Cyan,
-                'secondary' => Color::Cyan,
-                'success' => Color::Cyan,
-                'warning' => Color::Cyan,
-                'danger' => Color::Cyan,
+                'primary' => Color::Blue,
+                'secondary' => Color::Gray,
+                'success' => Color::Green,
+                'warning' => Color::Yellow,
+                'danger' => Color::Red,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -46,7 +46,11 @@ class AdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->widgets([])
+            ->widgets([
+                // ExchangeChart::class,
+                // StatsOverview::class,
+                // SupplyChart::class,
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -61,7 +65,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
                 Permission::class . ":institution",
-                userStatus::class ,
+                userStatus::class,
             ]);
     }
 }
