@@ -13,7 +13,9 @@ class ActivityLog extends Model
         'id',
         'log_name',
         'description',
+        'event',
         'subject_id',
         'causer_id',
+        'created_at',
     ];
 }

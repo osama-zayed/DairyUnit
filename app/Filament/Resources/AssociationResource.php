@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AssociationResource\Pages;
 use App\Filament\Resources\AssociationResource\RelationManagers;
+use App\Filament\Resources\AssociationResource\RelationManagers\ActivitylogRelationManager;
 use App\Models\Association;
 use App\Models\User;
 use Filament\Forms;
@@ -107,7 +108,7 @@ class AssociationResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ActivitylogRelationManager::class
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\AssociationResource\RelationManagers\ActivitylogRelationManager;
 use App\Filament\Resources\UserRepresentativeResource\Pages;
 use App\Filament\Resources\UserRepresentativeResource\RelationManagers;
 use App\Models\User;
@@ -118,7 +119,7 @@ class UserRepresentativeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ActivitylogRelationManager::class
         ];
     }
 
