@@ -49,13 +49,13 @@ class DriverController extends Controller
         self::userActivity(
             'اضافة سائق',
             $Driver,
-            'اضافة سائق جديد ' . $Driver->name .
+            ' اضافة سائق جديد ' . $Driver->name .
                 ' جمعية ' . $Driver->association->name,
         );
 
         self::userNotification(
             auth('sanctum')->user(),
-            'لقد قمت باضافة سائق جديد باسم ' . $Driver->name
+            ' لقد قمت باضافة سائق جديد باسم ' . $Driver->name
         );
         
         return self::responseSuccess([], 'تمت العملية بنجاح');
@@ -75,12 +75,12 @@ class DriverController extends Controller
         $this->userActivity(
             'تعديل سائق',
             $Driver,
-            'تم تعديل بيانات سائق ' . $Driver->name . ' جمعية ' . $Driver->association->name,
+            ' تم تعديل بيانات سائق ' . $Driver->name . ' جمعية ' . $Driver->association->name,
         );
 
         $this->userNotification(
             auth('sanctum')->user(),
-            'لقد قمت بتعديل بيانات سائق باسم ' . $Driver->name
+            ' لقد قمت بتعديل بيانات سائق باسم ' . $Driver->name
         );
         return $this->responseSuccess([], 'تمت العملية بنجاح');
     }

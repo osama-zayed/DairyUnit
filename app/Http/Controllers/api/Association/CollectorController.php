@@ -53,7 +53,7 @@ class CollectorController extends Controller
         self::userActivity(
             'اضافة مجمع جديد',
             $Collector,
-            'اضافة مجمع جديد ' . $Collector->name .
+            ' اضافة مجمع جديد ' . $Collector->name .
                 ' جمعية ' . $Collector->association->name,
         );
 
@@ -89,14 +89,14 @@ class CollectorController extends Controller
         $Collector->update($data);
     
         $this->userActivity(
-            'تعديل مجمع',
+            'تعديل مجمع ',
             $Collector,
-            'تم تعديل بيانات مجمع ' . $Collector->name . ' جمعية ' . $Collector->association->name,
+            ' تم تعديل بيانات مجمع ' . $Collector->name . ' جمعية ' . $Collector->association->name,
         );
     
         $this->userNotification(
             auth('sanctum')->user(),
-            'لقد قمت بتعديل بيانات مجمع باسم ' . $Collector->name
+            ' لقد قمت بتعديل بيانات مجمع باسم ' . $Collector->name
         );
     
         return $this->responseSuccess([], 'تمت العملية بنجاح');
@@ -119,12 +119,12 @@ class CollectorController extends Controller
         $this->userActivity(
             'تعديل حالة مجمع',
             $Collector,
-            'تم تعديل حالة المجمع ' . $Collector->name . ' جمعية ' . $Collector->association->name,
+            ' تم تعديل حالة المجمع ' . $Collector->name . ' جمعية ' . $Collector->association->name,
         );
 
         $this->userNotification(
             auth('sanctum')->user(),
-            'لقد قمت بتعديل حالة المجمع باسم ' . $Collector->name
+            ' لقد قمت بتعديل حالة المجمع باسم ' . $Collector->name
         );
         
         return $this->responseSuccess([], 'تمت العملية بنجاح');

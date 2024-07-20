@@ -55,14 +55,14 @@ class FamilyController extends Controller
         self::userActivity(
             'اضافة اسره جديدة',
             $family,
-            'اضافة اسرة جديدة ' . $family->name .
+            ' اضافة اسرة جديدة ' . $family->name .
                 ' جمعية ' . $family->association->name,
-            'فرع الجمعية' . auth('sanctum')->user()->name
+            ' فرع الجمعية' . auth('sanctum')->user()->name
         );
 
         self::userNotification(
             auth('sanctum')->user(),
-            'لقد قمت باضافة اسرة جديدة باسم ' . $family->name
+            ' لقد قمت باضافة اسرة جديدة باسم ' . $family->name
         );
 
         return self::responseSuccess([], 'تمت العملية بنجاح');
@@ -85,13 +85,13 @@ class FamilyController extends Controller
         $this->userActivity(
             'تعديل اسرة',
             $family,
-            'تم تعديل بيانات اسرة ' . $family->name . ' جمعية ' . $family->association->name,
-            'فرع الجمعية ' . auth('sanctum')->user()->name
+            ' تم تعديل بيانات اسرة ' . $family->name . ' جمعية ' . $family->association->name,
+            ' فرع الجمعية ' . auth('sanctum')->user()->name
         );
 
         $this->userNotification(
             auth('sanctum')->user(),
-            'لقد قمت بتعديل بيانات اسرة باسم ' . $family->name
+            ' لقد قمت بتعديل بيانات اسرة باسم ' . $family->name
         );
         return $this->responseSuccess([], 'تمت العملية بنجاح');
     }
@@ -113,7 +113,7 @@ class FamilyController extends Controller
         $this->userActivity(
             'تعديل حالة اسرة',
             $family,
-            'تم تعديل حالة الاسرة ' . $family->name . ' جمعية ' . $family->association->name,
+            ' تم تعديل حالة الاسرة ' . $family->name . ' جمعية ' . $family->association->name,
         );
 
         $this->userNotification(

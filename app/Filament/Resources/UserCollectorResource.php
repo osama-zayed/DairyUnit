@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserCollectorResource\Pages;
 use App\Filament\Resources\UserCollectorResource\RelationManagers;
+use App\Filament\Resources\UserCollectorResource\RelationManagers\ActivitylogRelationManager;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -120,7 +121,7 @@ class UserCollectorResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ActivitylogRelationManager::class
         ];
     }
 

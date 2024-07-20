@@ -28,14 +28,14 @@ class MilkCollectionController extends Controller
             'اضافة عملية تجميع حليب ',
             $collectingMilkFromFamily,
             ' جمعية ' . $collectingMilkFromFamily->association->name .
-                'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
+                ' تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
                 ' الكمية ' . $collectingMilkFromFamily->quantity,
             'فرع الجمعية'
         );
         self::userNotification(
             auth('sanctum')->user(),
             'لقد قمت ب ' .
-                'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
+                ' تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
                 ' الكمية ' . $collectingMilkFromFamily->quantity,
         );
         return self::responseSuccess('تمت العملية بنجاح');
@@ -72,15 +72,15 @@ class MilkCollectionController extends Controller
             'تعديل عملية تجميع حليب ',
             $collectingMilkFromFamily,
             ' جمعية ' . $collectingMilkFromFamily->association->name .
-                'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
+                ' تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
                 ' الكمية ' . $collectingMilkFromFamily->quantity,
             'فرع الجمعية'
         );
 
         self::userNotification(
             auth('sanctum')->user(),
-            'لقد قمت بتعديل ' .
-                'تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
+            ' لقد قمت بتعديل ' .
+                ' تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
                 ' الكمية ' . $collectingMilkFromFamily->quantity,
         );
 
