@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\UserProfile;
 use App\Filament\Resources\ExchangeResource\Widgets\ExchangeChart;
 use App\Filament\Resources\ProductResource\Widgets\StatsOverview;
 use App\Filament\Resources\SupplyResource\Widgets\SupplyChart;
@@ -14,6 +15,7 @@ use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use App\Filament\Pages\Auth\Login;
+use App\Filament\Pages\EditProfile;
 use App\Filament\Resources\CollectingMilkFromFamilyResource\Widgets\CollectingMilkFromFamilyChart;
 use App\Http\Middleware\Permission;
 use App\Http\Middleware\userStatus;
@@ -46,6 +48,8 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
+            ->databaseNotifications()
+            ->profile(EditProfile::class)
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 CollectingMilkFromFamilyChart::class,
