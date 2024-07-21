@@ -11,7 +11,7 @@ class AuthController extends UserController
     public function me()
     {
         $user = auth('sanctum')->user();
-        $warehouseSummary = CollectingMilkFromFamily::where('user_id', $user->id)
+        $totalQuantity = CollectingMilkFromFamily::where('user_id', $user->id)
             ->selectRaw('SUM(quantity) as total_quantity')
             ->first();
         $warehouseSummaryDay = CollectingMilkFromFamily::where('user_id', $user->id)
@@ -22,15 +22,15 @@ class AuthController extends UserController
             ->selectRaw('SUM(quantity) as total_delivered_quantity')
             ->first()->total_delivered_quantity;
 
-        $totalQuantity = $warehouseSummary->total_quantity - $exchangeSummary;
+        $warehouseSummary = $totalQuantity->total_quantity - $exchangeSummary;
 
         return self::responseSuccess([
             'id' => $user->id,
             'name' => $user->name,
             'phone_number' => $user->phone,
-            'the_remaining_quiantity' => $warehouseSummary->total_quantity ?? 0,
+            'total_quantity' => $totalQuantity->total_quantity ?? 0,
+            'the_remaining_quiantity' => $warehouseSummary ?? 0,
             'quiantity_spent' => $exchangeSummary ?? 0,
-            'total_quantity' => $totalQuantity,
             'the_remaining_quiantity_day' => $warehouseSummaryDay->total_quantity_day ?? 0,
         ]);
     }
