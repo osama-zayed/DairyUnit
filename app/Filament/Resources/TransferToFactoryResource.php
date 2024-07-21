@@ -29,26 +29,46 @@ class TransferToFactoryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('association_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('driver_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('factory_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('association_id')
+                    ->relationship('association', titleAttribute: 'name')
+                    ->label('الجمعية')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->options(function () {
+                        return User::where('user_type', 'association')->pluck('name', 'id');
+                    })
+                    ->required(),
+                Forms\Components\Select::make('driver_id')
+                    ->relationship('driver', titleAttribute: 'name')
+                    ->label('السائق')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->required(),
+                Forms\Components\Select::make('factory_id')
+                    ->relationship('factory', titleAttribute: 'name')
+                    ->label('المصنع')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->required(),
                 Forms\Components\TextInput::make('means_of_transportation')
                     ->required()
+                    ->label('وسيلة النفل')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('quantity')
                     ->required()
+                    ->label('الكمية')
                     ->numeric(),
-                Forms\Components\DateTimePicker::make('date_and_time')
+                    Forms\Components\DateTimePicker::make('date_and_time')
+                    ->label('الوقت والتاريخ')
                     ->required(),
-                Forms\Components\Toggle::make('status')
+                    Forms\Components\Toggle::make('status')
+                    ->label('الحالة')
                     ->required(),
-                Forms\Components\Textarea::make('notes')
+                    Forms\Components\Textarea::make('notes')
+                    ->label('الملاحظات')
                     ->required()
                     ->maxLength(65535)
                     ->columnSpanFull(),
