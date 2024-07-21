@@ -106,10 +106,17 @@ class FamilyResource extends Resource
             ->filters([
                 SelectFilter::make('association_id')
                 ->label('الجمعية')
-                ->relationship('Association', 'name'),
-                SelectFilter::make('associations_branche_id')
+                ->multiple()
+                ->options(function () {
+                    return User::where('user_type', 'association')->pluck('name', 'id');
+                })
+                ->relationship('association', 'name'),
+            SelectFilter::make('user_id')
                 ->label('فرع الجمعية')
-                ->relationship('associationsBranche', 'name'),
+                ->options(function () {
+                    return User::where('user_type', 'collector')->pluck('name', 'id');
+                })
+                ->relationship('user', 'name')
             ])
             ->actions([
                 // Tables\Actions\ViewAction::make(),

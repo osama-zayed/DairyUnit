@@ -2,31 +2,30 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CollectingMilkFromFamilyResource\Pages;
-use App\Filament\Resources\CollectingMilkFromFamilyResource\RelationManagers;
-use App\Models\CollectingMilkFromFamily;
+use App\Filament\Resources\ReceiptInvoiceFromStoreResource\Pages;
+use App\Filament\Resources\ReceiptInvoiceFromStoreResource\RelationManagers;
+use App\Models\ReceiptInvoiceFromStore;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Filters\SelectFilter;
 
-class CollectingMilkFromFamilyResource extends Resource
+class ReceiptInvoiceFromStoreResource extends Resource
 {
-    protected static ?string $model = CollectingMilkFromFamily::class;
+    protected static ?string $model = ReceiptInvoiceFromStore::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    // protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-down-on-square-stack';
 
     protected static ?string $navigationGroup = 'العمليات';
     protected static ?int $navigationSort = 7;
-    protected static ?string $modelLabel = 'تجميع الحليب من الاسر';
-    protected static ?string $pluralLabel = 'تجميع الحليب من الاسر';
+    protected static ?string $modelLabel = 'توريد الحليب من المجمعين الى الجمعية';
+    protected static ?string $pluralLabel = 'توريد الحليب من المجمعين الى الجمعية';
     public static function form(Form $form): Form
     {
         return $form
@@ -51,19 +50,15 @@ class CollectingMilkFromFamilyResource extends Resource
                         return User::where('user_type', 'collector')->pluck('name', 'id');
                     })
                     ->required(),
-                Forms\Components\Select::make('family_id')
-                    ->relationship('family', titleAttribute: 'name')
-                    ->searchable()
-                    ->preload()
-                    ->label('اسم الاسرة')
-                    ->live(),
-                Forms\Components\DateTimePicker::make('collection_date_and_time')
-                    ->label('وقت التجميع')
-                    ->required(),
                 Forms\Components\TextInput::make('quantity')
                     ->required()
-                    ->label('الكمية')
                     ->numeric(),
+                Forms\Components\DateTimePicker::make('date_and_time')
+                    ->required(),
+                Forms\Components\Textarea::make('notes')
+                    ->required()
+                    ->maxLength(65535)
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -76,31 +71,22 @@ class CollectingMilkFromFamilyResource extends Resource
                     ->label('اسم الجمعية')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user.name')
+                Tables\Columns\TextColumn::make('associationsBranche.name')
                     ->numeric()
                     ->label('فرع الجمعية')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('family.name')
-                    ->numeric()
-                    ->label('اسم الاسرة')
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('collection_date_and_time')
-                    ->dateTime()
-                    ->label('وقت التجميع')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
-                    ->label('الكمية')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('date_and_time')
+                    ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->label('وقت الاضافة')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label('وقت التعديل')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -118,16 +104,16 @@ class CollectingMilkFromFamilyResource extends Resource
                     ->options(function () {
                         return User::where('user_type', 'collector')->pluck('name', 'id');
                     })
-                    ->relationship('user', 'name')
+                    ->relationship('associationsBranche', 'name')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                // Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //      Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                Tables\Actions\BulkActionGroup::make([
+                    // Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ])
             ->emptyStateActions([
                 // Tables\Actions\CreateAction::make(),
@@ -144,9 +130,10 @@ class CollectingMilkFromFamilyResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCollectingMilkFromCaptivities::route('/'),
-            'view' => Pages\ViewCollectingMilkFromFamily::route('/{record}'),
-            // 'edit' => Pages\EditCollectingMilkFromFamily::route('/{record}/edit'),
+            'index' => Pages\ListReceiptInvoiceFromStores::route('/'),
+            // 'create' => Pages\CreateReceiptInvoiceFromStore::route('/create'),
+            'view' => Pages\ViewReceiptInvoiceFromStore::route('/{record}'),
+            // 'edit' => Pages\EditReceiptInvoiceFromStore::route('/{record}/edit'),
         ];
     }
 }

@@ -109,7 +109,11 @@ class UserCollectorResource extends Resource
             ->filters([
                 SelectFilter::make('association_id')
                 ->label('الجمعية')
-                ->relationship('Association', 'name')
+                ->multiple()
+                ->options(function () {
+                    return User::where('user_type', 'association')->pluck('name', 'id');
+                })
+                ->relationship('association', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

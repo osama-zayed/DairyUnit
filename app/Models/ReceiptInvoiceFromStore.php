@@ -38,6 +38,6 @@ class ReceiptInvoiceFromStore extends Model
     }
     public function associationsBranche()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'associations_branche_id');
     }
 }
