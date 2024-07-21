@@ -87,7 +87,13 @@ class UserCollectorResource extends Resource
                     ->sortable(),
                 Tables\Columns\IconColumn::make('status')
                     ->label('حالة المجمع')
-                    ->boolean(),
+                    ->boolean()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->label('وقت الاضافة')

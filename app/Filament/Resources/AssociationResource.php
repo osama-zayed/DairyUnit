@@ -55,7 +55,13 @@ class AssociationResource extends Resource
             Forms\Components\Toggle::make('status')
                 ->default(1)
                 ->label('حالة الجمعية')
-                ->required(),
+                ->required()
+                ->action(function ($record, $column) {
+                    $name = $column->getName();
+                    $record->update([
+                        $name => !$record->$name
+                    ]);
+                }),
         ];
     }
     public static function form(Form $form): Form

@@ -83,7 +83,13 @@ class FamilyResource extends Resource
                     ->sortable(),
                 Tables\Columns\IconColumn::make('status')
                     ->label('حالة الاسرة')
-                    ->boolean(),
+                    ->boolean()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->label('وقت الاضافة')
