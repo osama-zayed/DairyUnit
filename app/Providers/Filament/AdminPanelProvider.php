@@ -17,6 +17,7 @@ use Filament\Widgets;
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\EditProfile;
 use App\Filament\Resources\CollectingMilkFromFamilyResource\Widgets\CollectingMilkFromFamilyChart;
+use App\Filament\Resources\ReceiptInvoiceFromStoreResource\Widgets\ReceiptInvoiceFromStoreChart;
 use App\Http\Middleware\Permission;
 use App\Http\Middleware\userStatus;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -53,7 +54,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 CollectingMilkFromFamilyChart::class,
-                // StatsOverview::class,
+                ReceiptInvoiceFromStoreChart::class,
                 // SupplyChart::class,
             ])
             ->middleware([
