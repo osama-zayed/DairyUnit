@@ -30,9 +30,6 @@ class EditProfile extends SimplePage
     use Concerns\HasRoutes;
     use Concerns\InteractsWithFormActions;
 
-    /**
-     * @var view-string
-     */
     protected static string $view = 'filament-panels::pages.auth.edit-profile';
 
     /**
