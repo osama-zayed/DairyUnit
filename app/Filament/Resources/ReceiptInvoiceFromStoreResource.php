@@ -77,16 +77,20 @@ class ReceiptInvoiceFromStoreResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('quantity')
+                    ->label('الكمية')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('date_and_time')
                     ->dateTime()
+                    ->label('الوقت والتاريخ')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                    Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
+                    ->label('وقت الاضافة')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('وقت التعديل')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

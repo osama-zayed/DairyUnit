@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\SelectFilter;
+
 class TransferToFactoryResource extends Resource
 {
     protected static ?string $model = TransferToFactory::class;
@@ -59,10 +60,10 @@ class TransferToFactoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('association.name')
-                ->numeric()
-                ->label('اسم الجمعية')
-                ->searchable()
-                ->sortable(),
+                    ->numeric()
+                    ->label('اسم الجمعية')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('driver_id')
                     ->numeric()
                     ->sortable(),
@@ -73,17 +74,22 @@ class TransferToFactoryResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
+                    ->label('الكمية')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('date_and_time')
                     ->dateTime()
+                    ->label('الوقت والتاريخ')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('status')
+                    ->label('الحالة')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
+                    ->label('وقت الاضافة')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('وقت التعديل')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -109,14 +115,14 @@ class TransferToFactoryResource extends Resource
                 // Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -125,5 +131,5 @@ class TransferToFactoryResource extends Resource
             'view' => Pages\ViewTransferToFactory::route('/{record}'),
             'edit' => Pages\EditTransferToFactory::route('/{record}/edit'),
         ];
-    }    
+    }
 }
