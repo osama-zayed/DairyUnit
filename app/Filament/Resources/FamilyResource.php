@@ -116,7 +116,7 @@ class FamilyResource extends Resource
                 ->options(function () {
                     return User::where('user_type', 'collector')->pluck('name', 'id');
                 })
-                ->relationship('user', 'name')
+                ->relationship('associationsBranche', 'name')
             ])
             ->actions([
                 // Tables\Actions\ViewAction::make(),
