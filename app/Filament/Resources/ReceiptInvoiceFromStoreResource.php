@@ -41,7 +41,7 @@ class ReceiptInvoiceFromStoreResource extends Resource
                     })
                     ->required(),
                 Forms\Components\Select::make('user_id')
-                    ->relationship('user', titleAttribute: 'name')
+                    ->relationship('associationsBranche', titleAttribute: 'name')
                     ->label('فرع الجمعية')
                     ->searchable()
                     ->preload()
@@ -52,10 +52,13 @@ class ReceiptInvoiceFromStoreResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('quantity')
                     ->required()
+                    ->label('الكمية')
                     ->numeric(),
-                Forms\Components\DateTimePicker::make('date_and_time')
+                    Forms\Components\DateTimePicker::make('date_and_time')
+                    ->label('الوقت والتاريخ')
                     ->required(),
-                Forms\Components\Textarea::make('notes')
+                    Forms\Components\Textarea::make('notes')
+                    ->label('الملاحظات')
                     ->required()
                     ->maxLength(65535)
                     ->columnSpanFull(),
