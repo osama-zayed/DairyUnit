@@ -20,7 +20,7 @@ class UserRepresentativeResource extends Resource
     protected static ?int $navigationSort = 4;
     protected static ?string $modelLabel = 'مندوب';
     protected static ?string $pluralLabel = "المناديب";
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static string | array $routeMiddleware = [
         'auth:web',

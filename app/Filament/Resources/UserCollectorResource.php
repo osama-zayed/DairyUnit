@@ -22,7 +22,7 @@ class UserCollectorResource extends Resource
     protected static ?int $navigationSort = 3;
     protected static ?string $modelLabel = 'مجمع';
     protected static ?string $pluralLabel = "المجمعين";
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-plus';
 
     protected static string | array $routeMiddleware = [
         'auth:web',

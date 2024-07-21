@@ -19,9 +19,13 @@ class CollectingMilkFromFamilyResource extends Resource
 {
     protected static ?string $model = CollectingMilkFromFamily::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+
+    // protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+
+    protected static ?string $navigationGroup = 'العمليات';
     protected static ?int $navigationSort = 7;
-    protected static ?string $modelLabel = 'جمع الحليب من الاسر';
+    protected static ?string $modelLabel = 'تجميع الحليب من الاسر';
     protected static ?string $pluralLabel = 'الحليب المجمع من الاسر';
     public static function form(Form $form): Form
     {

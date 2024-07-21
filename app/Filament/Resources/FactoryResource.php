@@ -17,7 +17,7 @@ class FactoryResource extends Resource
 {
     protected static ?string $model = Factory::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static ?int $navigationSort = 4;
     protected static ?string $modelLabel = 'مصنع';
     protected static ?string $pluralLabel = "المصانع";
@@ -34,6 +34,7 @@ class FactoryResource extends Resource
                     ->default(1)
                     ->label('حالة المصنع')
                     ->required(),
+
             ]);
     }
 
@@ -46,7 +47,13 @@ class FactoryResource extends Resource
                     ->searchable(),
                 Tables\Columns\IconColumn::make('status')
                     ->label('حالة المصنع')
-                    ->boolean(),
+                    ->boolean()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->label('وقت الاضافة')
