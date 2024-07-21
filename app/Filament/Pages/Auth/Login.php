@@ -27,10 +27,7 @@ class Login extends SimplePage
 {
     use InteractsWithFormActions;
     use WithRateLimiting;
-
-    /**
-     * @var view-string
-     */
+    
     protected static string $view = 'filament-panels::pages.auth.login';
 
     /**
