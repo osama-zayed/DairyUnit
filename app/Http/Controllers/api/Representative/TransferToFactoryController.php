@@ -10,6 +10,23 @@ use Illuminate\Http\Request;
 
 class TransferToFactoryController extends Transfer
 {
+    public  function index(Request $request)
+    {
+        try {
+            return self::responseSuccess(self::getTransferToFactoryPaginated($request));
+        } catch (\Throwable $th) {
+            return self::responseError($th);
+        }
+    }
+
+    public  function show($id)
+    {
+        try {
+            return self::responseSuccess(self::getTransferToFactoryById($id));
+        } catch (\Throwable $th) {
+            return self::responseError();
+        }
+    }
     public function getTransferToFactoryPaginated($request)
     {
         $perPage = $request->get('per_page');
@@ -25,7 +42,8 @@ class TransferToFactoryController extends Transfer
             'status',
         )
             ->orderByDesc('id')
-            ->where('factory_id',  $user->factory_id);
+            ->where('factory_id',  $user->factory_id)
+            ->where('status',  0);
 
 
         $TransferToFactory = $query->paginate($perPage, "", "current_page", $page);
@@ -46,7 +64,7 @@ class TransferToFactoryController extends Transfer
             'status',
             'notes',
         )
-            ->where('association_id',  $user->id)
+            ->where('factory_id',  $user->factory_id)
             ->where('id', $id)
             ->first();
 

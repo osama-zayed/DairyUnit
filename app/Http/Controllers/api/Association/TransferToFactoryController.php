@@ -91,7 +91,7 @@ class TransferToFactoryController extends Controller
         $user = auth('sanctum')->user();
         $TransferToFactory = TransferToFactory::where('id', $request->input('id'))->first();
 
-        
+
         if ($TransferToFactory->status) {
             return self::responseError('لا يمكن التعديل لانه تم الاستلام');
         }
@@ -227,7 +227,7 @@ class TransferToFactoryController extends Controller
             'driver_name' => $TransferToFactory->driver->name,
             'factory_id' => $TransferToFactory->factory_id,
             'factory_name' => $TransferToFactory->factory->name,
-            'means_of_transportation'=>$TransferToFactory->means_of_transportation,
+            'means_of_transportation' => $TransferToFactory->means_of_transportation,
             'notes' => $TransferToFactory->notes,
             'status' => $TransferToFactory->status,
 
