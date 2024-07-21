@@ -64,14 +64,18 @@ class TransferToFactoryResource extends Resource
                     ->label('اسم الجمعية')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('driver_id')
+                Tables\Columns\TextColumn::make('Driver.name')
                     ->numeric()
+                    ->label('السائق')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('factory_id')
+                Tables\Columns\TextColumn::make('Factory.name')
                     ->numeric()
+                    ->label('المصنع')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('means_of_transportation')
-                    ->searchable(),
+                    ->label('وسيلة النقل')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
                     ->label('الكمية')
