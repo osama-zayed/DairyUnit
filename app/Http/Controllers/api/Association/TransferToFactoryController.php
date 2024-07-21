@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class TransferToFactoryController extends Controller
 {
-    public static function index(Request $request)
+    public  function index(Request $request)
     {
         try {
             return self::responseSuccess(self::getTransferToFactoryPaginated($request));
@@ -23,7 +23,7 @@ class TransferToFactoryController extends Controller
         }
     }
 
-    public static function show($id)
+    public  function show($id)
     {
         try {
             return self::responseSuccess(self::getTransferToFactoryById($id));
@@ -164,7 +164,7 @@ class TransferToFactoryController extends Controller
     }
 
 
-    public static function getTransferToFactoryPaginated($request)
+    public  function getTransferToFactoryPaginated($request)
     {
         $perPage = $request->get('per_page');
         $page = $request->get('current_page');
@@ -185,7 +185,7 @@ class TransferToFactoryController extends Controller
         $TransferToFactory = $query->paginate($perPage, "", "current_page", $page);
         return self::formatPaginatedResponse($TransferToFactory, self::formatTransferToFactoryDataForDisplay($TransferToFactory->items()));
     }
-    public static function getTransferToFactoryById($id)
+    public  function getTransferToFactoryById($id)
     {
         $user = auth('sanctum')->user();
 
@@ -206,7 +206,7 @@ class TransferToFactoryController extends Controller
 
         return self::formatCollectingData($query);
     }
-    private static function formatCollectingData($TransferToFactory)
+    public static function formatCollectingData($TransferToFactory)
     {
         $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $TransferToFactory->date_and_time);
         $formattedDate = $dateTime->format('d/m/Y');

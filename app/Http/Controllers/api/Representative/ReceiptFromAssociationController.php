@@ -8,12 +8,13 @@ use Illuminate\Http\Request;
 
 class ReceiptFromAssociationController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return self::responseError('jjj');
     }
 
     /**
