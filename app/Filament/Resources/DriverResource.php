@@ -46,12 +46,7 @@ class DriverResource extends Resource
                     ->default(1)
                     ->label('حالة السائق')
                     ->required()
-                    ->action(function ($record, $column) {
-                        $name = $column->getName();
-                        $record->update([
-                            $name => !$record->$name
-                        ]);
-                    }),
+                    ,
             ]);
     }
 
@@ -67,6 +62,7 @@ class DriverResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('association.name')
                     ->numeric()
+                    ->searchable()
                     ->label('اسم الجمعية')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('status')

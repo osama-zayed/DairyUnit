@@ -83,6 +83,7 @@ class UserCollectorResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('association.name')
                     ->numeric()
+                    ->searchable()
                     ->label('اسم الجمعية')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('status')

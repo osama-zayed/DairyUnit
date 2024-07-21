@@ -75,11 +75,13 @@ class FamilyResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('association.name')
                     ->numeric()
+                    ->searchable()
                     ->label('اسم الجمعية')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('associationsBranche.name')
                     ->numeric()
                     ->label('اسم الفرع')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('status')
                     ->label('حالة الاسرة')

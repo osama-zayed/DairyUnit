@@ -84,6 +84,7 @@ class UserRepresentativeResource extends Resource
                 Tables\Columns\TextColumn::make('factory.name')
                     ->numeric()
                     ->label('اسم المصنع')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('status')
                     ->label('حالة المندوب')

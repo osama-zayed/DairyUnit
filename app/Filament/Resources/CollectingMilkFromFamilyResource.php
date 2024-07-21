@@ -74,14 +74,17 @@ class CollectingMilkFromFamilyResource extends Resource
                 Tables\Columns\TextColumn::make('association.name')
                     ->numeric()
                     ->label('اسم الجمعية')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->label('فرع الجمعية')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('family.name')
                     ->numeric()
                     ->label('اسم الاسرة')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('collection_date_and_time')
                     ->dateTime()
