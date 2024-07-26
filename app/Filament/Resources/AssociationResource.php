@@ -56,12 +56,7 @@ class AssociationResource extends Resource
                 ->default(1)
                 ->label('حالة الجمعية')
                 ->required()
-                ->action(function ($record, $column) {
-                    $name = $column->getName();
-                    $record->update([
-                        $name => !$record->$name
-                    ]);
-                }),
+               ,
         ];
     }
     public static function form(Form $form): Form
