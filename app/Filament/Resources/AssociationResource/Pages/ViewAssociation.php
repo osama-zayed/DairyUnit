@@ -16,4 +16,10 @@ class ViewAssociation extends ViewRecord
             Actions\EditAction::make(),
         ];
     }
+    protected function authorizeAccess(): void
+    {
+        if ($this->getRecord()->user_type !=  "association") {
+            abort(404);
+        }
+    }
 }

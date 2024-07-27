@@ -17,4 +17,10 @@ class EditUser extends EditRecord
             // Actions\DeleteAction::make(),
         ];
     }
+    protected function authorizeAccess(): void
+    {
+        if ($this->getRecord()->user_type !=  "collector") {
+            abort(404);
+        }
+    }
 }

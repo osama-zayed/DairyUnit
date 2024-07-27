@@ -16,4 +16,10 @@ class ViewUser extends ViewRecord
             // Actions\EditAction::make(),
         ];
     }
+    protected function authorizeAccess(): void
+    {
+        if ($this->getRecord()->user_type !=  "collector") {
+            abort(404);
+        }
+    }
 }

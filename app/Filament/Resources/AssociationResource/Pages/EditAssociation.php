@@ -17,4 +17,10 @@ class EditAssociation extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+    protected function authorizeAccess(): void
+    {
+        if ($this->getRecord()->user_type !=  "association") {
+            abort(404);
+        }
+    }
 }
