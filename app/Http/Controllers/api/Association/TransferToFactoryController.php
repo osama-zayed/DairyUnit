@@ -95,7 +95,7 @@ class TransferToFactoryController extends Controller
         $TransferToFactory = TransferToFactory::where('id', $request->input('id'))->first();
 
 
-        if ($TransferToFactory->status) {
+        if (!$TransferToFactory->status) {
             return self::responseError('لا يمكن التعديل لانه تم الاستلام');
         }
 
