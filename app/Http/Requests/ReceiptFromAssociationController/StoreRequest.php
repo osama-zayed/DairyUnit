@@ -49,7 +49,7 @@ class StoreRequest extends FormRequest
                     $end_time = \Carbon\Carbon::parse($value);
 
                     // if ($start_time->greaterThan($end_time)) {
-                    //     $fail('لا يمكن أن يكون تاريخ انتهاء عملية الفحص قبل تاريخ البدء');
+                    //     $fail('لا يمكن أن يكون تاريخ انتهاء عملية الفحص قبل تاريخ البدء بالفحص');
                     // }
 
                     $now = \Carbon\Carbon::now();
