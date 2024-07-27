@@ -35,6 +35,9 @@ class TransferToFactoryController extends Controller
     {
         $user = auth('sanctum')->user();
         $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
+        if(is_null($AssemblyStore)){
+            return $this->responseError('لا يوجد لديك الكمية المطلوبة');
+        }
 
         if ($AssemblyStore->quantity  < $request->input('quantity')) {
             return $this->responseError('لا يوجد لديك الكمية المطلوبة');

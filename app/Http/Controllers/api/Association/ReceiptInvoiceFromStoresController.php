@@ -8,6 +8,7 @@ use App\Http\Requests\ReceiptInvoiceFromStores\UpdateReceiptInvoiceFromStoresReq
 use App\Models\AssemblyStore;
 use App\Models\CollectingMilkFromFamily;
 use App\Models\ReceiptInvoiceFromStore;
+use App\Models\TransferToFactory;
 use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
@@ -75,9 +76,27 @@ class ReceiptInvoiceFromStoresController extends Controller
     public function update(UpdateReceiptInvoiceFromStoresRequest $request)
     {
         $user = auth('sanctum')->user();
-        $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('id', $request->input("id"))
-            ->where('association_id', $user->id)->first();
 
+        $lastTransferToFactory = TransferToFactory::where('association_id', $user->id)
+            ->select('updated_at')
+            ->latest()
+            ->first();
+
+        $lastReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('association_id', $user->id)
+            ->select('created_at')
+            ->latest()
+            ->first();
+
+        $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('id', $request->input("id"))
+            ->where('association_id', $user->id)
+            ->first();
+
+        if ($ReceiptInvoiceFromStore && (
+            ($ReceiptInvoiceFromStore->created_at < $lastReceiptInvoiceFromStore->created_at) ||
+            ($ReceiptInvoiceFromStore->created_at < $lastTransferToFactory->updated_at)
+        )) {
+            return $this->responseError('لا يمكن التعديل لأنه حصل عملية في وقت لاحق');
+        }
         // Check if the user is trying to update the record after 2 hours of creation
         $createdAt = $ReceiptInvoiceFromStore->created_at;
         $now = now();
