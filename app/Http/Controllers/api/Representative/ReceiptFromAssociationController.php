@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Representative;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ReceiptFromAssociationController\StoreRequest;
 use App\Models\ReceiptFromAssociation;
 use Illuminate\Http\Request;
 
@@ -20,7 +21,7 @@ class ReceiptFromAssociationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         //
     }

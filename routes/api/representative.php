@@ -19,4 +19,5 @@ Route::middleware(['auth:sanctum', 'Permission:representative', 'userStatus'])->
     Route::get('TransferToFactory', "TransferToFactoryController@index");
     Route::get('TransferToFactory/{id}', "TransferToFactoryController@show");
     Route::resource('ReceiptFromAssociation', ReceiptFromAssociationController::class);
+    Route::post('ReceiptFromAssociation/store', "ReceiptFromAssociationController@store");
 });
