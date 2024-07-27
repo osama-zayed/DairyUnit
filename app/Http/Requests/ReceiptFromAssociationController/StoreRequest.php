@@ -66,18 +66,18 @@ class StoreRequest extends FormRequest
             ],
             'transfer_to_factory_id' => [
                 'exists:transfer_to_factories,id',
-                function ($attribute, $value, $fail)   {
-                    $transferToFactory= TransferToFactory::findOrFail($value);
-                    if($transferToFactory->status){
-                        $fail('لقد تم تاكيد استلام عملية التحويل');
+                function ($attribute, $value, $fail) {
+                    $transferToFactory = TransferToFactory::findOrFail($value);
+                    if ($transferToFactory->status) {
+                        $fail('لقد تم تاكيد استلام عملية التحويل من قبل');
                     }
                 },
             ],
             'number_of_packages' => 'required|numeric|min:1',
-            'package_cleanliness' => 'required|in:clean,dirty',
-            'transport_cleanliness' => 'required|in:clean,dirty',
-            'driver_personal_hygiene' => 'required|in:good,poor',
-            'ac_operation' => 'required|in:working,not_working',
+            'package_cleanliness' => 'required|in:clean,somewhat_clean,not_clean',
+            'transport_cleanliness' => 'required|in:clean,somewhat_clean,not_clean',
+            'driver_personal_hygiene' => 'required|in:clean,somewhat_clean,not_clean',
+            'ac_operation' => 'required|in:on,off,not_available',
             'defective_quantity_due_to_coagulation' => 'required|numeric|min:0',
             'defective_quantity_due_to_impurities' => 'required|numeric|min:0',
             'defective_quantity_due_to_density' => 'required|numeric|min:0',
@@ -101,13 +101,13 @@ class StoreRequest extends FormRequest
             'number_of_packages.numeric' => 'عدد الطرود يجب أن يكون رقميًا',
             'number_of_packages.min' => 'عدد الطرود يجب أن يكون على الأقل 1',
             'package_cleanliness.required' => 'نظافة الطرود مطلوبة',
-            'package_cleanliness.in' => 'نظافة الطرود يجب أن تكون "clean" أو "dirty"',
+            'package_cleanliness.in' => 'نظافة الطرود يجب أن تكون "clean" أو "somewhat_clean" أو "not_clean"',
             'transport_cleanliness.required' => 'نظافة النقل مطلوبة',
-            'transport_cleanliness.in' => 'نظافة النقل يجب أن تكون "clean" أو "dirty"',
+            'transport_cleanliness.in' => 'نظافة النقل يجب أن تكون "clean" أو "somewhat_clean" أو "not_clean"',
             'driver_personal_hygiene.required' => 'نظافة الشخصية للسائق مطلوبة',
-            'driver_personal_hygiene.in' => 'نظافة الشخصية للسائق يجب أن تكون "good" أو "poor"',
+            'driver_personal_hygiene.in' => 'نظافة الشخصية للسائق يجب أن تكون "clean" أو "somewhat_clean" أو "not_clean"',
             'ac_operation.required' => 'حالة نظام التكييف مطلوبة',
-            'ac_operation.in' => 'حالة نظام التكييف يجب أن تكون "working" أو "not_working"',
+            'ac_operation.in' => 'حالة نظام التكييف يجب أن تكون "on" أو "off" أو "not_available"',
             'defective_quantity_due_to_coagulation.required' => 'الكمية المعيبة بسبب التخثر مطلوبة',
             'defective_quantity_due_to_coagulation.numeric' => 'الكمية المعيبة بسبب التخثر يجب أن تكون رقمية',
             'defective_quantity_due_to_coagulation.min' => 'الكمية المعيبة بسبب التخثر يجب أن تكون على الأقل 0',
