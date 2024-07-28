@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('associations', function (Blueprint $table) {
-            //
+        Schema::table('receipt_from_associations', function (Blueprint $table) {
+            $table->foreignId('user_id')->nullable()->references('id')->on('users');
         });
     }
 
