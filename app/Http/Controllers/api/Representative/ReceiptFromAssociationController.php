@@ -48,6 +48,7 @@ class ReceiptFromAssociationController extends Controller
             'transport_cleanliness' => $request->input('transport_cleanliness'),
             'driver_personal_hygiene' => $request->input('driver_personal_hygiene'),
             'ac_operation' => $request->input('ac_operation'),
+            'user_id' => auth('sanctum')->user()->id,
             'notes' => $request->input('notes') ?? '',
         ]);
         $transferToFactory->update([
@@ -97,10 +98,13 @@ class ReceiptFromAssociationController extends Controller
     public function show($id)
     {
         try {
-            $receiptFromAssociation = ReceiptFromAssociation::find($id);
+            $user = auth('sanctum')->user();
+            $receiptFromAssociation = ReceiptFromAssociation::where('id', $id)
+                ->where('user_id',  $user->id)
+                ->first();
             return self::responseSuccess(self::formatDataById($receiptFromAssociation));
         } catch (\Throwable $th) {
-            return self::responseError();
+            return self::responseError($th);
         }
     }
 
@@ -125,14 +129,16 @@ class ReceiptFromAssociationController extends Controller
     {
         $perPage = $request->get('per_page');
         $page = $request->get('current_page');
+        $user = auth('sanctum')->user();
         $query = ReceiptFromAssociation::select(
             'id',
             'transfer_to_factory_id',
             'association_id',
             'quantity'
         )
-        ->with('association', 'transferToFactory')
-        ->orderByDesc('id');
+            ->with('association', 'transferToFactory')
+            ->where('user_id',  $user->id)
+            ->orderByDesc('id');
         $ReceiptFromAssociation = $query->paginate($perPage, "", "current_page", $page);
         return self::formatPaginatedResponse($ReceiptFromAssociation, self::formatReceiptFromAssociationDataForDisplay($ReceiptFromAssociation->items()));
     }
@@ -147,7 +153,7 @@ class ReceiptFromAssociationController extends Controller
             ];
         }, $ReceiptFromAssociation);
     }
-    
+
     public static function formatDataById($receiptFromAssociation)
     {
         $startDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $receiptFromAssociation->start_time_of_collection);

@@ -34,8 +34,13 @@ class ReceiptFromAssociation extends Model
         'transport_cleanliness',
         'driver_personal_hygiene',
         'ac_operation',
+        'user_id',
         'notes',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     public function transferToFactory()
     {
         return $this->belongsTo(TransferToFactory::class, 'transfer_to_factory_id');
