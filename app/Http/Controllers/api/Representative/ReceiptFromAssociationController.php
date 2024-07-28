@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api\Representative;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReceiptFromAssociationController\StoreRequest;
+use App\Models\AssemblyStore;
 use App\Models\ReceiptFromAssociation;
 use App\Models\TransferToFactory;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReceiptFromAssociationController extends Controller
 {
@@ -28,9 +30,8 @@ class ReceiptFromAssociationController extends Controller
         $transferToFactoryId = $request->input('transfer_to_factory_id');
         $quantity = $request->input('quantity');
         $transferToFactory = TransferToFactory::find($transferToFactoryId);
-        // return self::responseSuccess([$transferToFactory],'تمت العملية بنجاح');
         $receiptFromAssociation = ReceiptFromAssociation::create([
-            'transfer_id' => $transferToFactoryId,
+            'transfer_to_factory_id' => $transferToFactoryId,
             'association_id' => $transferToFactory->association_id,
             'driver_id' => $transferToFactory->driver_id,
             'factory_id' => $transferToFactory->factory_id,
@@ -43,11 +44,15 @@ class ReceiptFromAssociationController extends Controller
             'ac_operation' => $request->input('ac_operation'),
             'notes' => $request->input('notes') ?? '',
         ]);
-        return self::responseSuccess([],'تمت العملية بنجاح');
-
         $transferToFactory->update([
             'status' => 1
         ]);
+        AssemblyStore::where('association_id', $transferToFactory->association_id)
+            ->update(
+                [
+                    'quantity' => DB::raw('quantity + ' . $transferToFactory->quantity - $quantity),
+                ]
+            );
 
         self::userActivity(
             'استلام عملية تحويل حليب ',
@@ -74,9 +79,10 @@ class ReceiptFromAssociationController extends Controller
                 ' من قبل المندوب ' . auth('sanctum')->user()->name .
                 ' في مصنع ' . $transferToFactory->factory->name .
                 ' الكمية المحولة ' . $transferToFactory->quantity .
-                ' الكمية المستلمة ' . $quantity
+                ' الكمية المستلمة ' . $quantity .
+                ' الكمية الغير مصادق عليها ' . $transferToFactory->quantity - $quantity
         );
-        return self::responseSuccess([],'تمت العملية بنجاح');
+        return self::responseSuccess([], 'تمت العملية بنجاح');
     }
 
     /**
