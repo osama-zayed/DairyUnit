@@ -29,7 +29,7 @@ class ReceiptFromAssociation extends Model
         'factory_id',
         'start_time_of_collection',
         'end_time_of_collection',
-        'number_of_packages',
+        'quantity',
         'package_cleanliness',
         'transport_cleanliness',
         'driver_personal_hygiene',
