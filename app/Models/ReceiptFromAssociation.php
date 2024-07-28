@@ -34,10 +34,6 @@ class ReceiptFromAssociation extends Model
         'transport_cleanliness',
         'driver_personal_hygiene',
         'ac_operation',
-        'defective_quantity_due_to_coagulation',
-        'defective_quantity_due_to_impurities',
-        'defective_quantity_due_to_density',
-        'defective_quantity_due_to_acidity',
         'notes',
     ];
     public function transferToFactory()
