@@ -26,32 +26,7 @@ class ReceiptFromAssociationController extends Controller
             return self::responseError($th);
         }
     }
-    public function getReceiptFromAssociationPaginated($request)
-    {
-        $perPage = $request->get('per_page');
-        $page = $request->get('current_page');
-        $query = ReceiptFromAssociation::select(
-            'id',
-            'transfer_to_factory_id',
-            'association_id',
-            'quantity'
-        )
-        ->with('association', 'transferToFactory')
-        ->orderByDesc('id');
-        $ReceiptFromAssociation = $query->paginate($perPage, "", "current_page", $page);
-        return self::formatPaginatedResponse($ReceiptFromAssociation, self::formatReceiptFromAssociationDataForDisplay($ReceiptFromAssociation->items()));
-    }
-    public static function formatReceiptFromAssociationDataForDisplay($ReceiptFromAssociation)
-    {
-        return array_map(function ($ReceiptFromAssociation) {
-            return [
-                'id' => $ReceiptFromAssociation->id,
-                'association_name' => $ReceiptFromAssociation->association->name,
-                'transfer_quantity' => $ReceiptFromAssociation->transferToFactory->quantity,
-                'receipt_quantity' => $ReceiptFromAssociation->quantity,
-            ];
-        }, $ReceiptFromAssociation);
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -146,6 +121,33 @@ class ReceiptFromAssociationController extends Controller
         //
     }
 
+    public function getReceiptFromAssociationPaginated($request)
+    {
+        $perPage = $request->get('per_page');
+        $page = $request->get('current_page');
+        $query = ReceiptFromAssociation::select(
+            'id',
+            'transfer_to_factory_id',
+            'association_id',
+            'quantity'
+        )
+        ->with('association', 'transferToFactory')
+        ->orderByDesc('id');
+        $ReceiptFromAssociation = $query->paginate($perPage, "", "current_page", $page);
+        return self::formatPaginatedResponse($ReceiptFromAssociation, self::formatReceiptFromAssociationDataForDisplay($ReceiptFromAssociation->items()));
+    }
+    public static function formatReceiptFromAssociationDataForDisplay($ReceiptFromAssociation)
+    {
+        return array_map(function ($ReceiptFromAssociation) {
+            return [
+                'id' => $ReceiptFromAssociation->id,
+                'association_name' => $ReceiptFromAssociation->association->name,
+                'transfer_quantity' => $ReceiptFromAssociation->transferToFactory->quantity,
+                'receipt_quantity' => $ReceiptFromAssociation->quantity,
+            ];
+        }, $ReceiptFromAssociation);
+    }
+    
     public static function formatDataById($receiptFromAssociation)
     {
         $startDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $receiptFromAssociation->start_time_of_collection);
