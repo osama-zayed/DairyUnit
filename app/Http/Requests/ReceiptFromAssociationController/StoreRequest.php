@@ -45,12 +45,7 @@ class StoreRequest extends FormRequest
                 'required',
                 'date_format:Y-m-d H:i:s',
                 function ($attribute, $value, $fail) {
-                    // $start_time = \Carbon\Carbon::parse($startTimeOfCollection);
                     $end_time = \Carbon\Carbon::parse($value);
-
-                    // if ($start_time->greaterThan($end_time)) {
-                    //     $fail('لا يمكن أن يكون تاريخ انتهاء عملية الفحص قبل تاريخ البدء بالفحص');
-                    // }
 
                     $now = \Carbon\Carbon::now();
                     $twoDaysAgo = \Carbon\Carbon::now()->subDays(2);
@@ -66,12 +61,6 @@ class StoreRequest extends FormRequest
             ],
             'transfer_to_factory_id' => [
                 'exists:transfer_to_factories,id',
-                function ($attribute, $value, $fail) {
-                    $transferToFactory = TransferToFactory::findOrFail($value);
-                    if ($transferToFactory->status) {
-                        $fail('لقد تم تاكيد استلام عملية التحويل من قبل');
-                    }
-                },
             ],
             'quantity' => 'required|numeric|min:1',
             'package_cleanliness' => 'required|in:clean,somewhat_clean,not_clean',
@@ -87,6 +76,42 @@ class StoreRequest extends FormRequest
     }
 
     /**
+     * Configure the validator instance.
+     *
+     * @param \Illuminate\Validation\Validator $validator
+     * @return void
+     */
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $transferToFactoryId = $this->input('transfer_to_factory_id');
+            $quantity = $this->input('quantity');
+            $startTimeOfCollection = $this->input('start_time_of_collection');
+            $endTimeOfCollection = $this->input('end_time_of_collection');
+
+            $start = \Carbon\Carbon::parse($startTimeOfCollection);
+            $end = \Carbon\Carbon::parse($endTimeOfCollection);
+
+            if ($end->lessThan($start)) {
+                $validator->errors()->add('end_time_of_collection', 'يجب أن يكون تاريخ ووقت انتهاء الفحص بعد تاريخ ووقت بدء الفحص.');
+            }
+
+            // تحقق من وجود معرف التحويل
+            if ($transferToFactoryId) {
+                $transferToFactory = TransferToFactory::find($transferToFactoryId);
+
+                if ($transferToFactory) {
+                    if ($transferToFactory->status) {
+                        $validator->errors()->add('transfer_to_factory_id', 'لقد تم تاكيد استلام عملية التحويل من قبل');
+                    }
+                    if ($quantity > $transferToFactory->quantity) {
+                        $validator->errors()->add('quantity', 'لا يمكن أن تكون الكمية في الاستلام أكبر من الكمية في التحويل');
+                    }
+                }
+            }
+        });
+    }
+    /**
      * Get the error messages for the defined validation rules.
      */
     public function messages()
@@ -94,7 +119,7 @@ class StoreRequest extends FormRequest
         return [
             'date_and_time.required' => 'تاريخ ووقت الجمع مطلوب',
             'date_and_time.date_format' => 'يجب أن يكون تاريخ ووقت الجمع صالحًا',
-            'transfer_to_factory_id.exists' => 'معرف المصنع المحدد غير موجود',
+            'transfer_to_factory_id.exists' => 'معرف عملية التحويل المحدده غير موجوده',
             'start_time_of_collection.required' => 'وقت بداية الجمع مطلوب',
             'end_time_of_collection.required' => 'وقت نهاية الجمع مطلوب',
             'quantity.required' => 'عدد العبوات مطلوب',

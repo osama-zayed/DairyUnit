@@ -23,7 +23,7 @@ class ReceiptFromAssociationController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        //
+      
     }
 
     /**
