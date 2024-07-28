@@ -14,7 +14,7 @@ class ReceiptFromAssociation extends Model
      *
      * @var string
      */
-    protected $table = 'receipt_invoice_from_stores';
+    protected $table = 'receipt_from_associations';
 
     /**
      * The attributes that are mass assignable.
