@@ -25,9 +25,6 @@ class StoreRequest extends FormRequest
                 'required',
                 'date_format:Y-m-d H:i:s',
                 function ($attribute, $value, $fail) {
-                    global $startTimeOfCollection;
-                    $startTimeOfCollection = $value;
-
                     $requestDateTime = \Carbon\Carbon::parse($value);
                     $now = \Carbon\Carbon::now();
                     $twoDaysAgo = \Carbon\Carbon::now()->subDays(2);

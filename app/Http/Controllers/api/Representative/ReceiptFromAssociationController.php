@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Representative;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReceiptFromAssociationController\StoreRequest;
+use App\Http\Requests\ReceiptFromAssociationController\UpdateRequest;
 use App\Models\AssemblyStore;
 use App\Models\ReceiptFromAssociation;
 use App\Models\TransferToFactory;
@@ -112,7 +113,7 @@ class ReceiptFromAssociationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ReceiptFromAssociation $receiptFromAssociation)
+    public function update(UpdateRequest $request, ReceiptFromAssociation $receiptFromAssociation)
     {
         //
     }
