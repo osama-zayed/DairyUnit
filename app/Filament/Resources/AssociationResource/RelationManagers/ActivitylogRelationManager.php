@@ -18,9 +18,12 @@ class ActivitylogRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('description')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Section::make([
+                    Forms\Components\TextInput::make('description')
+                        ->required()
+                        ->maxLength(255),
+                ])->columns(2)->collapsed(2),
+
             ]);
     }
 
