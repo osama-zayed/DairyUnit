@@ -116,7 +116,7 @@ class ReceiptFromAssociationController extends Controller
     public function update(UpdateRequest $request,  $id)
     {
         // تحقق من الكمية في الاستلام مقارنة مع الكمية في التحويل
-        $receiptFromAssociation = ReceiptFromAssociation::find($id);
+        $receiptFromAssociation = ReceiptFromAssociation::find($request->input('id'));
         $transferToFactoryId = $receiptFromAssociation->transfer_to_factory_id;
         $quantity = $request->input('quantity');
         $transferToFactory = TransferToFactory::find($transferToFactoryId);

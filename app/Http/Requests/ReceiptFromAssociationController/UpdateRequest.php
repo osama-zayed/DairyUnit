@@ -110,24 +110,24 @@ class UpdateRequest extends FormRequest
                     ->first();
 
                 if ($receiptFromAssociation && (
-                    ($lastReceiptFromAssociation->created_at < $receiptFromAssociation->created_at) ||
-                    ($lastTransferToFactory->created_at < $receiptFromAssociation->created_at)
+                    ($receiptFromAssociation->created_at < $lastReceiptFromAssociation->created_at) ||
+                    ($receiptFromAssociation->created_at < $lastTransferToFactory->created_at)
                 )) {
                     $validator->errors()->add('id', 'لا يمكن التعديل لأنه حصل عملية في وقت لاحق');
                 }
 
-                $transferToFactoryId = $receiptFromAssociation->transfer_to_factory_id;
                 $quantity = $this->input('quantity');
                 $startTimeOfCollection = $this->input('start_time_of_collection');
                 $endTimeOfCollection = $this->input('end_time_of_collection');
-
+                
                 $start = \Carbon\Carbon::parse($startTimeOfCollection);
                 $end = \Carbon\Carbon::parse($endTimeOfCollection);
-
+                
                 if ($end->lessThan($start)) {
                     $validator->errors()->add('end_time_of_collection', 'يجب أن يكون تاريخ ووقت انتهاء الفحص بعد تاريخ ووقت بدء الفحص.');
                 }
-
+                
+                $transferToFactoryId = $receiptFromAssociation->transfer_to_factory_id;
                 // تحقق من وجود معرف التحويل
                 if ($transferToFactoryId) {
                     $transferToFactory = TransferToFactory::find($transferToFactoryId);
