@@ -30,6 +30,8 @@ class ReceiptInvoiceFromStoreResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Section::make([
+
                 Forms\Components\Select::make('association_id')
                     ->relationship('association', titleAttribute: 'name')
                     ->label('الجمعية')
@@ -62,6 +64,8 @@ class ReceiptInvoiceFromStoreResource extends Resource
                     ->required()
                     ->maxLength(65535)
                     ->columnSpanFull(),
+                    ])->columns(2)->collapsed(2),
+
             ]);
     }
 
