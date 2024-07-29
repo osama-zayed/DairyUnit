@@ -21,6 +21,7 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
+            'return_to'=>'required|in:institution,association',
             'defective_quantity_due_to_coagulation' => 'required|numeric|min:0',
             'defective_quantity_due_to_impurities' => 'required|numeric|min:0',
             'defective_quantity_due_to_density' => 'required|numeric|min:0',
@@ -47,6 +48,8 @@ class StoreRequest extends FormRequest
     public function messages()
     {
         return [
+            'return_to.required' => 'الجهة المحول لها مطلوبة',
+            'return_to.in' => 'الجهة المحول لها يجب ان تكون institution او association',
             'defective_quantity_due_to_coagulation.required' => 'الكمية التالفة بسبب التخثر مطلوبة',
             'defective_quantity_due_to_coagulation.numeric' => 'الكمية التالفة بسبب التخثر يجب أن تكون رقمية',
             'defective_quantity_due_to_coagulation.min' => 'الكمية التالفة بسبب التخثر يجب أن تكون على الأقل 0',
