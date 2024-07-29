@@ -17,6 +17,7 @@ use Filament\Widgets;
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\EditProfile;
 use App\Filament\Resources\CollectingMilkFromFamilyResource\Widgets\CollectingMilkFromFamilyChart;
+use App\Filament\Resources\ReceiptFromAssociationResource\Widgets\ReceiptFromAssociationChart;
 use App\Filament\Resources\ReceiptInvoiceFromStoreResource\Widgets\ReceiptInvoiceFromStoreChart;
 use App\Filament\Resources\TransferToFactoryResource\Widgets\TransferToFactoryChart;
 use App\Http\Middleware\Permission;
@@ -57,6 +58,7 @@ class AdminPanelProvider extends PanelProvider
                 CollectingMilkFromFamilyChart::class,
                 ReceiptInvoiceFromStoreChart::class,
                 TransferToFactoryChart::class,
+                ReceiptFromAssociationChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,
