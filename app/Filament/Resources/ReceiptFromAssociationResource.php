@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReceiptFromAssociationResource\Pages;
 use App\Filament\Resources\ReceiptFromAssociationResource\RelationManagers;
+use App\Models\Driver;
+use App\Models\Factory;
 use App\Models\ReceiptFromAssociation;
 use App\Models\User;
 use Filament\Forms;
@@ -31,7 +33,76 @@ class ReceiptFromAssociationResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Section::make([
+                    Forms\Components\Select::make('association_id')
+                        ->relationship('association', titleAttribute: 'name')
+                        ->label('اسم الجمعية')
+                        ->required(),
+                    Forms\Components\Select::make('user_id')
+                        ->relationship('user', titleAttribute: 'name')
+                        ->label('اسم المندوب')
+                        ->required(),
+                    Forms\Components\Select::make('factory_id')
+                        ->relationship('factory', titleAttribute: 'name')
+                        ->label('اسم المصنع')
+                        ->required(),
+                    Forms\Components\Select::make('driver_id')
+                        ->relationship('driver', titleAttribute: 'name')
+                        ->label('اسم السائق')
+                        ->required(),
+                ])->columns(2)->collapsed(2),
+                Forms\Components\Section::make([
+                    Forms\Components\Select::make('transfer_to_factory_id')
+                        ->relationship('transferToFactory', titleAttribute: 'quantity')
+                        ->label('الكمية المحولة')
+                        ->required(),
+                    Forms\Components\TextInput::make('quantity')
+                        ->label('الكمية المستلمة')
+                        ->numeric()
+                        ->required(),
+                ])->columns(2)->collapsed(2),
+                Forms\Components\Section::make([
+
+                Forms\Components\DateTimePicker::make('start_time_of_collection')
+                    ->label('وقت بدء الفحص')
+                    ->required(),
+                Forms\Components\DateTimePicker::make('end_time_of_collection')
+                    ->label('وقت انتهاء الفحص')
+                    ->required(),
+                Forms\Components\Select::make('package_cleanliness')
+                    ->label('نظافة العبوات')
+                    ->options([
+                        "clean" => 'نظيفة',
+                        "somewhat_clean" => 'مقبولة',
+                        "not_clean" => 'سيئة',
+                    ])
+                    ->required(),
+                Forms\Components\Select::make('transport_cleanliness')
+                    ->label('نظافة وسيلة النقل')
+                    ->options([
+                        "clean" => 'نظيفة',
+                        "somewhat_clean" => 'مقبولة',
+                        "not_clean" => 'سيئة',
+                    ])
+                    ->required(),
+                Forms\Components\Select::make('driver_personal_hygiene')
+                    ->label('النظافة الشخصية للسائق')
+                    ->options([
+                        "clean" => 'نظيفة',
+                        "somewhat_clean" => 'مقبولة',
+                        "not_clean" => 'سيئة',
+                    ])
+                    ->required(),
+                Forms\Components\Select::make('ac_operation')
+                    ->label('تشغيل التكييف')
+                    ->options([
+                        "on" => 'يعمل',
+                        "off" => 'لا يعمل',
+                        "not_available" => 'لا يوجد',
+                    ])
+                    ->required(),
+                ])->columns(2)->collapsed(2),
+
             ]);
     }
 
