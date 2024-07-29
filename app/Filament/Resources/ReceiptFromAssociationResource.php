@@ -17,7 +17,13 @@ class ReceiptFromAssociationResource extends Resource
 {
     protected static ?string $model = ReceiptFromAssociation::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-down-circle';
+
+
+    protected static ?string $navigationGroup = 'العمليات';
+    protected static ?int $navigationSort = 9;
+    protected static ?string $modelLabel = 'استلام الحليب من الجمعية الى المصنع';
+    protected static ?string $pluralLabel = 'استلام الحليب من الجمعية الى المصنع';
 
     public static function form(Form $form): Form
     {
@@ -38,15 +44,15 @@ class ReceiptFromAssociationResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
+                // Tables\Actions\CreateAction::make(),
             ]);
     }
     
@@ -61,9 +67,9 @@ class ReceiptFromAssociationResource extends Resource
     {
         return [
             'index' => Pages\ListReceiptFromAssociations::route('/'),
-            'create' => Pages\CreateReceiptFromAssociation::route('/create'),
+            // 'create' => Pages\CreateReceiptFromAssociation::route('/create'),
             'view' => Pages\ViewReceiptFromAssociation::route('/{record}'),
-            'edit' => Pages\EditReceiptFromAssociation::route('/{record}/edit'),
+            // 'edit' => Pages\EditReceiptFromAssociation::route('/{record}/edit'),
         ];
     }    
 }
