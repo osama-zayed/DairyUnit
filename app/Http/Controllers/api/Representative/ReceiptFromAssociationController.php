@@ -113,10 +113,78 @@ class ReceiptFromAssociationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, ReceiptFromAssociation $receiptFromAssociation)
+    public function update(UpdateRequest $request,  $id)
     {
-        //
+        // تحقق من الكمية في الاستلام مقارنة مع الكمية في التحويل
+        $receiptFromAssociation = ReceiptFromAssociation::find($id);
+        $transferToFactoryId = $receiptFromAssociation->transfer_to_factory_id;
+        $quantity = $request->input('quantity');
+        $transferToFactory = TransferToFactory::find($transferToFactoryId);
+
+        AssemblyStore::where('association_id', $transferToFactory->association_id)
+            ->update(
+                [
+                    'quantity' => DB::raw('quantity - ' . $transferToFactory->quantity - $receiptFromAssociation->quantity),
+                ]
+            );
+
+        // تحديث البيانات
+        $receiptFromAssociation->update([
+            'transfer_to_factory_id' => $transferToFactoryId,
+            'association_id' => $transferToFactory->association_id,
+            'driver_id' => $transferToFactory->driver_id,
+            'factory_id' => $transferToFactory->factory_id,
+            'start_time_of_collection' => $request->input('start_time_of_collection'),
+            'end_time_of_collection' => $request->input('end_time_of_collection'),
+            'quantity' => $quantity,
+            'package_cleanliness' => $request->input('package_cleanliness'),
+            'transport_cleanliness' => $request->input('transport_cleanliness'),
+            'driver_personal_hygiene' => $request->input('driver_personal_hygiene'),
+            'ac_operation' => $request->input('ac_operation'),
+            'user_id' => auth('sanctum')->user()->id,
+            'notes' => $request->input('notes') ?? '',
+        ]);
+
+        AssemblyStore::where('association_id', $transferToFactory->association_id)
+            ->update(
+                [
+                    'quantity' => DB::raw('quantity + ' . $transferToFactory->quantity - $quantity),
+                ]
+            );
+
+        self::userActivity(
+            'تعديل عملية استلام حليب ',
+            $receiptFromAssociation,
+            ' تم ' .
+                'تعديل عملية استلام حليب من الجمعية ' . $transferToFactory->association->name .
+                'الى المصنع ' . $transferToFactory->factory->name .
+                ' الكمية ' . $quantity,
+            'المندوب'
+        );
+
+        self::userNotification(
+            auth('sanctum')->user(),
+            'لقد قمت ب' .
+                'تعديل عملية استلام حليب من الجمعية ' . $transferToFactory->association->name .
+                'الى المصنع ' . $transferToFactory->factory->name .
+                ' الكمية ' . $quantity
+        );
+
+        $association = User::find($transferToFactory->association_id);
+        self::userNotification(
+            $association,
+            'لقد تم ' .
+                'تعديل عملية استلام الحليب برقم ' . $transferToFactoryId .
+                ' من قبل المندوب ' . auth('sanctum')->user()->name .
+                ' في مصنع ' . $transferToFactory->factory->name .
+                ' الكمية المحولة ' . $transferToFactory->quantity .
+                ' الكمية المستلمة ' . $quantity .
+                ' الكمية الغير مصادق عليها ' . ($transferToFactory->quantity - $quantity)
+        );
+
+        return self::responseSuccess([], 'تمت العملية بنجاح');
     }
+
 
     /**
      * Remove the specified resource from storage.
