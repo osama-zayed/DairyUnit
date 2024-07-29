@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\SelectFilter;
+
 class DriverResource extends Resource
 {
     protected static ?string $model = Driver::class;
@@ -25,28 +26,31 @@ class DriverResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('اسم السائق')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Section::make([
 
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->label('رقم الموبايل')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('association_id')
-                    ->relationship('association', titleAttribute: 'name')
-                    ->label('الجمعية')
-                    ->searchable()
-                    ->preload()
-                    ->live()
-                    ->required(),
-                Forms\Components\Toggle::make('status')
-                    ->default(1)
-                    ->label('حالة السائق')
-                    ->required()
-                    ,
+                    Forms\Components\TextInput::make('name')
+                        ->label('اسم السائق')
+                        ->required()
+                        ->maxLength(255),
+
+                    Forms\Components\TextInput::make('phone')
+                        ->tel()
+                        ->label('رقم الموبايل')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\Select::make('association_id')
+                        ->relationship('association', titleAttribute: 'name')
+                        ->label('الجمعية')
+                        ->searchable()
+                        ->preload()
+                        ->live()
+                        ->required(),
+                    Forms\Components\Toggle::make('status')
+                        ->default(1)
+                        ->label('حالة السائق')
+                        ->required()
+                ])->columns(2)->collapsed(2),
+
             ]);
     }
 
@@ -82,8 +86,8 @@ class DriverResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('association_id')
-                ->label('الجمعية')
-                ->relationship('Association', 'name'),
+                    ->label('الجمعية')
+                    ->relationship('Association', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

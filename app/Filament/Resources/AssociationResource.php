@@ -31,32 +31,35 @@ class AssociationResource extends Resource
     public static function  associationForm()
     {
         return [
-            Forms\Components\TextInput::make('name')
-                ->label('اسم الجمعية')
-                ->required()
-                ->maxLength(255),
-            Forms\Components\TextInput::make('phone')
-                ->tel()
-                ->label('رقم الموبايل')
-                ->required()
-                ->unique('users', 'phone')
-                ->maxLength(255),
-            Forms\Components\TextInput::make('password')
-                ->password()
-                ->required()
-                ->confirmed()
-                ->label('الرمز')
-                ->maxLength(255),
-            Forms\Components\TextInput::make('password_confirmation')
-                ->password()
-                ->required()
-                ->label('تأكيد الرمز')
-                ->maxLength(255),
-            Forms\Components\Toggle::make('status')
-                ->default(1)
-                ->label('حالة الجمعية')
-                ->required()
-               ,
+            Forms\Components\Section::make([
+
+                Forms\Components\TextInput::make('name')
+                    ->label('اسم الجمعية')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('phone')
+                    ->tel()
+                    ->label('رقم الموبايل')
+                    ->required()
+                    ->unique('users', 'phone')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->required()
+                    ->confirmed()
+                    ->label('الرمز')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('password_confirmation')
+                    ->password()
+                    ->required()
+                    ->label('تأكيد الرمز')
+                    ->maxLength(255),
+                Forms\Components\Toggle::make('status')
+                    ->default(1)
+                    ->label('حالة الجمعية')
+                    ->required()
+            ])->columns(2)->collapsed(2),
+
         ];
     }
     public static function form(Form $form): Form

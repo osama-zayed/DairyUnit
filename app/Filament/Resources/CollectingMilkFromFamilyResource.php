@@ -31,6 +31,8 @@ class CollectingMilkFromFamilyResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Section::make([
+
                 Forms\Components\Select::make('association_id')
                     ->relationship('association', titleAttribute: 'name')
                     ->label('الجمعية')
@@ -64,6 +66,8 @@ class CollectingMilkFromFamilyResource extends Resource
                     ->required()
                     ->label('الكمية')
                     ->numeric(),
+                    ])->columns(2)->collapsed(2),
+
             ]);
     }
 
