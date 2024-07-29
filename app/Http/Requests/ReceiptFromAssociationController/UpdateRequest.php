@@ -61,9 +61,9 @@ class UpdateRequest extends FormRequest
                     }
                 },
             ],
-            'transfer_to_factory_id' => [
-                'exists:transfer_to_factories,id',
-            ],
+            // 'transfer_to_factory_id' => [
+            //     'exists:transfer_to_factories,id',
+            // ],
             'quantity' => 'required|numeric|min:1',
             'package_cleanliness' => 'required|in:clean,somewhat_clean,not_clean',
             'transport_cleanliness' => 'required|in:clean,somewhat_clean,not_clean',
@@ -89,7 +89,6 @@ class UpdateRequest extends FormRequest
             $user = auth('sanctum')->user();
             $receiptFromAssociation = ReceiptFromAssociation::find($this->input('id'));
             if ($receiptFromAssociation) {
-                $validator->errors()->add('id', 'عملية الاستلام غير موجودة');
                 if ($receiptFromAssociation->user_id != $user->id) {
                     $validator->errors()->add('id', 'لم تقم انت باضافة هذه العملية');
                 }
@@ -117,7 +116,7 @@ class UpdateRequest extends FormRequest
                     $validator->errors()->add('id', 'لا يمكن التعديل لأنه حصل عملية في وقت لاحق');
                 }
 
-                $transferToFactoryId = $this->input('transfer_to_factory_id');
+                $transferToFactoryId = $receiptFromAssociation->transfer_to_factory_id;
                 $quantity = $this->input('quantity');
                 $startTimeOfCollection = $this->input('start_time_of_collection');
                 $endTimeOfCollection = $this->input('end_time_of_collection');
@@ -134,14 +133,16 @@ class UpdateRequest extends FormRequest
                     $transferToFactory = TransferToFactory::find($transferToFactoryId);
 
                     if ($transferToFactory) {
-                        if ($transferToFactory->status) {
-                            $validator->errors()->add('transfer_to_factory_id', 'لقد تم تاكيد استلام عملية التحويل من قبل');
-                        }
+                        // if ($transferToFactory->status) {
+                        //     $validator->errors()->add('', 'لقد تم تاكيد استلام عملية التحويل من قبل');
+                        // }
                         if ($quantity > $transferToFactory->quantity) {
                             $validator->errors()->add('quantity', 'لا يمكن أن تكون الكمية في الاستلام أكبر من الكمية في التحويل');
                         }
                     }
                 }
+            }else{
+                $validator->errors()->add('id', 'عملية الاستلام غير موجودة');
             }
         });
     }
