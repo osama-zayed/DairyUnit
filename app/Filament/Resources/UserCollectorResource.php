@@ -33,6 +33,8 @@ class UserCollectorResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Section::make([
+
                 Forms\Components\TextInput::make('name')
                     ->label('اسم المجمع')
                     ->required()
@@ -68,6 +70,8 @@ class UserCollectorResource extends Resource
                     ->default(1)
                     ->label('حالة المجمع')
                     ->required(),
+                    ])->columns(2)->collapsed(2),
+
             ]);
     }
 

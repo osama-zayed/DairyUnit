@@ -31,6 +31,8 @@ class UserRepresentativeResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Section::make([
+
                 Forms\Components\TextInput::make('name')
                     ->label('اسم المندوب')
                     ->required()
@@ -68,6 +70,8 @@ class UserRepresentativeResource extends Resource
                     ->default(1)
                     ->label('حالة المندوب')
                     ->required(),
+                    ])->columns(2)->collapsed(2),
+
             ]);
     }
 
