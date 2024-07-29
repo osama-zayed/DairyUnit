@@ -73,5 +73,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Activitylog::class,'subject_id');
     }
-
+    public function assemblyStore()
+    {
+        return $this->hasOne(AssemblyStore::class,'association_id');
+    }
 }

@@ -78,6 +78,9 @@ class AssociationResource extends Resource
                 Tables\Columns\TextColumn::make('phone')
                     ->label('رقم الموبايل')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('assemblyStore.quantity')
+                    ->label('الكمية المتوفره ')
+                    ->searchable(),
                 Tables\Columns\IconColumn::make('status')
                     ->label('حالة الجمعية')
                     ->boolean(),
