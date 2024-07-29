@@ -25,15 +25,17 @@ class FactoryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->label('اسم المصنع')
-                    ->columnSpanFull()
-                    ->maxLength(255),
-                Forms\Components\Toggle::make('status')
-                    ->default(1)
-                    ->label('حالة المصنع')
-                    ->required(),
+                Forms\Components\Section::make([
+                    Forms\Components\TextInput::make('name')
+                        ->required()
+                        ->label('اسم المصنع')
+                        ->columnSpanFull()
+                        ->maxLength(255),
+                    Forms\Components\Toggle::make('status')
+                        ->default(1)
+                        ->label('حالة المصنع')
+                        ->required(),
+                ])->columns(2)->collapsed(2)
 
             ]);
     }

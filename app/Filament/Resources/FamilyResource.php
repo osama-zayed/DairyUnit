@@ -27,6 +27,8 @@ class FamilyResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Section::make([
+
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->label('اسم الاسرة')
@@ -60,6 +62,8 @@ class FamilyResource extends Resource
                     ->default(1)
                     ->label('حالة الاسرة')
                     ->required(),
+                    ])->columns(2)->collapsed(2),
+
             ]);
     }
 
