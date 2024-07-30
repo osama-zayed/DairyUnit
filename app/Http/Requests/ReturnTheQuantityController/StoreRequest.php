@@ -21,7 +21,7 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'receipt_from_association_id' => 'nullable|exists:users,id',
+            'association_id' => 'nullable|exists:users,id',
             'return_to' => 'required|in:institution,association',
             'defective_quantity_due_to_coagulation' => 'required|numeric|min:0',
             'defective_quantity_due_to_impurities' => 'required|numeric|min:0',
@@ -41,10 +41,10 @@ class StoreRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $returnTo = $this->input('return_to');
-            $receiptFromAssociationId = $this->input('receipt_from_association_id');
+            $receiptFromAssociationId = $this->input('association_id');
 
             if ($returnTo == 'association' && is_null($receiptFromAssociationId)) {
-                $validator->errors()->add('receipt_from_association_id', 'معرف الجمعية مطلوب');
+                $validator->errors()->add('association_id', 'معرف الجمعية مطلوب');
             }
         });
     }
@@ -56,7 +56,7 @@ class StoreRequest extends FormRequest
         return [
             'return_to.required' => 'الجهة المحول لها مطلوبة',
             'return_to.in' => 'الجهة المحول لها يجب ان تكون institution او association',
-            'receipt_from_association_id.exists' => 'معرف الجمعية مطلوب',
+            'association_id.exists' => 'معرف الجمعية مطلوب',
             'defective_quantity_due_to_coagulation.required' => 'الكمية التالفة بسبب التخثر مطلوبة',
             'defective_quantity_due_to_coagulation.numeric' => 'الكمية التالفة بسبب التخثر يجب أن تكون رقمية',
             'defective_quantity_due_to_coagulation.min' => 'الكمية التالفة بسبب التخثر يجب أن تكون على الأقل 0',

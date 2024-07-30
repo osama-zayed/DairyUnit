@@ -9,7 +9,6 @@ use App\Models\AssemblyStore;
 use App\Models\ReceiptFromAssociation;
 use App\Models\ReceiptInvoiceFromStore;
 use App\Models\ReturnTheQuantity;
-use App\Models\ReturnTheQuantity;
 use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
@@ -37,43 +36,45 @@ class ReturnTheQuantityController extends Controller
     public function store(StoreRequest $request)
     {
         $ReturnTheQuantity = new ReturnTheQuantity();
-    
+
+        $ReturnTheQuantity->user_id = auth('sanctum')->user()->id;
+        $ReturnTheQuantity->factory_id = auth('sanctum')->user()->factory_id;
         $ReturnTheQuantity->return_to = $request->input('return_to');
         $ReturnTheQuantity->defective_quantity_due_to_coagulation = $request->input('defective_quantity_due_to_coagulation');
         $ReturnTheQuantity->defective_quantity_due_to_impurities = $request->input('defective_quantity_due_to_impurities');
         $ReturnTheQuantity->defective_quantity_due_to_density = $request->input('defective_quantity_due_to_density');
         $ReturnTheQuantity->defective_quantity_due_to_acidity = $request->input('defective_quantity_due_to_acidity');
-        
+
         $quantity = $ReturnTheQuantity->defective_quantity_due_to_acidity +
-                    $ReturnTheQuantity->defective_quantity_due_to_density +
-                    $ReturnTheQuantity->defective_quantity_due_to_impurities +
-                    $ReturnTheQuantity->defective_quantity_due_to_coagulation;
-        
+            $ReturnTheQuantity->defective_quantity_due_to_density +
+            $ReturnTheQuantity->defective_quantity_due_to_impurities +
+            $ReturnTheQuantity->defective_quantity_due_to_coagulation;
+
         $ReturnTheQuantity->notes = $request->input('notes') ?? '';
-        
+
         if ($ReturnTheQuantity->return_to == 'association') {
-            $ReturnTheQuantity->receipt_from_association_id = $request->input('receipt_from_association_id');
-            $association = User::find($ReturnTheQuantity->receipt_from_association_id);
+            $ReturnTheQuantity->association_id = $request->input('association_id');
+            $association = User::find($ReturnTheQuantity->association_id);
             self::userNotification(
                 $association,
                 'تم إنشاء مرتجع حليب برقم ' . $ReturnTheQuantity->id .
-                ' من قبل المندوب ' . auth('sanctum')->user()->name .
-                ' في مصنع ' . $ReturnTheQuantity->factory->name .
-                ' الكمية المردودة ' . $quantity .
+                    ' من قبل المندوب ' . auth('sanctum')->user()->name .
+                    ' في مصنع ' . $ReturnTheQuantity->factory->name .
+                    ' الكمية المردودة ' . $quantity
             );
         } else {
-            $admin_users = User::where('user_id', "admin")->get();
+            $admin_users = User::where('user_type', "admin")->get();
             foreach ($admin_users as $admin) {
                 self::userNotification(
                     $admin,
                     'تم إنشاء مرتجع حليب برقم ' . $ReturnTheQuantity->id .
-                    ' من قبل المندوب ' . auth('sanctum')->user()->name .
-                    ' في مصنع ' . $ReturnTheQuantity->factory->name .
-                    ' الكمية المردودة ' . $quantity 
+                        ' من قبل المندوب ' . auth('sanctum')->user()->name .
+                        ' في مصنع ' . $ReturnTheQuantity->factory->name .
+                        ' الكمية المردودة ' . $quantity
                 );
             }
         }
-    
+
         $ReturnTheQuantity->save();
         self::userActivity(
             'استلام عملية تحويل حليب ',
@@ -84,7 +85,7 @@ class ReturnTheQuantityController extends Controller
                 ' الكمية ' . $quantity,
             'المندوب'
         );
-    
+
         self::userNotification(
             auth('sanctum')->user(),
             'لقد قمت ب' .
@@ -92,7 +93,7 @@ class ReturnTheQuantityController extends Controller
                 'الى المصنع ' . $ReturnTheQuantity->factory->name .
                 ' الكمية ' . $quantity
         );
-    
+
         return self::responseSuccess([], 'تمت العملية بنجاح');
     }
 
