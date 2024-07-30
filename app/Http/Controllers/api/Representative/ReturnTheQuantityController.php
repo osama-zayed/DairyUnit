@@ -7,7 +7,9 @@ use App\Http\Requests\ReturnTheQuantityController\StoreRequest;
 use App\Http\Requests\ReturnTheQuantityController\UpdateRequest;
 use App\Models\AssemblyStore;
 use App\Models\ReceiptFromAssociation;
-use App\Models\TransferToFactory;
+use App\Models\ReceiptInvoiceFromStore;
+use App\Models\ReturnTheQuantity;
+use App\Models\ReturnTheQuantity;
 use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
@@ -34,63 +36,64 @@ class ReturnTheQuantityController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        // $transferToFactoryId = $request->input('transfer_to_factory_id');
-        // $quantity = $request->input('quantity');
-        // $transferToFactory = TransferToFactory::find($transferToFactoryId);
-        // $receiptFromAssociation = ReceiptFromAssociation::create([
-        //     'transfer_to_factory_id' => $transferToFactoryId,
-        //     'association_id' => $transferToFactory->association_id,
-        //     'driver_id' => $transferToFactory->driver_id,
-        //     'factory_id' => $transferToFactory->factory_id,
-        //     'start_time_of_collection' => $request->input('start_time_of_collection'),
-        //     'end_time_of_collection' => $request->input('end_time_of_collection'),
-        //     'quantity' => $quantity,
-        //     'package_cleanliness' => $request->input('package_cleanliness'),
-        //     'transport_cleanliness' => $request->input('transport_cleanliness'),
-        //     'driver_personal_hygiene' => $request->input('driver_personal_hygiene'),
-        //     'ac_operation' => $request->input('ac_operation'),
-        //     'user_id' => auth('sanctum')->user()->id,
-        //     'notes' => $request->input('notes') ?? '',
-        // ]);
-        // $transferToFactory->update([
-        //     'status' => 1
-        // ]);
-        // AssemblyStore::where('association_id', $transferToFactory->association_id)
-        //     ->update(
-        //         [
-        //             'quantity' => DB::raw('quantity + ' . $transferToFactory->quantity - $quantity),
-        //         ]
-        //     );
-
-        // self::userActivity(
-        //     'استلام عملية تحويل حليب ',
-        //     $receiptFromAssociation,
-        //     ' تم ' .
-        //         'استلام عملية تحويل حليب من الجمعية ' . $transferToFactory->association->name .
-        //         'الى المصنع ' . $transferToFactory->factory->name .
-        //         ' الكمية ' . $quantity,
-        //     'المندوب'
-        // );
-
-        // self::userNotification(
-        //     auth('sanctum')->user(),
-        //     'لقد قمت ب' .
-        //         'استلام عملية تحويل حليب من الجمعية ' . $transferToFactory->association->name .
-        //         'الى المصنع ' . $transferToFactory->factory->name .
-        //         ' الكمية ' . $quantity
-        // );
-        // $association = User::find($transferToFactory->association_id);
-        // self::userNotification(
-        //     $association,
-        //     'لقد تم ' .
-        //         'استلام عملية تحويل الحليب برقم ' . $transferToFactoryId .
-        //         ' من قبل المندوب ' . auth('sanctum')->user()->name .
-        //         ' في مصنع ' . $transferToFactory->factory->name .
-        //         ' الكمية المحولة ' . $transferToFactory->quantity .
-        //         ' الكمية المستلمة ' . $quantity .
-        //         ' الكمية الغير مصادق عليها ' . $transferToFactory->quantity - $quantity
-        // );
-        // return self::responseSuccess([], 'تمت العملية بنجاح');
+        $ReturnTheQuantity = new ReturnTheQuantity();
+    
+        $ReturnTheQuantity->return_to = $request->input('return_to');
+        $ReturnTheQuantity->defective_quantity_due_to_coagulation = $request->input('defective_quantity_due_to_coagulation');
+        $ReturnTheQuantity->defective_quantity_due_to_impurities = $request->input('defective_quantity_due_to_impurities');
+        $ReturnTheQuantity->defective_quantity_due_to_density = $request->input('defective_quantity_due_to_density');
+        $ReturnTheQuantity->defective_quantity_due_to_acidity = $request->input('defective_quantity_due_to_acidity');
+        
+        $quantity = $ReturnTheQuantity->defective_quantity_due_to_acidity +
+                    $ReturnTheQuantity->defective_quantity_due_to_density +
+                    $ReturnTheQuantity->defective_quantity_due_to_impurities +
+                    $ReturnTheQuantity->defective_quantity_due_to_coagulation;
+        
+        $ReturnTheQuantity->notes = $request->input('notes') ?? '';
+        
+        if ($ReturnTheQuantity->return_to == 'association') {
+            $ReturnTheQuantity->receipt_from_association_id = $request->input('receipt_from_association_id');
+            $association = User::find($ReturnTheQuantity->receipt_from_association_id);
+            self::userNotification(
+                $association,
+                'تم إنشاء مرتجع حليب برقم ' . $ReturnTheQuantity->id .
+                ' من قبل المندوب ' . auth('sanctum')->user()->name .
+                ' في مصنع ' . $ReturnTheQuantity->factory->name .
+                ' الكمية المردودة ' . $quantity .
+            );
+        } else {
+            $admin_users = User::where('user_id', "admin")->get();
+            foreach ($admin_users as $admin) {
+                self::userNotification(
+                    $admin,
+                    'تم إنشاء مرتجع حليب برقم ' . $ReturnTheQuantity->id .
+                    ' من قبل المندوب ' . auth('sanctum')->user()->name .
+                    ' في مصنع ' . $ReturnTheQuantity->factory->name .
+                    ' الكمية المردودة ' . $quantity 
+                );
+            }
+        }
+    
+        $ReturnTheQuantity->save();
+        self::userActivity(
+            'استلام عملية تحويل حليب ',
+            $ReturnTheQuantity,
+            ' تم ' .
+                'استلام عملية تحويل حليب من الجمعية ' . $ReturnTheQuantity->association->name .
+                'الى المصنع ' . $ReturnTheQuantity->factory->name .
+                ' الكمية ' . $quantity,
+            'المندوب'
+        );
+    
+        self::userNotification(
+            auth('sanctum')->user(),
+            'لقد قمت ب' .
+                'استلام عملية تحويل حليب من الجمعية ' . $ReturnTheQuantity->association->name .
+                'الى المصنع ' . $ReturnTheQuantity->factory->name .
+                ' الكمية ' . $quantity
+        );
+    
+        return self::responseSuccess([], 'تمت العملية بنجاح');
     }
 
     /**
@@ -117,23 +120,23 @@ class ReturnTheQuantityController extends Controller
     {
         // تحقق من الكمية في الاستلام مقارنة مع الكمية في التحويل
         // $receiptFromAssociation = ReceiptFromAssociation::find($request->input('id'));
-        // $transferToFactoryId = $receiptFromAssociation->transfer_to_factory_id;
+        // $ReturnTheQuantityId = $receiptFromAssociation->transfer_to_factory_id;
         // $quantity = $request->input('quantity');
-        // $transferToFactory = TransferToFactory::find($transferToFactoryId);
+        // $ReturnTheQuantity = ReturnTheQuantity::find($ReturnTheQuantityId);
 
-        // AssemblyStore::where('association_id', $transferToFactory->association_id)
+        // AssemblyStore::where('association_id', $ReturnTheQuantity->association_id)
         //     ->update(
         //         [
-        //             'quantity' => DB::raw('quantity - ' . $transferToFactory->quantity - $receiptFromAssociation->quantity),
+        //             'quantity' => DB::raw('quantity - ' . $ReturnTheQuantity->quantity - $receiptFromAssociation->quantity),
         //         ]
         //     );
 
         // // تحديث البيانات
         // $receiptFromAssociation->update([
-        //     'transfer_to_factory_id' => $transferToFactoryId,
-        //     'association_id' => $transferToFactory->association_id,
-        //     'driver_id' => $transferToFactory->driver_id,
-        //     'factory_id' => $transferToFactory->factory_id,
+        //     'transfer_to_factory_id' => $ReturnTheQuantityId,
+        //     'association_id' => $ReturnTheQuantity->association_id,
+        //     'driver_id' => $ReturnTheQuantity->driver_id,
+        //     'factory_id' => $ReturnTheQuantity->factory_id,
         //     'start_time_of_collection' => $request->input('start_time_of_collection'),
         //     'end_time_of_collection' => $request->input('end_time_of_collection'),
         //     'quantity' => $quantity,
@@ -145,10 +148,10 @@ class ReturnTheQuantityController extends Controller
         //     'notes' => $request->input('notes') ?? '',
         // ]);
 
-        // AssemblyStore::where('association_id', $transferToFactory->association_id)
+        // AssemblyStore::where('association_id', $ReturnTheQuantity->association_id)
         //     ->update(
         //         [
-        //             'quantity' => DB::raw('quantity + ' . $transferToFactory->quantity - $quantity),
+        //             'quantity' => DB::raw('quantity + ' . $ReturnTheQuantity->quantity - $quantity),
         //         ]
         //     );
 
@@ -156,8 +159,8 @@ class ReturnTheQuantityController extends Controller
         //     'تعديل عملية استلام حليب ',
         //     $receiptFromAssociation,
         //     ' تم ' .
-        //         'تعديل عملية استلام حليب من الجمعية ' . $transferToFactory->association->name .
-        //         'الى المصنع ' . $transferToFactory->factory->name .
+        //         'تعديل عملية استلام حليب من الجمعية ' . $ReturnTheQuantity->association->name .
+        //         'الى المصنع ' . $ReturnTheQuantity->factory->name .
         //         ' الكمية ' . $quantity,
         //     'المندوب'
         // );
@@ -165,21 +168,21 @@ class ReturnTheQuantityController extends Controller
         // self::userNotification(
         //     auth('sanctum')->user(),
         //     'لقد قمت ب' .
-        //         'تعديل عملية استلام حليب من الجمعية ' . $transferToFactory->association->name .
-        //         'الى المصنع ' . $transferToFactory->factory->name .
+        //         'تعديل عملية استلام حليب من الجمعية ' . $ReturnTheQuantity->association->name .
+        //         'الى المصنع ' . $ReturnTheQuantity->factory->name .
         //         ' الكمية ' . $quantity
         // );
 
-        // $association = User::find($transferToFactory->association_id);
+        // $association = User::find($ReturnTheQuantity->association_id);
         // self::userNotification(
         //     $association,
         //     'لقد تم ' .
-        //         'تعديل عملية استلام الحليب برقم ' . $transferToFactoryId .
+        //         'تعديل عملية استلام الحليب برقم ' . $ReturnTheQuantityId .
         //         ' من قبل المندوب ' . auth('sanctum')->user()->name .
-        //         ' في مصنع ' . $transferToFactory->factory->name .
-        //         ' الكمية المحولة ' . $transferToFactory->quantity .
+        //         ' في مصنع ' . $ReturnTheQuantity->factory->name .
+        //         ' الكمية المحولة ' . $ReturnTheQuantity->quantity .
         //         ' الكمية المستلمة ' . $quantity .
-        //         ' الكمية الغير مصادق عليها ' . ($transferToFactory->quantity - $quantity)
+        //         ' الكمية الغير مصادق عليها ' . ($ReturnTheQuantity->quantity - $quantity)
         // );
 
         // return self::responseSuccess([], 'تمت العملية بنجاح');
@@ -205,7 +208,7 @@ class ReturnTheQuantityController extends Controller
             'association_id',
             'quantity'
         )
-            ->with('association', 'transferToFactory')
+            ->with('association', 'ReturnTheQuantity')
             ->where('user_id',  $user->id)
             ->orderByDesc('id');
         $ReceiptFromAssociation = $query->paginate($perPage, "", "current_page", $page);
@@ -217,7 +220,7 @@ class ReturnTheQuantityController extends Controller
             return [
                 'id' => $ReceiptFromAssociation->id,
                 'association_name' => $ReceiptFromAssociation->association->name,
-                'transfer_quantity' => $ReceiptFromAssociation->transferToFactory->quantity,
+                'transfer_quantity' => $ReceiptFromAssociation->ReturnTheQuantity->quantity,
                 'receipt_quantity' => $ReceiptFromAssociation->quantity,
             ];
         }, $ReceiptFromAssociation);
@@ -250,7 +253,7 @@ class ReturnTheQuantityController extends Controller
             'start_day' => $startDayOfWeek,
             'end_day' => $endDayOfWeek,
             'transfer_to_factory_id' => $receiptFromAssociation->transfer_to_factory_id,
-            'transfer_quantity' => $receiptFromAssociation->transferToFactory->quantity,
+            'transfer_quantity' => $receiptFromAssociation->ReturnTheQuantity->quantity,
             'receipt_quantity' => $receiptFromAssociation->quantity,
             'association_id' => $receiptFromAssociation->association->id,
             'association_name' => $receiptFromAssociation->association->name,
