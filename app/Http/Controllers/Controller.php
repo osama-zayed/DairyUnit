@@ -54,7 +54,7 @@ class Controller extends BaseController
 
         activity()->performedOn($opration)->event($event)->causedBy($user)
             ->log(
-                'لقد قام' . $userType .' '. $user->name .  $message . " الوقت والتاريخ " . now()
+                'لقد قام ' . $userType .' '. $user->name .  $message . " الوقت والتاريخ " . now()
             );
     }
     public static function getDayPeriodArabic($dayPeriod)

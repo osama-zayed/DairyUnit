@@ -65,8 +65,7 @@ class ReceiptFromAssociationController extends Controller
         self::userActivity(
             'استلام عملية تحويل حليب ',
             $receiptFromAssociation,
-            ' تم ' .
-                'استلام عملية تحويل حليب من الجمعية ' . $transferToFactory->association->name .
+                ' باستلام عملية تحويل حليب من الجمعية ' . $transferToFactory->association->name .
                 'الى المصنع ' . $transferToFactory->factory->name .
                 ' الكمية ' . $quantity,
             'المندوب'
@@ -155,8 +154,7 @@ class ReceiptFromAssociationController extends Controller
         self::userActivity(
             'تعديل عملية استلام حليب ',
             $receiptFromAssociation,
-            ' تم ' .
-                'تعديل عملية استلام حليب من الجمعية ' . $transferToFactory->association->name .
+                ' بتعديل عملية استلام حليب من الجمعية ' . $transferToFactory->association->name .
                 'الى المصنع ' . $transferToFactory->factory->name .
                 ' الكمية ' . $quantity,
             'المندوب'

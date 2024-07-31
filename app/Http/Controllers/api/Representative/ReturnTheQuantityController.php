@@ -35,6 +35,7 @@ class ReturnTheQuantityController extends Controller
      */
     public function store(StoreRequest $request)
     {
+
         $ReturnTheQuantity = new ReturnTheQuantity();
 
         $ReturnTheQuantity->user_id = auth('sanctum')->user()->id;
@@ -51,7 +52,7 @@ class ReturnTheQuantityController extends Controller
             $ReturnTheQuantity->defective_quantity_due_to_coagulation;
 
         $ReturnTheQuantity->notes = $request->input('notes') ?? '';
-
+        $userMessage = ' والمردودة الى ';
         if ($ReturnTheQuantity->return_to == 'association') {
             $ReturnTheQuantity->association_id = $request->input('association_id');
             $association = User::find($ReturnTheQuantity->association_id);
@@ -59,9 +60,10 @@ class ReturnTheQuantityController extends Controller
                 $association,
                 'تم إنشاء مرتجع حليب برقم ' . $ReturnTheQuantity->id .
                     ' من قبل المندوب ' . auth('sanctum')->user()->name .
-                    ' في مصنع ' . $ReturnTheQuantity->factory->name .
+                    ' في مصنع ' . auth('sanctum')->user()->factory->name .
                     ' الكمية المردودة ' . $quantity
             );
+            $userMessage = $userMessage . 'جمعية '.  $association ->name ;
         } else {
             $admin_users = User::where('user_type', "admin")->get();
             foreach ($admin_users as $admin) {
@@ -69,29 +71,31 @@ class ReturnTheQuantityController extends Controller
                     $admin,
                     'تم إنشاء مرتجع حليب برقم ' . $ReturnTheQuantity->id .
                         ' من قبل المندوب ' . auth('sanctum')->user()->name .
-                        ' في مصنع ' . $ReturnTheQuantity->factory->name .
+                        ' في مصنع ' . auth('sanctum')->user()->factory->name .
                         ' الكمية المردودة ' . $quantity
                 );
             }
+            $userMessage = $userMessage . 'المؤاسسة' ;
         }
 
         $ReturnTheQuantity->save();
+
         self::userActivity(
-            'استلام عملية تحويل حليب ',
+            'مرتجع حليب ',
             $ReturnTheQuantity,
-            ' تم ' .
-                'استلام عملية تحويل حليب من الجمعية ' . $ReturnTheQuantity->association->name .
-                'الى المصنع ' . $ReturnTheQuantity->factory->name .
-                ' الكمية ' . $quantity,
+            ' بانشاء مرتجع حليب برقم ' . $ReturnTheQuantity->id .
+                ' في مصنع ' . auth('sanctum')->user()->factory->name .
+                $userMessage .
+                ' الكمية المردودة ' . $quantity,
             'المندوب'
         );
 
         self::userNotification(
             auth('sanctum')->user(),
-            'لقد قمت ب' .
-                'استلام عملية تحويل حليب من الجمعية ' . $ReturnTheQuantity->association->name .
-                'الى المصنع ' . $ReturnTheQuantity->factory->name .
-                ' الكمية ' . $quantity
+            'لقد قمت ب ' .
+                'إنشاء مرتجع حليب برقم ' . $ReturnTheQuantity->id .
+                 $userMessage .
+                ' الكمية المردودة ' . $quantity,
         );
 
         return self::responseSuccess([], 'تمت العملية بنجاح');
