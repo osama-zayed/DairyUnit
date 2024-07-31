@@ -100,7 +100,71 @@ class ReturnTheQuantityController extends Controller
 
         return self::responseSuccess([], 'تمت العملية بنجاح');
     }
-
+    public function update(UpdateRequest $request, $id)
+    {
+        $ReturnTheQuantity = ReturnTheQuantity::findOrFail($request->input('id'));
+    
+        $ReturnTheQuantity->return_to = $request->input('return_to');
+        $ReturnTheQuantity->defective_quantity_due_to_coagulation = $request->input('defective_quantity_due_to_coagulation');
+        $ReturnTheQuantity->defective_quantity_due_to_impurities = $request->input('defective_quantity_due_to_impurities');
+        $ReturnTheQuantity->defective_quantity_due_to_density = $request->input('defective_quantity_due_to_density');
+        $ReturnTheQuantity->defective_quantity_due_to_acidity = $request->input('defective_quantity_due_to_acidity');
+    
+        $quantity = $ReturnTheQuantity->defective_quantity_due_to_acidity +
+            $ReturnTheQuantity->defective_quantity_due_to_density +
+            $ReturnTheQuantity->defective_quantity_due_to_impurities +
+            $ReturnTheQuantity->defective_quantity_due_to_coagulation;
+    
+        $ReturnTheQuantity->notes = $request->input('notes') ?? '';
+    
+        if ($ReturnTheQuantity->return_to == 'association') {
+            $ReturnTheQuantity->association_id = $request->input('association_id');
+            $association = User::find($ReturnTheQuantity->association_id);
+            self::userNotification(
+                $association,
+                'تم تعديل مرتجع حليب برقم ' . $ReturnTheQuantity->id .
+                    ' من قبل المندوب ' . auth('sanctum')->user()->name .
+                    ' في مصنع ' . auth('sanctum')->user()->factory->name .
+                    ' الكمية المردودة ' . $quantity
+            );
+            $userMessage = ' والمردودة الى جمعية '. $association->name;
+        } else {
+            $ReturnTheQuantity->association_id = null;
+            $admin_users = User::where('user_type', "admin")->get();
+            foreach ($admin_users as $admin) {
+                self::userNotification(
+                    $admin,
+                    'تم تعديل مرتجع حليب برقم ' . $ReturnTheQuantity->id .
+                        ' من قبل المندوب ' . auth('sanctum')->user()->name .
+                        ' في مصنع ' . auth('sanctum')->user()->factory->name .
+                        ' الكمية المردودة ' . $quantity
+                );
+            }
+            $userMessage = ' والمردودة الى المؤاسسة';
+        }
+    
+        $ReturnTheQuantity->save();
+    
+        self::userActivity(
+            'تعديل مرتجع حليب',
+            $ReturnTheQuantity,
+            ' بتعديل مرتجع حليب برقم ' . $ReturnTheQuantity->id .
+                ' في مصنع ' . auth('sanctum')->user()->factory->name .
+                $userMessage .
+                ' الكمية المردودة ' . $quantity,
+            'المندوب'
+        );
+    
+        self::userNotification(
+            auth('sanctum')->user(),
+            'لقد قمت ب ' .
+                'تعديل مرتجع حليب برقم ' . $ReturnTheQuantity->id .
+                $userMessage .
+                ' الكمية المردودة ' . $quantity,
+        );
+    
+        return self::responseSuccess([], 'تمت العملية بنجاح');
+    }
     /**
      * Display the specified resource.
      */
@@ -121,77 +185,7 @@ class ReturnTheQuantityController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request,  $id)
-    {
-        // تحقق من الكمية في الاستلام مقارنة مع الكمية في التحويل
-        // $receiptFromAssociation = ReceiptFromAssociation::find($request->input('id'));
-        // $ReturnTheQuantityId = $receiptFromAssociation->transfer_to_factory_id;
-        // $quantity = $request->input('quantity');
-        // $ReturnTheQuantity = ReturnTheQuantity::find($ReturnTheQuantityId);
 
-        // AssemblyStore::where('association_id', $ReturnTheQuantity->association_id)
-        //     ->update(
-        //         [
-        //             'quantity' => DB::raw('quantity - ' . $ReturnTheQuantity->quantity - $receiptFromAssociation->quantity),
-        //         ]
-        //     );
-
-        // // تحديث البيانات
-        // $receiptFromAssociation->update([
-        //     'transfer_to_factory_id' => $ReturnTheQuantityId,
-        //     'association_id' => $ReturnTheQuantity->association_id,
-        //     'driver_id' => $ReturnTheQuantity->driver_id,
-        //     'factory_id' => $ReturnTheQuantity->factory_id,
-        //     'start_time_of_collection' => $request->input('start_time_of_collection'),
-        //     'end_time_of_collection' => $request->input('end_time_of_collection'),
-        //     'quantity' => $quantity,
-        //     'package_cleanliness' => $request->input('package_cleanliness'),
-        //     'transport_cleanliness' => $request->input('transport_cleanliness'),
-        //     'driver_personal_hygiene' => $request->input('driver_personal_hygiene'),
-        //     'ac_operation' => $request->input('ac_operation'),
-        //     'user_id' => auth('sanctum')->user()->id,
-        //     'notes' => $request->input('notes') ?? '',
-        // ]);
-
-        // AssemblyStore::where('association_id', $ReturnTheQuantity->association_id)
-        //     ->update(
-        //         [
-        //             'quantity' => DB::raw('quantity + ' . $ReturnTheQuantity->quantity - $quantity),
-        //         ]
-        //     );
-
-        // self::userActivity(
-        //     'تعديل عملية استلام حليب ',
-        //     $receiptFromAssociation,
-        //     ' تم ' .
-        //         'تعديل عملية استلام حليب من الجمعية ' . $ReturnTheQuantity->association->name .
-        //         'الى المصنع ' . $ReturnTheQuantity->factory->name .
-        //         ' الكمية ' . $quantity,
-        //     'المندوب'
-        // );
-
-        // self::userNotification(
-        //     auth('sanctum')->user(),
-        //     'لقد قمت ب' .
-        //         'تعديل عملية استلام حليب من الجمعية ' . $ReturnTheQuantity->association->name .
-        //         'الى المصنع ' . $ReturnTheQuantity->factory->name .
-        //         ' الكمية ' . $quantity
-        // );
-
-        // $association = User::find($ReturnTheQuantity->association_id);
-        // self::userNotification(
-        //     $association,
-        //     'لقد تم ' .
-        //         'تعديل عملية استلام الحليب برقم ' . $ReturnTheQuantityId .
-        //         ' من قبل المندوب ' . auth('sanctum')->user()->name .
-        //         ' في مصنع ' . $ReturnTheQuantity->factory->name .
-        //         ' الكمية المحولة ' . $ReturnTheQuantity->quantity .
-        //         ' الكمية المستلمة ' . $quantity .
-        //         ' الكمية الغير مصادق عليها ' . ($ReturnTheQuantity->quantity - $quantity)
-        // );
-
-        // return self::responseSuccess([], 'تمت العملية بنجاح');
-    }
 
 
     /**
