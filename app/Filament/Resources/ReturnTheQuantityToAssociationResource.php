@@ -17,7 +17,7 @@ class ReturnTheQuantityToAssociationResource extends Resource
 {
     protected static ?string $model = ReturnTheQuantity::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-arrow-down-on-square-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-right-circle';
 
     protected static ?string $navigationGroup = 'العمليات';
     protected static ?int $navigationSort = 10;
