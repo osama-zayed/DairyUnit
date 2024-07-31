@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\ReturnTheQuantityResource\Pages;
+namespace App\Filament\Resources\ReturnTheQuantityToAssociationResource\Pages;
 
-use App\Filament\Resources\ReturnTheQuantityResource;
+use App\Filament\Resources\ReturnTheQuantityToAssociationResource;
 use Filament\Actions;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\ListRecords;
 
 class ListReturnTheQuantities extends ListRecords
 {
-    protected static string $resource = ReturnTheQuantityResource::class;
+    protected static string $resource = ReturnTheQuantityToAssociationResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -20,7 +20,7 @@ class ListReturnTheQuantities extends ListRecords
     protected function getTableQuery(): Builder
     {
         $query = parent::getTableQuery();
-        $query->where('association_id', null);
+        $query->where('association_id', '!=', null);
         return $query;
     }
 }

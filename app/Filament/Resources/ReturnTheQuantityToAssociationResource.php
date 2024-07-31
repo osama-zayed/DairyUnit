@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ReturnTheQuantityResource\Pages;
-use App\Filament\Resources\ReturnTheQuantityResource\RelationManagers;
+use App\Filament\Resources\ReturnTheQuantityToAssociationResource\Pages;
+use App\Filament\Resources\ReturnTheQuantityToAssociationResource\RelationManagers;
 use App\Models\ReturnTheQuantity;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,22 +13,27 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ReturnTheQuantityResource extends Resource
+class ReturnTheQuantityToAssociationResource extends Resource
 {
     protected static ?string $model = ReturnTheQuantity::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-on-square-stack';
 
     protected static ?string $navigationGroup = 'العمليات';
-    protected static ?int $navigationSort = 11;
-    protected static ?string $modelLabel = 'مردود الى المؤاسسة';
-    protected static ?string $pluralLabel = 'مردود الى المؤاسسة';
+    protected static ?int $navigationSort = 10;
+    protected static ?string $modelLabel = 'مردود الى الجمعيات';
+    protected static ?string $pluralLabel = 'مردود الى الجمعيات';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Section::make([
 
+                    Forms\Components\Select::make('association_id')
+                        ->relationship('association', titleAttribute: 'name')
+                        ->label('الجمعية المردود لها')
+                        ->searchable()
+                        ->required(),
 
                     Forms\Components\Select::make('user_id')
                         ->relationship('user', titleAttribute: 'name')
@@ -69,6 +74,11 @@ class ReturnTheQuantityResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('association.name')
+                    ->numeric()
+                    ->label('اسم الجمعية المردود لها')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->label('اسم المندوب')
