@@ -35,7 +35,47 @@ class ReturnTheQuantityResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('association.name')
+                    ->numeric()
+                    ->label('اسم الجمعية')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->numeric()
+                    ->label('اسم المندوب')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('factory.name')
+                    ->numeric()
+                    ->label('اسم المصنع')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('defective_quantity_due_to_coagulation')
+                    ->label('الكمية التالفة بسبب التخثر')
+                    ->numeric()
+                    ->sortable(),
+                    Tables\Columns\TextColumn::make('defective_quantity_due_to_impurities')
+                    ->label('الكمية التالفة بسبب الشوائب')
+                    ->numeric()
+                    ->sortable(),
+                    Tables\Columns\TextColumn::make('defective_quantity_due_to_density')
+                    ->label('الكمية التالفة بسبب الكثافة')
+                    ->numeric()
+                    ->sortable(),
+                    Tables\Columns\TextColumn::make('defective_quantity_due_to_acidity')
+                    ->label('الكمية التالفة بسبب الحموضة')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->label('وقت الاضافة')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('وقت التعديل')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

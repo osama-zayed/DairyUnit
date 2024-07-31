@@ -32,39 +32,39 @@ class ReceiptInvoiceFromStoreResource extends Resource
             ->schema([
                 Forms\Components\Section::make([
 
-                Forms\Components\Select::make('association_id')
-                    ->relationship('association', titleAttribute: 'name')
-                    ->label('الجمعية')
-                    ->searchable()
-                    ->preload()
-                    ->live()
-                    ->options(function () {
-                        return User::where('user_type', 'association')->pluck('name', 'id');
-                    })
-                    ->required(),
-                Forms\Components\Select::make('user_id')
-                    ->relationship('associationsBranche', titleAttribute: 'name')
-                    ->label('فرع الجمعية')
-                    ->searchable()
-                    ->preload()
-                    ->live()
-                    ->options(function () {
-                        return User::where('user_type', 'collector')->pluck('name', 'id');
-                    })
-                    ->required(),
-                Forms\Components\TextInput::make('quantity')
-                    ->required()
-                    ->label('الكمية')
-                    ->numeric(),
+                    Forms\Components\Select::make('association_id')
+                        ->relationship('association', titleAttribute: 'name')
+                        ->label('الجمعية')
+                        ->searchable()
+                        ->preload()
+                        ->live()
+                        ->options(function () {
+                            return User::where('user_type', 'association')->pluck('name', 'id');
+                        })
+                        ->required(),
+                    Forms\Components\Select::make('user_id')
+                        ->relationship('associationsBranche', titleAttribute: 'name')
+                        ->label('فرع الجمعية')
+                        ->searchable()
+                        ->preload()
+                        ->live()
+                        ->options(function () {
+                            return User::where('user_type', 'collector')->pluck('name', 'id');
+                        })
+                        ->required(),
+                    Forms\Components\TextInput::make('quantity')
+                        ->required()
+                        ->label('الكمية')
+                        ->numeric(),
                     Forms\Components\DateTimePicker::make('date_and_time')
-                    ->label('الوقت والتاريخ')
-                    ->required(),
+                        ->label('الوقت والتاريخ')
+                        ->required(),
                     Forms\Components\Textarea::make('notes')
-                    ->label('الملاحظات')
-                    ->required()
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
-                    ])->columns(2)->collapsed(2),
+                        ->label('الملاحظات')
+                        ->required()
+                        ->maxLength(65535)
+                        ->columnSpanFull(),
+                ])->columns(2)->collapsed(2),
 
             ]);
     }
@@ -91,7 +91,7 @@ class ReceiptInvoiceFromStoreResource extends Resource
                     ->dateTime()
                     ->label('الوقت والتاريخ')
                     ->sortable(),
-                    Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->label('وقت الاضافة')
                     ->sortable()

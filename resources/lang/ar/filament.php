@@ -14,8 +14,8 @@ return [
         ],
         'receiptFromAssociation'=>[
             "clean"=>'نظيفة',
-            "somewhat_clean"=>'مقبولة',
-            "not_clean"=>'سيئة',
+            "somewhat_clean"=>'متوسط التظافة',
+            "not_clean"=>'غير نظيفة',
             "on"=>'يعمل',
             "off"=>'لا يعمل',
             "not_available"=>'لا يوجد',
