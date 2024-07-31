@@ -53,8 +53,9 @@ class CollectorController extends Controller
         self::userActivity(
             'اضافة مجمع جديد',
             $Collector,
-            ' اضافة مجمع جديد ' . $Collector->name .
+            ' باضافة مجمع جديد ' . $Collector->name .
                 ' جمعية ' . $Collector->association->name,
+                'جمعية'
         );
 
         self::userNotification(
@@ -91,7 +92,8 @@ class CollectorController extends Controller
         $this->userActivity(
             'تعديل مجمع ',
             $Collector,
-            ' تم تعديل بيانات مجمع ' . $Collector->name . ' جمعية ' . $Collector->association->name,
+            ' بتعديل بيانات مجمع ' . $Collector->name . ' جمعية ' . $Collector->association->name,
+             'جمعية'
         );
     
         $this->userNotification(
@@ -119,7 +121,8 @@ class CollectorController extends Controller
         $this->userActivity(
             'تعديل حالة مجمع',
             $Collector,
-            ' تم تعديل حالة المجمع ' . $Collector->name . ' جمعية ' . $Collector->association->name,
+            ' بتعديل حالة المجمع ' . $Collector->name . ' جمعية ' . $Collector->association->name,
+             'جمعية'
         );
 
         $this->userNotification(
