@@ -14,7 +14,7 @@ return [
         ],
         'receiptFromAssociation'=>[
             "clean"=>'نظيفة',
-            "somewhat_clean"=>'متوسط التظافة',
+            "somewhat_clean"=>'متوسط النظافة',
             "not_clean"=>'غير نظيفة',
             "on"=>'يعمل',
             "off"=>'لا يعمل',
