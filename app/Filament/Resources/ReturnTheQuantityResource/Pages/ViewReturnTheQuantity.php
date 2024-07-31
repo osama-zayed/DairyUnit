@@ -16,4 +16,10 @@ class ViewReturnTheQuantity extends ViewRecord
             // Actions\EditAction::make(),
         ];
     }
+    protected function authorizeAccess(): void
+    {
+        if ($this->getRecord()->association_id !=  null) {
+            abort(404);
+        }
+    }
 }
