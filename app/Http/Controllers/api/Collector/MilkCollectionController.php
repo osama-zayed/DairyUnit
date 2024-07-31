@@ -27,8 +27,8 @@ class MilkCollectionController extends Controller
         self::userActivity(
             'اضافة عملية تجميع حليب ',
             $collectingMilkFromFamily,
+            ' بتجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
             ' جمعية ' . $collectingMilkFromFamily->association->name .
-                ' تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
                 ' الكمية ' . $collectingMilkFromFamily->quantity,
             'فرع الجمعية'
         );
@@ -71,8 +71,9 @@ class MilkCollectionController extends Controller
         self::userActivity(
             'تعديل عملية تجميع حليب ',
             $collectingMilkFromFamily,
+            ' بتعديل بيانات عملية تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
             ' جمعية ' . $collectingMilkFromFamily->association->name .
-                ' تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
+            ' رقم العملية ' . $collectingMilkFromFamily->id.
                 ' الكمية ' . $collectingMilkFromFamily->quantity,
             'فرع الجمعية'
         );
