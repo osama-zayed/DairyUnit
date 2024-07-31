@@ -18,7 +18,7 @@ class ViewReturnTheQuantity extends ViewRecord
     }
     protected function authorizeAccess(): void
     {
-        if ($this->getRecord()->association_id !=  null) {
+        if (is_null($this->getRecord()->association_id)) {
             abort(404);
         }
     }

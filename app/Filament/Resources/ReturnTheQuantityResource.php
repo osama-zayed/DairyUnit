@@ -27,7 +27,48 @@ class ReturnTheQuantityResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Section::make([
+
+                    Forms\Components\Select::make('association_id')
+                        ->relationship('association', titleAttribute: 'name')
+                        ->label('الجمعية المردود لها')
+                        ->searchable()
+                        ->required(),
+
+                    Forms\Components\Select::make('user_id')
+                        ->relationship('user', titleAttribute: 'name')
+                        ->label('المندوب')
+                        ->required(),
+
+                    Forms\Components\Select::make('factory_id')
+                        ->relationship('factory', titleAttribute: 'name')
+                        ->label('المصنع')
+                        ->required(),
+            Forms\Components\DateTimePicker::make('created_at')
+                        ->label('الوقت والتاريخ')
+                        ->required(),
+                    Forms\Components\TextInput::make('defective_quantity_due_to_coagulation')
+                        ->label('الكمية التالفة بسبب التخثر')
+                        ->numeric(),
+                    Forms\Components\TextInput::make('defective_quantity_due_to_impurities')
+                        ->label('الكمية التالفة بسبب الشوائب')
+                        ->numeric(),
+                    Forms\Components\TextInput::make('defective_quantity_due_to_density')
+                        ->label('الكمية التالفة بسبب الكثافة')
+                        ->numeric(),
+                    Forms\Components\TextInput::make('defective_quantity_due_to_acidity')
+                        ->label('الكمية التالفة بسبب الحموضة')
+                        ->numeric(),
+
+        
+
+                    Forms\Components\Textarea::make('notes')
+                        ->label('الملاحظات')
+                        ->required()
+                        ->maxLength(65535)
+                        ->columnSpanFull(),
+                ])->columns(2)->collapsed(2),
+
             ]);
     }
 
@@ -50,21 +91,21 @@ class ReturnTheQuantityResource extends Resource
                     ->numeric()
                     ->label('اسم المصنع')
                     ->searchable()
-                    ->sortable() 
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('defective_quantity_due_to_coagulation')
                     ->label('الكمية التالفة بسبب التخثر')
                     ->numeric()
                     ->sortable(),
-                    Tables\Columns\TextColumn::make('defective_quantity_due_to_impurities')
+                Tables\Columns\TextColumn::make('defective_quantity_due_to_impurities')
                     ->label('الكمية التالفة بسبب الشوائب')
                     ->numeric()
                     ->sortable(),
-                    Tables\Columns\TextColumn::make('defective_quantity_due_to_density')
+                Tables\Columns\TextColumn::make('defective_quantity_due_to_density')
                     ->label('الكمية التالفة بسبب الكثافة')
                     ->numeric()
                     ->sortable(),
-                    Tables\Columns\TextColumn::make('defective_quantity_due_to_acidity')
+                Tables\Columns\TextColumn::make('defective_quantity_due_to_acidity')
                     ->label('الكمية التالفة بسبب الحموضة')
                     ->numeric()
                     ->sortable(),
