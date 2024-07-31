@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Association\ReturnTheQuantityController;
 use App\Http\Controllers\Api\Association\TransferToFactoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -47,3 +48,4 @@ Route::prefix('transfertofactory')->middleware(['auth:sanctum', 'Permission:asso
     Route::post('store', "TransferToFactoryController@store");
     Route::put('update', "TransferToFactoryController@update");
 });
+Route::resource('ReturnTheQuantity', ReturnTheQuantityController::class);
