@@ -53,10 +53,10 @@ class ReceiptInvoiceFromStoresController extends Controller
         self::userActivity(
             'اضافة عملية توريد حليب ',
             $ReceiptInvoiceFromStore,
+            ' بتوريد حليب من فرع الجمعية ' . $ReceiptInvoiceFromStore->associationsBranche->name .
             ' جمعية ' . $user->name .
-                'توريد حليب من فرع الجمعية ' . $ReceiptInvoiceFromStore->associationsBranche->name .
                 ' الكمية ' . $ReceiptInvoiceFromStore->quantity,
-            'الجمعية'
+             'جمعية'
         );
         self::userNotification(
             auth('sanctum')->user(),
@@ -147,10 +147,11 @@ class ReceiptInvoiceFromStoresController extends Controller
         self::userActivity(
             'تعديل عملية توريد الحليب ',
             $ReceiptInvoiceFromStore,
+            ' تعديل عملية توريد الحليب من المجمع ' . $ReceiptInvoiceFromStore->associationsBranche->name .
             ' جمعية ' . $user->name .
-                ' توريد الحليب من المجمع ' . $ReceiptInvoiceFromStore->associationsBranche->name .
+            ' رقم العلمية ' . $ReceiptInvoiceFromStore->id .
                 ' الكمية ' . $ReceiptInvoiceFromStore->quantity,
-            'الجمعية'
+             'جمعية'
         );
 
         self::userNotification(

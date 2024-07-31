@@ -77,6 +77,7 @@ class DriverController extends Controller
             'تعديل سائق',
             $Driver,
             ' بتعديل بيانات سائق ' . $Driver->name . ' جمعية ' . $Driver->association->name,
+             'جمعية'
         );
 
         $this->userNotification(
