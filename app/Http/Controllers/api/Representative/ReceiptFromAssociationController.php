@@ -65,7 +65,7 @@ class ReceiptFromAssociationController extends Controller
         self::userActivity(
             'استلام عملية تحويل حليب ',
             $receiptFromAssociation,
-                ' باستلام عملية تحويل حليب من الجمعية ' . $transferToFactory->association->name .
+            ' باستلام عملية تحويل حليب من الجمعية ' . $transferToFactory->association->name .
                 'الى المصنع ' . $transferToFactory->factory->name .
                 ' الكمية ' . $quantity,
             'المندوب'
@@ -154,7 +154,7 @@ class ReceiptFromAssociationController extends Controller
         self::userActivity(
             'تعديل عملية استلام حليب ',
             $receiptFromAssociation,
-                ' بتعديل عملية استلام حليب من الجمعية ' . $transferToFactory->association->name .
+            ' بتعديل عملية استلام حليب من الجمعية ' . $transferToFactory->association->name .
                 'الى المصنع ' . $transferToFactory->factory->name .
                 ' الكمية ' . $quantity,
             'المندوب'
@@ -256,10 +256,10 @@ class ReceiptFromAssociationController extends Controller
             'driver_name' => $receiptFromAssociation->driver->name,
             'factory_id' => $receiptFromAssociation->factory_id,
             'factory_name' => $receiptFromAssociation->factory->name,
-            'package_cleanliness' => $receiptFromAssociation->package_cleanliness,
-            'transport_cleanliness' => $receiptFromAssociation->transport_cleanliness,
-            'driver_personal_hygiene' => $receiptFromAssociation->driver_personal_hygiene,
-            'ac_operation' => $receiptFromAssociation->ac_operation,
+            'package_cleanliness' => trans("filament.resources.receiptFromAssociation.$receiptFromAssociation->package_cleanliness"),
+            'transport_cleanliness' => trans("filament.resources.receiptFromAssociation.$receiptFromAssociation->transport_cleanliness"),
+            'driver_personal_hygiene' => trans("filament.resources.receiptFromAssociation.$receiptFromAssociation->driver_personal_hygiene"),
+            'ac_operation' => trans("filament.resources.receiptFromAssociation.$receiptFromAssociation->ac_operation"),
             'notes' => $receiptFromAssociation->notes,
         ];
     }
