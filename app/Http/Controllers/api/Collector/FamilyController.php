@@ -55,7 +55,7 @@ class FamilyController extends Controller
         self::userActivity(
             'اضافة اسره جديدة',
             $family,
-            ' اضافة اسرة جديدة ' . $family->name .
+            ' باضافة اسرة جديدة ' . $family->name .
                 ' جمعية ' . $family->association->name,
             ' فرع الجمعية' . auth('sanctum')->user()->name
         );
@@ -85,7 +85,7 @@ class FamilyController extends Controller
         $this->userActivity(
             'تعديل اسرة',
             $family,
-            ' تم تعديل بيانات اسرة ' . $family->name . ' جمعية ' . $family->association->name,
+            ' بتعديل بيانات اسرة ' . $family->name . ' جمعية ' . $family->association->name,
             ' فرع الجمعية ' . auth('sanctum')->user()->name
         );
 
@@ -113,7 +113,8 @@ class FamilyController extends Controller
         $this->userActivity(
             'تعديل حالة اسرة',
             $family,
-            ' تم تعديل حالة الاسرة ' . $family->name . ' جمعية ' . $family->association->name,
+            ' بتعديل حالة الاسرة ' . $family->name . ' جمعية ' . $family->association->name,
+            
         );
 
         $this->userNotification(
