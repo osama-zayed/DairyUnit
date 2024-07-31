@@ -19,6 +19,7 @@ Route::prefix('auth')->group(function () {
 Route::middleware(['auth:sanctum', 'Permission:representative', 'userStatus'])->group(function () {
     Route::get('TransferToFactory', "TransferToFactoryController@index");
     Route::get('TransferToFactory/{id}', "TransferToFactoryController@show");
+    Route::get('association', "AssociationController@index");
     Route::resource('ReceiptFromAssociation', ReceiptFromAssociationController::class);
     Route::post('ReceiptFromAssociation/store', "ReceiptFromAssociationController@store");
     Route::resource('ReturnTheQuantity', ReturnTheQuantityController::class);

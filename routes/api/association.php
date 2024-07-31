@@ -48,4 +48,4 @@ Route::prefix('transfertofactory')->middleware(['auth:sanctum', 'Permission:asso
     Route::post('store', "TransferToFactoryController@store");
     Route::put('update', "TransferToFactoryController@update");
 });
-Route::resource('ReturnTheQuantity', ReturnTheQuantityController::class);
+Route::resource('ReturnTheQuantity', ReturnTheQuantityController::class)->middleware(['auth:sanctum', 'Permission:association', 'userStatus']);
