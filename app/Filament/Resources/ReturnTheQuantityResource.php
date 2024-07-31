@@ -37,19 +37,21 @@ class ReturnTheQuantityResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('association.name')
                     ->numeric()
-                    ->label('اسم الجمعية')
+                    ->label('اسم الجمعية المردود لها')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->label('اسم المندوب')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('factory.name')
                     ->numeric()
                     ->label('اسم المصنع')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable() 
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('defective_quantity_due_to_coagulation')
                     ->label('الكمية التالفة بسبب التخثر')
                     ->numeric()
