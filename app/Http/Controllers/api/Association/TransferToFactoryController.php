@@ -35,7 +35,7 @@ class TransferToFactoryController extends Controller
     {
         $user = auth('sanctum')->user();
         $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
-        if(is_null($AssemblyStore)){
+        if (is_null($AssemblyStore)) {
             return $this->responseError('لا يوجد لديك الكمية المطلوبة');
         }
 
@@ -65,11 +65,10 @@ class TransferToFactoryController extends Controller
         self::userActivity(
             'اضافة عملية تحويل حليب ',
             $TransferToFactory,
-            ' تم ' .
-                'تحويل حليب من الجمعية ' . $user->name .
+            ' بتحويل حليب من الجمعية ' . $user->name .
                 'الى المصنع ' . $TransferToFactory->factory->name .
                 ' الكمية ' . $TransferToFactory->quantity,
-            'الجمعية'
+            'جمعية'
         );
 
         self::userNotification(
@@ -141,11 +140,11 @@ class TransferToFactoryController extends Controller
         self::userActivity(
             'تعديل عملية تحويل حليب ',
             $TransferToFactory,
-            ' تم ' .
-                'تعديل عملية تحويل حليب من الجمعية ' . $user->name .
-                'الى المصنع ' . $TransferToFactory->factory->name .
+            ' بتعديل عملية تحويل حليب من الجمعية ' . $user->name .
+                ' الى المصنع ' . $TransferToFactory->factory->name .
+                ' رقم المعلية ' . $TransferToFactory->id .
                 ' الكمية ' . $TransferToFactory->quantity,
-            'الجمعية'
+            'جمعية'
         );
 
         self::userNotification(
