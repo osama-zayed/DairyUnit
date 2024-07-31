@@ -49,8 +49,9 @@ class DriverController extends Controller
         self::userActivity(
             'اضافة سائق',
             $Driver,
-            ' اضافة سائق جديد ' . $Driver->name .
+            ' باضافة سائق جديد ' . $Driver->name .
                 ' جمعية ' . $Driver->association->name,
+                 'جمعية'
         );
 
         self::userNotification(
@@ -75,7 +76,7 @@ class DriverController extends Controller
         $this->userActivity(
             'تعديل سائق',
             $Driver,
-            ' تم تعديل بيانات سائق ' . $Driver->name . ' جمعية ' . $Driver->association->name,
+            ' بتعديل بيانات سائق ' . $Driver->name . ' جمعية ' . $Driver->association->name,
         );
 
         $this->userNotification(
@@ -102,7 +103,8 @@ class DriverController extends Controller
         $this->userActivity(
             'تعديل حالة سائق',
             $Driver,
-            'تم تعديل حالة السائق ' . $Driver->name . ' جمعية ' . $Driver->association->name,
+            ' بتعديل حالة السائق ' . $Driver->name . ' جمعية ' . $Driver->association->name,
+             'جمعية'
         );
 
         $this->userNotification(
