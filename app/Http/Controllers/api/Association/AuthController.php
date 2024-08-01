@@ -29,7 +29,7 @@ class AuthController extends UserController
 
         $returnData = ReturnTheQuantity::whereIn('return_to', 'association')
             ->where('association_id',  $user->id)
-            ->selectRaw('return_to, SUM(quantity) as quantity')
+            ->selectRaw('SUM(quantity) as quantity')
             ->get();
 
         return self::responseSuccess([
