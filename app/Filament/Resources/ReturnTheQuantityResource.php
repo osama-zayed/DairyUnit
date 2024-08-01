@@ -21,8 +21,8 @@ class ReturnTheQuantityResource extends Resource
 
     protected static ?string $navigationGroup = 'العمليات';
     protected static ?int $navigationSort = 11;
-    protected static ?string $modelLabel = 'مردود الى المؤاسسة';
-    protected static ?string $pluralLabel = 'مردود الى المؤاسسة';
+    protected static ?string $modelLabel = 'مردود الى المؤسسة';
+    protected static ?string $pluralLabel = 'مردود الى المؤسسة';
     public static function form(Form $form): Form
     {
         return $form

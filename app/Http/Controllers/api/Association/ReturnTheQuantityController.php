@@ -79,7 +79,7 @@ class ReturnTheQuantityController extends Controller
                     $ReturnTheQuantity->defective_quantity_due_to_impurities +
                     $ReturnTheQuantity->defective_quantity_due_to_coagulation,
                 'return_to' => ($ReturnTheQuantity->return_to == "association") ? 'مردود الى جمعية ' . $ReturnTheQuantity->association->name :
-                    'مردود الى المؤاسسة'
+                    'مردود الى المؤسسة'
             ];
         }, $ReturnTheQuantity);
     }
@@ -103,7 +103,7 @@ class ReturnTheQuantityController extends Controller
                 $ReturnTheQuantity->defective_quantity_due_to_impurities +
                 $ReturnTheQuantity->defective_quantity_due_to_coagulation,
             'return' => ($ReturnTheQuantity->return_to == "association") ? 'مردود الى جمعية ' . $ReturnTheQuantity->association->name :
-                'مردود الى المؤاسسة',
+                'مردود الى المؤسسة',
             'return_to' => $ReturnTheQuantity->return_to,
 
             'association_id' => $ReturnTheQuantity->association_id,

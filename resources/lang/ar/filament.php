@@ -6,7 +6,7 @@ return [
                 'name' => 'الصلاحية',
             ],
             'options' => [
-                'institution' => 'المؤاسسة',
+                'institution' => 'المؤسسة',
                 'association' => 'الجمعية',
                 'representative' => 'المندوب',
                 'collector' => 'المجمع',
