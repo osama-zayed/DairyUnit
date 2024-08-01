@@ -37,8 +37,8 @@ class AuthController extends UserController
             'id' => $user->id,
             'name' => $user->name,
             'phone_number' => $user->phone,
-            'total_quantity' => $receiptFromAssociation->total_quantity ?? 0,
-            'association_count' => $receiptFromAssociation->association_count ?? 0,
+            'total_quantity' => $receiptFromAssociation->total_quantity - $returnToInstitution - $returnToInstitution ?? 0,
+            'receipt_quantity' => $receiptFromAssociation->total_quantity ?? 0,
             'return_to_association' => $returnToAssociation,
             'return_to_institution' => $returnToInstitution,
         ]);
