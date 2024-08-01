@@ -86,7 +86,7 @@ class UpdateRequest extends FormRequest
     
                     $association = User::where('id', $receiptFromAssociationId)
                         ->where('user_type', 'association')->first();
-                    if ($association)
+                    if (!$association)
                         $validator->errors()->add('association_id', ' الجمعية غير موجودة');
                 }
             } else {
