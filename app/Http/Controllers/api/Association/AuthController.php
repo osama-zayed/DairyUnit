@@ -27,7 +27,7 @@ class AuthController extends UserController
             ->selectRaw('SUM(quantity) as total_quantity')
             ->first();
 
-        $returnData = ReturnTheQuantity::whereIn('return_to', 'association')
+        $returnData = ReturnTheQuantity::where('return_to', 'association')
             ->where('association_id',  $user->id)
             ->selectRaw('SUM(quantity) as quantity')
             ->get();
