@@ -76,7 +76,7 @@ class ReturnTheQuantityController extends Controller
             }
             $userMessage = $userMessage . 'المؤاسسة';
         }
-
+        $ReturnTheQuantity->quantity = $quantity;
         $ReturnTheQuantity->save();
 
         self::userActivity(
@@ -141,7 +141,7 @@ class ReturnTheQuantityController extends Controller
             }
             $userMessage = ' والمردودة الى المؤاسسة';
         }
-
+        $ReturnTheQuantity->quantity = $quantity;
         $ReturnTheQuantity->save();
 
         self::userActivity(
