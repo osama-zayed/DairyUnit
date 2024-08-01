@@ -15,30 +15,31 @@ class AuthController extends UserController
     public function me()
     {
         $user = auth('sanctum')->user();
+    
         $receiptFromAssociation = ReceiptFromAssociation::where('user_id', $user->id)
-            ->selectRaw('SUM(quantity) as total_quantity , COUNT(association_id) as association_count')
+            ->where('association_id', '!=', null)
+            ->selectRaw('SUM(quantity) as total_quantity, COUNT(association_id) as association_count')
             ->first();
-
+    
         $returnData = ReturnTheQuantity::where('user_id', $user->id)
             ->whereIn('return_to', ['association', 'institution'])
             ->selectRaw('return_to, COUNT(return_to) as count')
+            ->groupBy('return_to')
             ->get()
             ->mapWithKeys(function ($item) {
                 return [$item->return_to => $item->count];
             });
-
+    
         $returnToAssociation = $returnData['association'] ?? 0;
         $returnToInstitution = $returnData['institution'] ?? 0;
-
-
+    
         return self::responseSuccess([
             'id' => $user->id,
             'name' => $user->name,
             'phone_number' => $user->phone,
             'total_quantity' => $receiptFromAssociation->total_quantity ?? 0,
             'association_count' => $receiptFromAssociation->association_count ?? 0,
-
-            'return_to_association' => $returnToAssociation ,
+            'return_to_association' => $returnToAssociation,
             'return_to_institution' => $returnToInstitution,
         ]);
     }
