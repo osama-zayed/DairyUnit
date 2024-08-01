@@ -77,13 +77,41 @@ class UpdateRequest extends FormRequest
                 )) {
                     $validator->errors()->add('id', 'لا يمكن التعديل لأنه حصل عملية في وقت لاحق');
                 }
+
                 $returnTo = $this->input('return_to');
                 $receiptFromAssociationId = $this->input('association_id');
+                /// التحقق من الكميات
+                $receiptFromAssociation = ReceiptFromAssociation::where('user_id', $user->id)
+                    ->selectRaw('SUM(quantity) as total_quantity')
+                    ->first();
 
+                $quantity = $this->input('defective_quantity_due_to_acidity') +
+                    $this->input('defective_quantity_due_to_density') +
+                    $this->input('defective_quantity_due_to_impurities') +
+                    $this->input('defective_quantity_due_to_coagulation');
+                $returnData = ReturnTheQuantity::where('user_id', $user->id)
+                    ->where('id', '!=', $this->input('id'))
+                    ->whereIn('return_to', ['association', 'institution'])
+                    ->selectRaw('return_to, SUM(quantity) as quantity')
+                    ->groupBy('return_to')
+                    ->get()
+                    ->mapWithKeys(function ($item) {
+                        return [$item->return_to => $item->quantity];
+                    });
+
+                $returnToAssociation = $returnData['association'] ?? 0;
+                $returnToInstitution = $returnData['institution'] ?? 0;
+
+                $quantity += $returnToAssociation + $returnToInstitution;
+
+                if ($quantity > $receiptFromAssociation->total_quantity) {
+                    $validator->errors()->add('association_id', 'لا يوجد لديك الكمية');
+                }
+                /// نهاية كود التحقق من الكميات
                 if ($returnTo == 'association') {
                     if (is_null($receiptFromAssociationId))
                         $validator->errors()->add('association_id', 'معرف الجمعية مطلوب');
-    
+
                     $association = User::where('id', $receiptFromAssociationId)
                         ->where('user_type', 'association')->first();
                     if (!$association)

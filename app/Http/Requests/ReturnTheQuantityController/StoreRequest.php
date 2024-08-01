@@ -3,6 +3,7 @@
 namespace App\Http\Requests\ReturnTheQuantityController;
 
 use App\Models\ReceiptFromAssociation;
+use App\Models\ReturnTheQuantity;
 use App\Models\TransferToFactory;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
@@ -54,7 +55,20 @@ class StoreRequest extends FormRequest
                 $this->input('defective_quantity_due_to_density') +
                 $this->input('defective_quantity_due_to_impurities') +
                 $this->input('defective_quantity_due_to_coagulation');
-
+                $returnData = ReturnTheQuantity::where('user_id', $user->id)
+                ->whereIn('return_to', ['association', 'institution'])
+                ->selectRaw('return_to, SUM(quantity) as quantity')
+                ->groupBy('return_to')
+                ->get()
+                ->mapWithKeys(function ($item) {
+                    return [$item->return_to => $item->quantity];
+                });
+        
+            $returnToAssociation = $returnData['association'] ?? 0;
+            $returnToInstitution = $returnData['institution'] ?? 0;
+        
+                $quantity+= $returnToAssociation + $returnToInstitution ;
+                
             if ($quantity > $receiptFromAssociation->total_quantity) {
                 $validator->errors()->add('association_id', 'لا يوجد لديك الكمية');
             }
