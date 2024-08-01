@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Models\AssemblyStore;
 use App\Models\ReceiptFromAssociation;
 use App\Models\ReceiptInvoiceFromStore;
+use App\Models\ReturnTheQuantity;
 use App\Models\TransferToFactory;
 use App\Models\User;
 
@@ -26,7 +27,10 @@ class AuthController extends UserController
             ->selectRaw('SUM(quantity) as total_quantity')
             ->first();
 
-        $numberOfCollectors = User::where('association_id', $user->id)->count();
+        $returnData = ReturnTheQuantity::whereIn('return_to', 'association')
+            ->where('association_id',  $user->id)
+            ->selectRaw('return_to, SUM(quantity) as quantity')
+            ->get();
 
         return self::responseSuccess([
             'id' => $user->id,
@@ -35,7 +39,7 @@ class AuthController extends UserController
             'total_quantity' => $totalQuantity->total_quantity ?? 0,
             'ruantity_disbursed' => $TransferToFactory->total_quantity ?? 0,
             'residual_quantity' => $residualQuantity->total_quantity ?? 0,
-            'number_of_compilers' => $numberOfCollectors,
+            'return_quantity' => $returnData->quantity ??0,
         ]);
     }
 }
