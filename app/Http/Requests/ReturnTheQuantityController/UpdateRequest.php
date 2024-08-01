@@ -5,6 +5,7 @@ namespace App\Http\Requests\ReturnTheQuantityController;
 use App\Models\ReceiptFromAssociation;
 use App\Models\ReturnTheQuantity;
 use App\Models\TransferToFactory;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
@@ -79,8 +80,14 @@ class UpdateRequest extends FormRequest
                 $returnTo = $this->input('return_to');
                 $receiptFromAssociationId = $this->input('association_id');
 
-                if ($returnTo == 'association' && is_null($receiptFromAssociationId)) {
-                    $validator->errors()->add('association_id', 'معرف الجمعية مطلوب');
+                if ($returnTo == 'association') {
+                    if (is_null($receiptFromAssociationId))
+                        $validator->errors()->add('association_id', 'معرف الجمعية مطلوب');
+    
+                    $association = User::where('id', $receiptFromAssociationId)
+                        ->where('user_type', 'association')->first();
+                    if ($association)
+                        $validator->errors()->add('association_id', ' الجمعية غير موجودة');
                 }
             } else {
                 $validator->errors()->add('id', 'العملية غير موجودة');
