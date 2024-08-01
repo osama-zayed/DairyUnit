@@ -56,7 +56,7 @@ class StoreRequest extends FormRequest
                 $this->input('defective_quantity_due_to_coagulation');
 
             if ($quantity > $receiptFromAssociation->total_quantity) {
-                $validator->errors()->add('association_id', 'لا يوجد لديك الكمية المردودة');
+                $validator->errors()->add('association_id', 'لا يوجد لديك الكمية');
             }
             if ($returnTo == 'association') {
                 if (is_null($receiptFromAssociationId))
