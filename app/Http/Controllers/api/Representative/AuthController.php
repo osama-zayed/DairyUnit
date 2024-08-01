@@ -23,11 +23,11 @@ class AuthController extends UserController
     
         $returnData = ReturnTheQuantity::where('user_id', $user->id)
             ->whereIn('return_to', ['association', 'institution'])
-            ->selectRaw('return_to, COUNT(return_to) as count')
+            ->selectRaw('return_to, SUM(quantity) as quantity')
             ->groupBy('return_to')
             ->get()
             ->mapWithKeys(function ($item) {
-                return [$item->return_to => $item->count];
+                return [$item->return_to => $item->quantity];
             });
     
         $returnToAssociation = $returnData['association'] ?? 0;
