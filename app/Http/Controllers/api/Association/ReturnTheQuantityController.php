@@ -56,6 +56,7 @@ class ReturnTheQuantityController extends Controller
             'id',
             'association_id',
             'return_to',
+            'quantity',
             'defective_quantity_due_to_coagulation',
             'defective_quantity_due_to_impurities',
             'defective_quantity_due_to_density',
