@@ -30,15 +30,7 @@ class Controller extends BaseController
         return [
             'current_page' => $paginatedData->currentPage(),
             'data' => $formattedData,
-            'first_page_url' => $paginatedData->url(1),
-            'from' => $paginatedData->firstItem(),
             'last_page' => $paginatedData->lastPage(),
-            'last_page_url' => $paginatedData->url($paginatedData->lastPage()),
-            'next_page_url' => $paginatedData->nextPageUrl(),
-            'path' => $paginatedData->path(),
-            'per_page' => $paginatedData->perPage(),
-            'prev_page_url' => $paginatedData->previousPageUrl(),
-            'to' => $paginatedData->lastItem(),
             'total' => $paginatedData->total(),
         ];
     }
