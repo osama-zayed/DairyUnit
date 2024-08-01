@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\association;
+namespace App\Http\Controllers\Api\Association;
 
 use App\Http\Controllers\Api\UserController;
 use App\Models\AssemblyStore;
