@@ -18,7 +18,7 @@ class AuthController extends UserController
     
         $receiptFromAssociation = ReceiptFromAssociation::where('user_id', $user->id)
             ->where('association_id', '!=', null)
-            ->selectRaw('SUM(quantity) as total_quantity, COUNT(association_id) as association_count')
+            ->selectRaw('SUM(quantity) as total_quantity')
             ->first();
     
         $returnData = ReturnTheQuantity::where('user_id', $user->id)
