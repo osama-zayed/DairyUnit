@@ -44,7 +44,7 @@ class ReturnTheQuantityToAssociationResource extends Resource
                         ->relationship('factory', titleAttribute: 'name')
                         ->label('المصنع')
                         ->required(),
-            Forms\Components\DateTimePicker::make('created_at')
+                    Forms\Components\DateTimePicker::make('created_at')
                         ->label('الوقت والتاريخ')
                         ->required(),
                     Forms\Components\TextInput::make('defective_quantity_due_to_coagulation')
@@ -105,6 +105,10 @@ class ReturnTheQuantityToAssociationResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('defective_quantity_due_to_acidity')
                     ->label('الكمية التالفة بسبب الحموضة')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('quantity')
+                    ->label('اجمالي التالف')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

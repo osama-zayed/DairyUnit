@@ -97,6 +97,10 @@ class ReturnTheQuantityResource extends Resource
                     ->label('الكمية التالفة بسبب الحموضة')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('quantity')
+                    ->label('اجمالي التالف')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->label('وقت الاضافة')
