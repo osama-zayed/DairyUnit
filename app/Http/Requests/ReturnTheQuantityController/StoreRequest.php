@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\ReturnTheQuantityController;
 
+use App\Models\ReceiptFromAssociation;
 use App\Models\TransferToFactory;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
@@ -41,9 +42,22 @@ class StoreRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
+            $user = auth('sanctum')->user();
             $returnTo = $this->input('return_to');
             $receiptFromAssociationId = $this->input('association_id');
 
+            $receiptFromAssociation = ReceiptFromAssociation::where('user_id', $user->id)
+                ->selectRaw('SUM(quantity) as total_quantity')
+                ->first();
+
+            $quantity = $this->input('defective_quantity_due_to_acidity') +
+                $this->input('defective_quantity_due_to_density') +
+                $this->input('defective_quantity_due_to_impurities') +
+                $this->input('defective_quantity_due_to_coagulation');
+
+            if ($quantity > $receiptFromAssociation->total_quantity) {
+                $validator->errors()->add('association_id', 'لا يوجد لديك الكمية المردودة');
+            }
             if ($returnTo == 'association') {
                 if (is_null($receiptFromAssociationId))
                     $validator->errors()->add('association_id', 'معرف الجمعية مطلوب');
