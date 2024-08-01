@@ -91,18 +91,11 @@ class UpdateRequest extends FormRequest
                     $this->input('defective_quantity_due_to_coagulation');
                 $returnData = ReturnTheQuantity::where('user_id', $user->id)
                     ->where('id', '!=', $this->input('id'))
-                    ->whereIn('return_to', ['association', 'institution'])
                     ->selectRaw('return_to, SUM(quantity) as quantity')
-                    ->groupBy('return_to')
                     ->get()
-                    ->mapWithKeys(function ($item) {
-                        return [$item->return_to => $item->quantity];
-                    });
-
-                $returnToAssociation = $returnData['association'] ?? 0;
-                $returnToInstitution = $returnData['institution'] ?? 0;
-
-                $quantity += $returnToAssociation + $returnToInstitution;
+                    ;
+                    
+                $quantity += $returnData->quantity;
 
                 if ($quantity > $receiptFromAssociation->total_quantity) {
                     $validator->errors()->add('association_id', 'لا يوجد لديك الكمية');
