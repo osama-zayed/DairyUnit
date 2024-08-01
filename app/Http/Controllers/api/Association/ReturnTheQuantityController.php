@@ -74,10 +74,7 @@ class ReturnTheQuantityController extends Controller
         return array_map(function ($ReturnTheQuantity) {
             return [
                 'id' => $ReturnTheQuantity->id,
-                'quantity' =>  $ReturnTheQuantity->defective_quantity_due_to_acidity +
-                    $ReturnTheQuantity->defective_quantity_due_to_density +
-                    $ReturnTheQuantity->defective_quantity_due_to_impurities +
-                    $ReturnTheQuantity->defective_quantity_due_to_coagulation,
+                'quantity' =>  $ReturnTheQuantity->quantity ,
                 'return_to' => ($ReturnTheQuantity->return_to == "association") ? 'مردود الى جمعية ' . $ReturnTheQuantity->association->name :
                     'مردود الى المؤسسة'
             ];
@@ -98,10 +95,7 @@ class ReturnTheQuantityController extends Controller
             'time' => $FormattedTime,
             'period' => $DayPeriod,
             'day' => $DayOfWeek,
-            'quantity' =>  $ReturnTheQuantity->defective_quantity_due_to_acidity +
-                $ReturnTheQuantity->defective_quantity_due_to_density +
-                $ReturnTheQuantity->defective_quantity_due_to_impurities +
-                $ReturnTheQuantity->defective_quantity_due_to_coagulation,
+            'quantity' =>  $ReturnTheQuantity->quantity ,
             'return' => ($ReturnTheQuantity->return_to == "association") ? 'مردود الى جمعية ' . $ReturnTheQuantity->association->name :
                 'مردود الى المؤسسة',
             'return_to' => $ReturnTheQuantity->return_to,
