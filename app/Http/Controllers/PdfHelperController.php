@@ -19,7 +19,7 @@ class PdfHelperController extends Controller
             'data' => $data,
             'today' => $today,
         ])->render();
-        return  self::downloadPdf($html);
+        return  self::printApiPdf($html);
     }
 
 
