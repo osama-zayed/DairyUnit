@@ -11,23 +11,19 @@ class userStatus
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth("sanctum")->check()) {
-            $userstatu = auth('sanctum')->user()->status;
-            if (isset($userstatu)) {
-                if ($userstatu)
-                    return $next($request);
-            }
-            $request->user()->currentAccessToken()->delete();
-
-            return response()->json(['Status' => false, 'Message' => 'حسابك موقف'], 403);
+        if ($request->user()->status) {
+            return $next($request);
         } else {
-            $userstatu = auth()->user()->status;
-            if (isset($userstatu)) {
-                if ($userstatu)
-                    return $next($request);
+            if ($request->is('api/*')) {
+                $request->user()->currentAccessToken()->delete();
+                return response()->json([
+                    'status' => 'false',
+                    'message' => 'حسابك موقف',
+                ], 403);
+            } else {
+                auth()->logout();
+                return abort(403);
             }
-            auth()->logout();
-            return redirect()->back();
         }
     }
 }
