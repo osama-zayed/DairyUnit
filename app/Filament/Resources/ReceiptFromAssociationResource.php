@@ -8,6 +8,8 @@ use App\Models\Driver;
 use App\Models\Factory;
 use App\Models\ReceiptFromAssociation;
 use App\Models\User;
+use App\Traits\PdfTraits;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -20,6 +22,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ReceiptFromAssociationResource extends Resource
 {
+    use PdfTraits;
     protected static ?string $model = ReceiptFromAssociation::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-circle';
@@ -224,18 +227,17 @@ class ReceiptFromAssociationResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\BulkActionGroup::make([
-                        BulkAction::make('print_pdf')
-                            ->label('طباعة ك PDF')
-                            ->action(function ($records) {
-                                // return self::printPdf($records);
-                                return response()->streamDownload(function(){
-
-                                });
-                            })
-                            ->requiresConfirmation(),
-                    ]),
+                    // Tables\Actions\DeleteBulkAction::make(),
+                        // BulkAction::make('print_pdf')
+                        //     ->label('طباعة ك PDF')
+                        //     ->action(function ($records) {
+                        //         $html = view('report.index', [
+                        //             'data' => $records,
+                        //             'today' => Carbon::now()->format('Y / m / d'),
+                        //         ])->render();
+                        //         return  self::printPdf($html);
+                        //     })
+                        //     ->requiresConfirmation(),
                 ]),
             ])
             ->emptyStateActions([
