@@ -12,6 +12,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -223,7 +224,18 @@ class ReceiptFromAssociationResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkActionGroup::make([
+                        BulkAction::make('print_pdf')
+                            ->label('طباعة ك PDF')
+                            ->action(function ($records) {
+                                // return self::printPdf($records);
+                                return response()->streamDownload(function(){
+
+                                });
+                            })
+                            ->requiresConfirmation(),
+                    ]),
                 ]),
             ])
             ->emptyStateActions([

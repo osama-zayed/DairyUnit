@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Traits;
 
@@ -6,7 +6,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Mpdf\Mpdf;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-trait PdfTraits{
+
+trait PdfTraits
+{
     public static function printPdf($html, $format = '-L')
     {
         // Set up mPDF with UTF-8 support
@@ -27,7 +29,7 @@ trait PdfTraits{
             ->header('Content-Disposition', 'inline; filename="report.pdf"');
     }
 
-    public static function printApiPdf($html , $format = '-L')
+    public static function printApiPdf($html, $format = '-L')
     {
         // Set up mPDF with UTF-8 support
         $mpdf = new Mpdf([
@@ -57,7 +59,7 @@ trait PdfTraits{
         ]);
     }
 
-    public static function downloadPdf($html , $format = '-L')
+    public static function downloadPdf($html, $format = '-L')
     {
         // Set up mPDF with UTF-8 support
         $mpdf = new Mpdf([
@@ -81,17 +83,15 @@ trait PdfTraits{
         // Store the PDF file in the storage
         Storage::disk('public')->put('pdf/' . $fileName, $pdfContent);
 
-        // Create a streamed response for the PDF file
-        $response = new StreamedResponse(function () use ($pdfContent) {
-            echo $pdfContent;
-        }, 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
-            'Cache-Control' => 'no-cache, no-store, must-revalidate',
-            'Pragma' => 'no-cache',
-            'Expires' => '0',
+        // Return the URL of the generated PDF file
+        return response()->json([
+            'status' => 'true',
+            'data' => [
+                'url' => asset('storage/pdf/' . $fileName),
+            ],
+            'message' => '',
+        ], 200,[
+            'Content-Type', 'application/pdf','Content-Disposition', 'attachment; filename="report.pdf"'
         ]);
-
-        return $response;
     }
 }
