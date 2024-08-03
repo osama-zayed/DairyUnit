@@ -33,136 +33,152 @@ class TransferToFactoryController extends Controller
     }
     public function store(AddTransferToFactoryRequest $request)
     {
-        $user = auth('sanctum')->user();
-        $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
-        if (is_null($AssemblyStore)) {
-            return $this->responseError('لا يوجد لديك الكمية المطلوبة');
+        try {
+            DB::transaction(function () use ($request) {
+
+                $user = auth('sanctum')->user();
+                $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
+                if (is_null($AssemblyStore)) {
+                    return $this->responseError('لا يوجد لديك الكمية المطلوبة');
+                }
+
+                if ($AssemblyStore->quantity  < $request->input('quantity')) {
+                    return $this->responseError('لا يوجد لديك الكمية المطلوبة');
+                }
+
+                $TransferToFactory = TransferToFactory::create([
+                    'date_and_time' => $request->input('date_and_time'),
+                    'quantity' => $request->input('quantity'),
+                    'association_id' => $user->id,
+                    'driver_id' => $request->input('driver_id'),
+                    'factory_id' => $request->input('factory_id'),
+                    'means_of_transportation' => $request->input('means_of_transportation'),
+                    'notes' => $request->input('notes') ?? '',
+                ]);
+
+                $AssemblyStore::updateOrCreate(
+                    [
+                        'association_id' => $user->id,
+                    ],
+                    [
+                        'quantity' => DB::raw('quantity - ' . $request->input('quantity')),
+                    ]
+                );
+
+                self::userActivity(
+                    'اضافة عملية تحويل حليب ',
+                    $TransferToFactory,
+                    ' بتحويل حليب من الجمعية ' . $user->name .
+                        'الى المصنع ' . $TransferToFactory->factory->name .
+                        ' الكمية ' . $TransferToFactory->quantity,
+                    'جمعية'
+                );
+
+                self::userNotification(
+                    auth('sanctum')->user(),
+                    'لقد قمت ب' .
+                        'تحويل حليب الى المصنع ' . $TransferToFactory->factory->name .
+                        ' الكمية ' . $TransferToFactory->quantity
+                );
+                $users = User::where('factory_id', $TransferToFactory->factory_id)->get();
+                foreach ($users as $key => $value) {
+                    self::userNotification(
+                        $value,
+                        'لقد قامت الجمعية ' . $user->name .
+                            ' بتحويل حليب ' .
+                            ' الكمية ' . $TransferToFactory->quantity
+                    );
+                }
+            });
+
+            return self::responseSuccess([], 'تمت العملية بنجاح');
+        } catch (\Exception $e) {
+            return self::responseError('حدث خطأ أثناء تنفيذ العملية');
         }
-
-        if ($AssemblyStore->quantity  < $request->input('quantity')) {
-            return $this->responseError('لا يوجد لديك الكمية المطلوبة');
-        }
-
-        $TransferToFactory = TransferToFactory::create([
-            'date_and_time' => $request->input('date_and_time'),
-            'quantity' => $request->input('quantity'),
-            'association_id' => $user->id,
-            'driver_id' => $request->input('driver_id'),
-            'factory_id' => $request->input('factory_id'),
-            'means_of_transportation' => $request->input('means_of_transportation'),
-            'notes' => $request->input('notes') ?? '',
-        ]);
-
-        $AssemblyStore::updateOrCreate(
-            [
-                'association_id' => $user->id,
-            ],
-            [
-                'quantity' => DB::raw('quantity - ' . $request->input('quantity')),
-            ]
-        );
-
-        self::userActivity(
-            'اضافة عملية تحويل حليب ',
-            $TransferToFactory,
-            ' بتحويل حليب من الجمعية ' . $user->name .
-                'الى المصنع ' . $TransferToFactory->factory->name .
-                ' الكمية ' . $TransferToFactory->quantity,
-            'جمعية'
-        );
-
-        self::userNotification(
-            auth('sanctum')->user(),
-            'لقد قمت ب' .
-                'تحويل حليب الى المصنع ' . $TransferToFactory->factory->name .
-                ' الكمية ' . $TransferToFactory->quantity
-        );
-        $users = User::where('factory_id', $TransferToFactory->factory_id)->get();
-        foreach ($users as $key => $value) {
-            self::userNotification(
-                $value,
-                'لقد قامت الجمعية ' . $user->name .
-                    ' بتحويل حليب ' .
-                    ' الكمية ' . $TransferToFactory->quantity
-            );
-        }
-        return $this->responseSuccess([], 'تمت العملية بنجاح');
     }
     public function update(UpdateTransferToFactoryRequest $request)
     {
-        $user = auth('sanctum')->user();
-        $TransferToFactory = TransferToFactory::where('id', $request->input('id'))->first();
+        try {
+            DB::transaction(function () use ($request) {
+
+                $user = auth('sanctum')->user();
+                $TransferToFactory = TransferToFactory::where('id', $request->input('id'))->first();
 
 
-        if (!$TransferToFactory->status) {
-            return self::responseError('لا يمكن التعديل لانه تم الاستلام');
+                if (!$TransferToFactory->status) {
+                    return self::responseError('لا يمكن التعديل لانه تم الاستلام');
+                }
+
+                $createdAt = $TransferToFactory->created_at;
+                $now = now();
+                $diffInHours = $now->diffInHours($createdAt);
+                if ($diffInHours >= 2) {
+                    return self::responseError('لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
+                }
+
+                $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
+                if ($AssemblyStore->quantity + $TransferToFactory->quantity  < $request->input('quantity')) {
+                    return $this->responseError('لا يوجد لديك الكمية المطلوبة');
+                }
+                $AssemblyStore::updateOrCreate(
+                    [
+                        'association_id' => $user->id,
+                    ],
+                    [
+                        'quantity' => DB::raw('quantity + ' . $TransferToFactory->quantity),
+                    ]
+                );
+                $TransferToFactory->update([
+                    'date_and_time' => $request->input('date_and_time'),
+                    'quantity' => $request->input('quantity'),
+                    'association_id' => $user->id,
+                    'driver_id' => $request->input('driver_id'),
+                    'factory_id' => $request->input('factory_id'),
+                    'means_of_transportation' => $request->input('means_of_transportation'),
+                    'notes' => $request->input('notes') ?? '',
+
+                ]);
+                $AssemblyStore->updateOrCreate(
+                    [
+                        'association_id' => $user->id,
+                    ],
+                    [
+                        'quantity' => DB::raw('quantity - ' . $TransferToFactory->quantity),
+                    ]
+                );
+
+
+                self::userActivity(
+                    'تعديل عملية تحويل حليب ',
+                    $TransferToFactory,
+                    ' بتعديل عملية تحويل حليب من الجمعية ' . $user->name .
+                        ' الى المصنع ' . $TransferToFactory->factory->name .
+                        ' رقم المعلية ' . $TransferToFactory->id .
+                        ' الكمية ' . $TransferToFactory->quantity,
+                    'جمعية'
+                );
+
+                self::userNotification(
+                    auth('sanctum')->user(),
+                    'لقد قمت ب' .
+                        'تعديل بيانات عملية تحويل حليب الى المصنع ' . $TransferToFactory->factory->name .
+                        ' الكمية ' . $TransferToFactory->quantity
+                );
+                $users = User::where('factory_id', $TransferToFactory->factory_id)->get();
+                foreach ($users as $key => $value) {
+                    self::userNotification(
+                        $value,
+                        'لقد قامت الجمعية ' . $user->name .
+                            ' بتعديل بيانات عملية تحويل حليب ' .
+                            ' الكمية ' . $TransferToFactory->quantity
+                    );
+                }
+            });
+
+            return self::responseSuccess([], 'تمت العملية بنجاح');
+        } catch (\Exception $e) {
+            return self::responseError('حدث خطأ أثناء تنفيذ العملية');
         }
-
-        $createdAt = $TransferToFactory->created_at;
-        $now = now();
-        $diffInHours = $now->diffInHours($createdAt);
-        if ($diffInHours >= 2) {
-            return self::responseError('لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
-        }
-
-        $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
-        if ($AssemblyStore->quantity + $TransferToFactory->quantity  < $request->input('quantity')) {
-            return $this->responseError('لا يوجد لديك الكمية المطلوبة');
-        }
-        $AssemblyStore::updateOrCreate(
-            [
-                'association_id' => $user->id,
-            ],
-            [
-                'quantity' => DB::raw('quantity + ' . $TransferToFactory->quantity),
-            ]
-        );
-        $TransferToFactory->update([
-            'date_and_time' => $request->input('date_and_time'),
-            'quantity' => $request->input('quantity'),
-            'association_id' => $user->id,
-            'driver_id' => $request->input('driver_id'),
-            'factory_id' => $request->input('factory_id'),
-            'means_of_transportation' => $request->input('means_of_transportation'),
-            'notes' => $request->input('notes') ?? '',
-
-        ]);
-        $AssemblyStore->updateOrCreate(
-            [
-                'association_id' => $user->id,
-            ],
-            [
-                'quantity' => DB::raw('quantity - ' . $TransferToFactory->quantity),
-            ]
-        );
-
-
-        self::userActivity(
-            'تعديل عملية تحويل حليب ',
-            $TransferToFactory,
-            ' بتعديل عملية تحويل حليب من الجمعية ' . $user->name .
-                ' الى المصنع ' . $TransferToFactory->factory->name .
-                ' رقم المعلية ' . $TransferToFactory->id .
-                ' الكمية ' . $TransferToFactory->quantity,
-            'جمعية'
-        );
-
-        self::userNotification(
-            auth('sanctum')->user(),
-            'لقد قمت ب' .
-                'تعديل بيانات عملية تحويل حليب الى المصنع ' . $TransferToFactory->factory->name .
-                ' الكمية ' . $TransferToFactory->quantity
-        );
-        $users = User::where('factory_id', $TransferToFactory->factory_id)->get();
-        foreach ($users as $key => $value) {
-            self::userNotification(
-                $value,
-                'لقد قامت الجمعية ' . $user->name .
-                    ' بتعديل بيانات عملية تحويل حليب ' .
-                    ' الكمية ' . $TransferToFactory->quantity
-            );
-        }
-        return self::responseSuccess([], 'تم التعديل بنجاح');
     }
 
 

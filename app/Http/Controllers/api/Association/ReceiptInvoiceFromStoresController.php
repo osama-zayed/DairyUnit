@@ -18,156 +18,170 @@ class ReceiptInvoiceFromStoresController extends Controller
 {
     public function AddReceiptInvoiceFromCollector(AddReceiptInvoiceFromStoresRequest $request)
     {
-        $user = auth('sanctum')->user();
-        $warehouseSummary = CollectingMilkFromFamily::where('user_id', $request->input('associations_branche_id'))
-            ->selectRaw('SUM(quantity) as total_quantity')
-            ->first();
+        try {
+            DB::transaction(function () use ($request) {
+                $user = auth('sanctum')->user();
+                $warehouseSummary = CollectingMilkFromFamily::where('user_id', $request->input('associations_branche_id'))
+                    ->selectRaw('SUM(quantity) as total_quantity')
+                    ->first();
 
-        $totalDeliveredQuantity = ReceiptInvoiceFromStore::where('associations_branche_id', $request->input('associations_branche_id'))
-            ->selectRaw('SUM(quantity) as total_delivered_quantity')
-            ->first()->total_delivered_quantity;
+                $totalDeliveredQuantity = ReceiptInvoiceFromStore::where('associations_branche_id', $request->input('associations_branche_id'))
+                    ->selectRaw('SUM(quantity) as total_delivered_quantity')
+                    ->first()->total_delivered_quantity;
 
-        $availableQuantity = $warehouseSummary->total_quantity - $totalDeliveredQuantity;
+                $availableQuantity = $warehouseSummary->total_quantity - $totalDeliveredQuantity;
 
-        // Check if the user has enough quantity available
-        if ($availableQuantity < $request->input('quantity')) {
-            return $this->responseError('لا يوجد لدى المجمع الكمية المطلوبة');
+                // Check if the user has enough quantity available
+                if ($availableQuantity < $request->input('quantity')) {
+                    return $this->responseError('لا يوجد لدى المجمع الكمية المطلوبة');
+                }
+
+                $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::create([
+                    'date_and_time' => $request->input('date_and_time'),
+                    'quantity' => $request->input('quantity'),
+                    'association_id' => $user->id,
+                    'associations_branche_id' => $request->input('associations_branche_id'),
+                    'notes' => $request->input('notes') ?? '',
+                ]);
+
+                $assemblyStore = AssemblyStore::updateOrCreate(
+                    [
+                        'association_id' => $user->id,
+                    ],
+                    [
+                        'quantity' => DB::raw('quantity + ' . $request->input('quantity')),
+                    ]
+                );
+                self::userActivity(
+                    'اضافة عملية توريد حليب ',
+                    $ReceiptInvoiceFromStore,
+                    ' بتوريد حليب من فرع الجمعية ' . $ReceiptInvoiceFromStore->associationsBranche->name .
+                        ' جمعية ' . $user->name .
+                        ' الكمية ' . $ReceiptInvoiceFromStore->quantity,
+                    'جمعية'
+                );
+                self::userNotification(
+                    auth('sanctum')->user(),
+                    'لقد قمت ب' .
+                        ' توريد حليب من فرع الجمعية ' . $ReceiptInvoiceFromStore->associationsBranche->name .
+                        ' الكمية ' . $ReceiptInvoiceFromStore->quantity
+                );
+                $user = User::find($request->input('associations_branche_id'));
+                self::userNotification(
+                    $user,
+                    'لقد قامت الجمعية ب' .
+                        ' توريد حليب منك' .
+                        ' الكمية ' . $ReceiptInvoiceFromStore->quantity
+                );
+            });
+
+            return self::responseSuccess([], 'تمت العملية بنجاح');
+        } catch (\Exception $e) {
+            return self::responseError('حدث خطأ أثناء تنفيذ العملية');
         }
-
-        $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::create([
-            'date_and_time' => $request->input('date_and_time'),
-            'quantity' => $request->input('quantity'),
-            'association_id' => $user->id,
-            'associations_branche_id' => $request->input('associations_branche_id'),
-            'notes' => $request->input('notes') ?? '',
-        ]);
-
-        $assemblyStore = AssemblyStore::updateOrCreate(
-            [
-                'association_id' => $user->id,
-            ],
-            [
-                'quantity' => DB::raw('quantity + ' . $request->input('quantity')),
-            ]
-        );
-        self::userActivity(
-            'اضافة عملية توريد حليب ',
-            $ReceiptInvoiceFromStore,
-            ' بتوريد حليب من فرع الجمعية ' . $ReceiptInvoiceFromStore->associationsBranche->name .
-            ' جمعية ' . $user->name .
-                ' الكمية ' . $ReceiptInvoiceFromStore->quantity,
-             'جمعية'
-        );
-        self::userNotification(
-            auth('sanctum')->user(),
-            'لقد قمت ب' .
-                ' توريد حليب من فرع الجمعية ' . $ReceiptInvoiceFromStore->associationsBranche->name .
-                ' الكمية ' . $ReceiptInvoiceFromStore->quantity
-        );
-        $user = User::find($request->input('associations_branche_id'));
-        self::userNotification(
-            $user,
-            'لقد قامت الجمعية ب' .
-                ' توريد حليب منك' .
-                ' الكمية ' . $ReceiptInvoiceFromStore->quantity
-        );
-        return $this->responseSuccess([], 'تمت العملية بنجاح');
     }
     public function update(UpdateReceiptInvoiceFromStoresRequest $request)
     {
-        $user = auth('sanctum')->user();
+        try {
+            DB::transaction(function () use ($request) {
+                $user = auth('sanctum')->user();
 
-        $lastTransferToFactory = TransferToFactory::where('association_id', $user->id)
-            ->select('updated_at')
-            ->latest()
-            ->first();
+                $lastTransferToFactory = TransferToFactory::where('association_id', $user->id)
+                    ->select('updated_at')
+                    ->latest()
+                    ->first();
 
-        $lastReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('association_id', $user->id)
-            ->select('created_at')
-            ->latest()
-            ->first();
+                $lastReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('association_id', $user->id)
+                    ->select('created_at')
+                    ->latest()
+                    ->first();
 
-        $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('id', $request->input("id"))
-            ->where('association_id', $user->id)
-            ->first();
+                $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('id', $request->input("id"))
+                    ->where('association_id', $user->id)
+                    ->first();
 
-        if ($ReceiptInvoiceFromStore && (
-            ($ReceiptInvoiceFromStore->created_at < $lastReceiptInvoiceFromStore->created_at) ||
-            ($ReceiptInvoiceFromStore->created_at < $lastTransferToFactory->updated_at)
-        )) {
-            return $this->responseError('لا يمكن التعديل لأنه حصل عملية في وقت لاحق');
+                if ($ReceiptInvoiceFromStore && (
+                    ($ReceiptInvoiceFromStore->created_at < $lastReceiptInvoiceFromStore->created_at) ||
+                    ($ReceiptInvoiceFromStore->created_at < $lastTransferToFactory->updated_at)
+                )) {
+                    return $this->responseError('لا يمكن التعديل لأنه حصل عملية في وقت لاحق');
+                }
+                // Check if the user is trying to update the record after 2 hours of creation
+                $createdAt = $ReceiptInvoiceFromStore->created_at;
+                $now = now();
+                $diffInHours = $now->diffInHours($createdAt);
+                if ($diffInHours >= 2) {
+                    return self::responseError('لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
+                }
+
+                $warehouseSummary = CollectingMilkFromFamily::where('user_id', $request->input('associations_branche_id'))
+                    ->selectRaw('SUM(quantity) as total_quantity')
+                    ->first();
+
+                $totalDeliveredQuantity = ReceiptInvoiceFromStore::where('associations_branche_id', $request->input('associations_branche_id'))
+                    ->selectRaw('SUM(quantity) as total_delivered_quantity')
+                    ->first()->total_delivered_quantity;
+
+                $availableQuantity = $warehouseSummary->total_quantity - $totalDeliveredQuantity + $ReceiptInvoiceFromStore->quantity;
+
+                // Check if the user has enough quantity available
+                if ($availableQuantity  < $request->input('quantity')) {
+                    return $this->responseError('لا يوجد لدى المجمع الكمية المطلوبة');
+                }
+
+
+                AssemblyStore::updateOrCreate(
+                    [
+                        'association_id' => $user->id,
+                    ],
+                    [
+                        'quantity' => DB::raw('quantity - ' . $ReceiptInvoiceFromStore->quantity),
+                    ]
+                );
+                $ReceiptInvoiceFromStore->update([
+                    'collection_date_and_time' => $request->input('date_and_time'),
+                    'associations_branche_id' => $request->input('associations_branche_id'),
+                    'quantity' => $request->input('quantity'),
+                    'family_id' => $request->input('family_id'),
+                    'nots' => $request->input('nots') ?? '',
+                ]);
+                AssemblyStore::updateOrCreate(
+                    [
+                        'association_id' => $user->id,
+                    ],
+                    [
+                        'quantity' => DB::raw('quantity + ' . $ReceiptInvoiceFromStore->quantity),
+                    ]
+                );
+                self::userActivity(
+                    'تعديل عملية توريد الحليب ',
+                    $ReceiptInvoiceFromStore,
+                    ' تعديل عملية توريد الحليب من المجمع ' . $ReceiptInvoiceFromStore->associationsBranche->name .
+                        ' جمعية ' . $user->name .
+                        ' رقم العلمية ' . $ReceiptInvoiceFromStore->id .
+                        ' الكمية ' . $ReceiptInvoiceFromStore->quantity,
+                    'جمعية'
+                );
+
+                self::userNotification(
+                    $user,
+                    'لقد قمت بتعديل ' .
+                        ' توريد حليب من المجمع ' . $ReceiptInvoiceFromStore->associationsBranche->name .
+                        ' الكمية ' . $ReceiptInvoiceFromStore->quantity,
+                );
+                $user = User::find($request->input('associations_branche_id'));
+                self::userNotification(
+                    $user,
+                    'لقد قامت الجمعية ب' .
+                        ' تعديل توريد حليب منك' .
+                        ' الكمية ' . $ReceiptInvoiceFromStore->quantity
+                );
+            });
+
+            return self::responseSuccess([], 'تمت العملية بنجاح');
+        } catch (\Exception $e) {
+            return self::responseError('حدث خطأ أثناء تنفيذ العملية');
         }
-        // Check if the user is trying to update the record after 2 hours of creation
-        $createdAt = $ReceiptInvoiceFromStore->created_at;
-        $now = now();
-        $diffInHours = $now->diffInHours($createdAt);
-        if ($diffInHours >= 2) {
-            return self::responseError('لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
-        }
-
-        $warehouseSummary = CollectingMilkFromFamily::where('user_id', $request->input('associations_branche_id'))
-            ->selectRaw('SUM(quantity) as total_quantity')
-            ->first();
-
-        $totalDeliveredQuantity = ReceiptInvoiceFromStore::where('associations_branche_id', $request->input('associations_branche_id'))
-            ->selectRaw('SUM(quantity) as total_delivered_quantity')
-            ->first()->total_delivered_quantity;
-
-        $availableQuantity = $warehouseSummary->total_quantity - $totalDeliveredQuantity + $ReceiptInvoiceFromStore->quantity;
-
-        // Check if the user has enough quantity available
-        if ($availableQuantity  < $request->input('quantity')) {
-            return $this->responseError('لا يوجد لدى المجمع الكمية المطلوبة');
-        }
-
-
-        AssemblyStore::updateOrCreate(
-            [
-                'association_id' => $user->id,
-            ],
-            [
-                'quantity' => DB::raw('quantity - ' . $ReceiptInvoiceFromStore->quantity),
-            ]
-        );
-        $ReceiptInvoiceFromStore->update([
-            'collection_date_and_time' => $request->input('date_and_time'),
-            'associations_branche_id' => $request->input('associations_branche_id'),
-            'quantity' => $request->input('quantity'),
-            'family_id' => $request->input('family_id'),
-            'nots' => $request->input('nots') ?? '',
-        ]);
-        AssemblyStore::updateOrCreate(
-            [
-                'association_id' => $user->id,
-            ],
-            [
-                'quantity' => DB::raw('quantity + ' . $ReceiptInvoiceFromStore->quantity),
-            ]
-        );
-        self::userActivity(
-            'تعديل عملية توريد الحليب ',
-            $ReceiptInvoiceFromStore,
-            ' تعديل عملية توريد الحليب من المجمع ' . $ReceiptInvoiceFromStore->associationsBranche->name .
-            ' جمعية ' . $user->name .
-            ' رقم العلمية ' . $ReceiptInvoiceFromStore->id .
-                ' الكمية ' . $ReceiptInvoiceFromStore->quantity,
-             'جمعية'
-        );
-
-        self::userNotification(
-            $user,
-            'لقد قمت بتعديل ' .
-                ' توريد حليب من المجمع ' . $ReceiptInvoiceFromStore->associationsBranche->name .
-                ' الكمية ' . $ReceiptInvoiceFromStore->quantity,
-        );
-        $user = User::find($request->input('associations_branche_id'));
-        self::userNotification(
-            $user,
-            'لقد قامت الجمعية ب' .
-                ' تعديل توريد حليب منك' .
-                ' الكمية ' . $ReceiptInvoiceFromStore->quantity
-        );
-        return self::responseSuccess([], 'تم التعديل بنجاح');
     }
     public static function showAll(Request $request)
     {
