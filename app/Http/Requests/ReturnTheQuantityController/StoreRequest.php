@@ -56,8 +56,8 @@ class StoreRequest extends FormRequest
                 $this->input('defective_quantity_due_to_impurities') +
                 $this->input('defective_quantity_due_to_coagulation');
                 $returnData = ReturnTheQuantity::where('user_id', $user->id)
-                ->selectRaw('return_to, SUM(quantity) as quantity')
-                ->get();
+                ->selectRaw('SUM(quantity) as quantity')
+                ->first();
                 
                 $quantity+= $returnData->quantity ;
 
