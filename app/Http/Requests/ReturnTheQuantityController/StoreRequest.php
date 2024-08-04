@@ -55,16 +55,16 @@ class StoreRequest extends FormRequest
                 $this->input('defective_quantity_due_to_density') +
                 $this->input('defective_quantity_due_to_impurities') +
                 $this->input('defective_quantity_due_to_coagulation');
-                $returnData = ReturnTheQuantity::where('user_id', $user->id)
+            $returnData = ReturnTheQuantity::where('user_id', $user->id)
                 ->selectRaw('SUM(quantity) as quantity')
                 ->first();
-                
-                $quantity+= $returnData->quantity ;
+
+            $quantity += $returnData->quantity;
 
             if ($quantity > $receiptFromAssociation->total_quantity) {
                 $validator->errors()->add('association_id', 'لا يوجد لديك الكمية');
             }
-            
+
             if ($returnTo == 'association') {
                 if (is_null($receiptFromAssociationId))
                     $validator->errors()->add('association_id', 'معرف الجمعية مطلوب');
