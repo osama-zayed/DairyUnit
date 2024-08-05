@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\Representative\ReceiptFromAssociationController;
 use App\Http\Controllers\Api\Representative\ReturnTheQuantityController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
