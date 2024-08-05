@@ -3,8 +3,6 @@
 use App\Http\Controllers\Api\Association\ReturnTheQuantityController;
 use Illuminate\Support\Facades\Route;
 
-
-
 Route::prefix('auth')->group(function () {
     Route::post('login', "AuthController@login");
     Route::middleware(['auth:sanctum', 'Permission:association', 'userStatus'])->group(function () {
