@@ -59,7 +59,7 @@ class FackeDataSeeder extends Seeder
 
         $family = Family::create([
             'name' => "الاسره 1",
-            'phone' => "777888999",
+            'phone' => "777888990",
             'number_of_cows_produced' => 5,
             'number_of_cows_unproductive' => 6,
             'association_id' => $association1->id,
@@ -75,7 +75,7 @@ class FackeDataSeeder extends Seeder
         ]);
         $family = Family::create([
             'name' => "الاسره 3",
-            'phone' => "777888999",
+            'phone' => "777888995",
             'number_of_cows_produced' => 5,
             'number_of_cows_unproductive' => 6,
             'association_id' => $association2->id,
@@ -112,12 +112,12 @@ class FackeDataSeeder extends Seeder
         ]);
         $Driver = Driver::create([
             'name' => "السائق 1",
-            'phone' => "777888999",
+            'phone' => "777888990",
             'association_id' => $association1->id,
         ]);
         $Driver = Driver::create([
             'name' => "السائق 2",
-            'phone' => "777888999",
+            'phone' => "777888950",
             'association_id' => $association2->id,
         ]);
       
