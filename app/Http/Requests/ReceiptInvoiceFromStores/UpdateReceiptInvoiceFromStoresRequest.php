@@ -34,10 +34,7 @@ class UpdateReceiptInvoiceFromStoresRequest extends FormRequest
             'id' => [
                 'required',
                 'integer',
-                'exists:receipt_invoice_from_stores,id',
-                function ($attribute, $value, $fail) {
-                   
-                },
+                'exists:receipt_invoice_from_stores,id'
             ],
             'date_and_time' => [
                 'required',
@@ -85,9 +82,9 @@ class UpdateReceiptInvoiceFromStoresRequest extends FormRequest
             $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('id', $this->input("id"))
                 ->where('association_id', $user->id)
                 ->first();
-                if ($ReceiptInvoiceFromStore->association_id !== auth('sanctum')->user()->id) {
-                    $validator->errors()->add('id', 'لم تقم انت باضافة هذه العملية');
-                }
+            if ($ReceiptInvoiceFromStore->association_id !== auth('sanctum')->user()->id) {
+                $validator->errors()->add('id', 'لم تقم انت باضافة هذه العملية');
+            }
             if ($ReceiptInvoiceFromStore && (
                 ($ReceiptInvoiceFromStore->created_at < $lastReceiptInvoiceFromStore->created_at) ||
                 ($ReceiptInvoiceFromStore->created_at < $lastTransferToFactory->updated_at)
@@ -115,7 +112,6 @@ class UpdateReceiptInvoiceFromStoresRequest extends FormRequest
             // Check if the user has enough quantity available
             if ($availableQuantity  < $this->input('quantity')) {
                 $validator->errors()->add('quantity', 'لا يوجد لدى المجمع الكمية المطلوبة');
-
             }
         });
     }

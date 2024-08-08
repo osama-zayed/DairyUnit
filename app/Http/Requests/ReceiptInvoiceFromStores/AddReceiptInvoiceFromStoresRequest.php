@@ -53,24 +53,21 @@ class AddReceiptInvoiceFromStoresRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            $user = auth('sanctum')->user();
-          
+
             $warehouseSummary = CollectingMilkFromFamily::where('user_id', $this->input('associations_branche_id'))
-            ->selectRaw('SUM(quantity) as total_quantity')
-            ->first();
+                ->selectRaw('SUM(quantity) as total_quantity')
+                ->first();
 
-        $totalDeliveredQuantity = ReceiptInvoiceFromStore::where('associations_branche_id', $this->input('associations_branche_id'))
-            ->selectRaw('SUM(quantity) as total_delivered_quantity')
-            ->first()->total_delivered_quantity;
+            $totalDeliveredQuantity = ReceiptInvoiceFromStore::where('associations_branche_id', $this->input('associations_branche_id'))
+                ->selectRaw('SUM(quantity) as total_delivered_quantity')
+                ->first()->total_delivered_quantity;
 
-        $availableQuantity = $warehouseSummary->total_quantity - $totalDeliveredQuantity;
+            $availableQuantity = $warehouseSummary->total_quantity - $totalDeliveredQuantity;
 
-        // Check if the user has enough quantity available
-        if ($availableQuantity < $this->input('quantity')) {
-            $validator->errors()->add('quantity', 'لا يوجد لدى المجمع الكمية المطلوبة');
-        }
-
-
+            // Check if the user has enough quantity available
+            if ($availableQuantity < $this->input('quantity')) {
+                $validator->errors()->add('quantity', 'لا يوجد لدى المجمع الكمية المطلوبة');
+            }
         });
     }
     /**
