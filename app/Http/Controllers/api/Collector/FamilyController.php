@@ -60,7 +60,7 @@ class FamilyController extends Controller
                     $family,
                     ' باضافة اسرة جديدة ' . $family->name .
                         ' جمعية ' . $family->association->name,
-                    ' فرع الجمعية' . auth('sanctum')->user()->name
+                    ' فرع الجمعية'
                 );
 
                 self::userNotification(
@@ -95,7 +95,7 @@ class FamilyController extends Controller
                     'تعديل اسرة',
                     $family,
                     ' بتعديل بيانات اسرة ' . $family->name . ' جمعية ' . $family->association->name,
-                    ' فرع الجمعية ' . auth('sanctum')->user()->name
+                    ' فرع الجمعية '
                 );
 
                 $this->userNotification(
@@ -111,7 +111,7 @@ class FamilyController extends Controller
     }
     public function updateStatus(StatusRequest $request)
     {
-    
+
         $family = Family::where('id', $request->input('id'))
             ->where('associations_branche_id', auth('sanctum')->user()->id)
             ->first();
@@ -129,7 +129,7 @@ class FamilyController extends Controller
             'تعديل حالة اسرة',
             $family,
             ' بتعديل حالة الاسرة ' . $family->name . ' جمعية ' . $family->association->name,
-
+            'فرع الجمعية'
         );
 
         $this->userNotification(
