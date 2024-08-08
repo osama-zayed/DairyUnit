@@ -66,8 +66,16 @@ class CollectingMilkFromFamilyResource extends Resource
                     ->required()
                     ->label('الكمية')
                     ->numeric(),
+                    
                     ])->columns(2)->collapsed(2),
-
+                    Forms\Components\Section::make([
+                        Forms\Components\Textarea::make('nots')
+                            ->label('الملاحظات')
+                            ->required()
+                            ->maxLength(65535)
+                            ->columnSpanFull(),
+                    ])->columns(2)->collapsed(2)
+    
             ]);
     }
 
