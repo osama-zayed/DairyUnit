@@ -4,6 +4,7 @@ namespace App\Http\Requests\Collector;
 
 use App\Models\CollectingMilkFromFamily;
 use App\Models\Family;
+use App\Models\ReceiptInvoiceFromStore;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCollectingRequest extends FormRequest
@@ -25,13 +26,7 @@ class UpdateCollectingRequest extends FormRequest
             'id' => [
                 'required',
                 'integer',
-                'exists:collecting_milk_from_families,id',
-                function ($attribute, $value, $fail) {
-                    $collectingMilkFromFamily = CollectingMilkFromFamily::findOrFail($value);
-                    if ($collectingMilkFromFamily->user_id !== auth('sanctum')->user()->id) {
-                        $fail('لم تقم انت باضافة هذه العملية');
-                    }
-                },
+                'exists:collecting_milk_from_families,id'
             ],
             'date_and_time' => [
                 'required',
@@ -40,11 +35,11 @@ class UpdateCollectingRequest extends FormRequest
                     $requestDateTime = \Carbon\Carbon::parse($value);
                     $now = \Carbon\Carbon::now();
                     $twoDaysAgo = \Carbon\Carbon::now()->subDays(2);
-    
+
                     if ($requestDateTime->greaterThan($now)) {
                         $fail('يجب أن لا يكون تاريخ ووقت الجمع في المستقبل (بعد الوقت الحالي).');
                     }
-    
+
                     if ($requestDateTime->lessThan($twoDaysAgo)) {
                         $fail('يجب أن لا يكون تاريخ ووقت الجمع قبل يومين.');
                     }
@@ -57,15 +52,41 @@ class UpdateCollectingRequest extends FormRequest
             ],
             'family_id' => [
                 'required',
-                'exists:families,id',
-                function ($attribute, $value, $fail) {
-                    $family =Family::findOrFail($value)->associations_branche_id;
-                    if ( $family !== auth('sanctum')->user()->id) {
-                        $fail('لم تقم أنت بإضافة هذه الأسرة');
-                    }
-                },
+                'exists:families,id'
             ],
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $collectingMilkFromFamily = CollectingMilkFromFamily::findOrFail($this->input("id"));
+
+            if ($collectingMilkFromFamily->user_id !== auth('sanctum')->user()->id) {
+                $validator->errors()->add('user_id', 'لم تقم أنت بإضافة هذه الأسرة');
+            }
+
+            $family = Family::findOrFail($this->input("family_id"))->associations_branche_id;
+            if ($family !== auth('sanctum')->user()->id) {
+                $validator->errors()->add('date_and_time', 'لم تقم أنت بإضافة هذه الأسرة');
+            }
+
+
+            $createdAtReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('associations_branche_id', auth('sanctum')->user()->id)
+                ->orderByDesc('id')
+                ->first();
+
+            $createdAt = $collectingMilkFromFamily->created_at;
+            if (!is_null($createdAtReceiptInvoiceFromStore))
+                if ($createdAtReceiptInvoiceFromStore->created_at >= $createdAt) {
+                    $validator->errors()->add('date_and_time', 'لا يمكن تعديل السجل لانه حصل عملية في وقت لاحق');
+                }
+            $now = now();
+            $diffInHours = $now->diffInHours($createdAt);
+            if ($diffInHours >= 2) {
+                $validator->errors()->add('date_and_time', 'لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
+            }
+        });
     }
 
     /**

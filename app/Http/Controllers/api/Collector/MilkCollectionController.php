@@ -51,22 +51,7 @@ class MilkCollectionController extends Controller
         try {
             DB::transaction(function () use ($request) {
                 $collectingMilkFromFamily = CollectingMilkFromFamily::findOrFail($request->input("id"));
-                $createdAtReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('associations_branche_id', auth('sanctum')->user()->id)
-                    ->orderByDesc('id')
-                    ->first();
-
-                // Check if the user is trying to update the record after 2 hours of creation
-                $createdAt = $collectingMilkFromFamily->created_at;
-                if (!is_null($createdAtReceiptInvoiceFromStore))
-                    if ($createdAtReceiptInvoiceFromStore->created_at >= $createdAt) {
-                        return self::responseError('لا يمكن تعديل السجل لانه حصل عملية في وقت لاحق');
-                    }
-                $now = now();
-                $diffInHours = $now->diffInHours($createdAt);
-                if ($diffInHours >= 2) {
-                    return self::responseError('لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
-                }
-
+               
 
                 $collectingMilkFromFamily->update([
                     'collection_date_and_time' => $request->input('date_and_time'),
