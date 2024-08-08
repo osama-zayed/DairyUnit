@@ -60,27 +60,28 @@ class UpdateCollectingRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
+            // تحقق من أن المستخدم هو من أضاف هذه العائلة
             $collectingMilkFromFamily = CollectingMilkFromFamily::findOrFail($this->input("id"));
-
             if ($collectingMilkFromFamily->user_id !== auth('sanctum')->user()->id) {
-                $validator->errors()->add('user_id', 'لم تقم أنت بإضافة هذه الأسرة');
+                $validator->errors()->add('user_id', 'لم تقم أنت بإضافة هذه العملية');
             }
-
+    
+            // تحقق من أن العائلة تنتمي إلى فرع المستخدم
             $family = Family::findOrFail($this->input("family_id"))->associations_branche_id;
             if ($family !== auth('sanctum')->user()->id) {
                 $validator->errors()->add('date_and_time', 'لم تقم أنت بإضافة هذه الأسرة');
             }
-
-
+    
+            // تحقق من أنه لم يتم إجراء أي عملية لاحقة
             $createdAtReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('associations_branche_id', auth('sanctum')->user()->id)
                 ->orderByDesc('id')
                 ->first();
-
             $createdAt = $collectingMilkFromFamily->created_at;
-            if (!is_null($createdAtReceiptInvoiceFromStore))
-                if ($createdAtReceiptInvoiceFromStore->created_at >= $createdAt) {
-                    $validator->errors()->add('date_and_time', 'لا يمكن تعديل السجل لانه حصل عملية في وقت لاحق');
-                }
+            if (!is_null($createdAtReceiptInvoiceFromStore) && $createdAtReceiptInvoiceFromStore->created_at >= $createdAt) {
+                $validator->errors()->add('date_and_time', 'لا يمكن تعديل السجل لانه حصل عملية في وقت لاحق');
+            }
+    
+            // تحقق من أنه لم يمر أكثر من ساعتين منذ إضافة السجل
             $now = now();
             $diffInHours = $now->diffInHours($createdAt);
             if ($diffInHours >= 2) {
