@@ -97,24 +97,7 @@ class TransferToFactoryController extends Controller
 
                 $user = auth('sanctum')->user();
                 $TransferToFactory = TransferToFactory::where('id', $request->input('id'))->first();
-
-
-                if (!$TransferToFactory->status) {
-                    throw new \Exception('لا يمكن التعديل لانه تم الاستلام');
-                    
-                }
-                
-                $createdAt = $TransferToFactory->created_at;
-                $now = now();
-                $diffInHours = $now->diffInHours($createdAt);
-                if ($diffInHours >= 2) {
-                    throw new \Exception('لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
-                }
-                
                 $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
-                if ($AssemblyStore->quantity + $TransferToFactory->quantity  < $request->input('quantity')) {
-                    throw new \Exception('لا يوجد لديك الكمية المطلوبة');
-                }
 
                 $AssemblyStore::updateOrCreate(
                     [
@@ -142,7 +125,6 @@ class TransferToFactoryController extends Controller
                         'quantity' => DB::raw('quantity - ' . $TransferToFactory->quantity),
                     ]
                 );
-
 
                 self::userActivity(
                     'تعديل عملية تحويل حليب ',

@@ -36,13 +36,7 @@ class UpdateTransferToFactoryRequest extends FormRequest
             'id' => [
                 'required',
                 'integer',
-                'exists:transfer_to_factories,id',
-                function ($attribute, $value, $fail) {
-                    $collectingMilkFromFamily = TransferToFactory::findOrFail($value);
-                    if ($collectingMilkFromFamily->association_id !== auth('sanctum')->user()->id) {
-                        $fail('لم تقم انت باضافة هذه العملية');
-                    }
-                },
+                'exists:transfer_to_factories,id'
             ],
             'date_and_time' => [
                 'required',
@@ -73,7 +67,59 @@ class UpdateTransferToFactoryRequest extends FormRequest
             'notes' => 'nullable|string',
         ];
     }
-
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $user = auth('sanctum')->user();
+    
+            $TransferToFactory = TransferToFactory::where('id', $this->input('id'))->first();
+            if (!$TransferToFactory) {
+                $validator->errors()->add('id', 'السجل غير موجود.');
+                return;
+            }
+    
+            if ($TransferToFactory->association_id !== $user->id) {
+                $validator->errors()->add('id', 'لم تقم أنت بإضافة هذه العملية.');
+            }
+    
+            if ($TransferToFactory->status) {
+                $validator->errors()->add('id', 'لا يمكن التعديل لأنه تم الاستلام.');
+            }
+    
+            $createdAt = $TransferToFactory->created_at;
+            $now = now();
+            $diffInHours = $now->diffInHours($createdAt);
+            if ($diffInHours >= 2) {
+                $validator->errors()->add('id', 'لا يمكن تعديل السجل بعد مرور ساعتين من إضافته.');
+            }
+    
+            ////////////
+    
+            $lastReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('association_id', $user->id)
+                ->select('created_at')
+                ->latest()
+                ->first();
+            $lastTransferToFactory = TransferToFactory::where('association_id', $user->id)
+                ->select('created_at')
+                ->latest()
+                ->first();
+    
+                if (
+                    ($lastReceiptInvoiceFromStore && $lastReceiptInvoiceFromStore->created_at > $TransferToFactory->created_at) ||
+                    ($lastTransferToFactory && $TransferToFactory->created_at < $lastTransferToFactory->created_at)
+                ) {
+                    $validator->errors()->add('date_and_time', 'لا يمكن التعديل لأنه حصلت عملية في وقت لاحق.');
+                }
+                
+    
+            ////////////
+            $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
+            if ($AssemblyStore->quantity + $TransferToFactory->quantity  < $this->input('quantity')) {
+                $validator->errors()->add('id', 'لا يوجد لديك الكمية المطلوبة');
+            }
+        });
+    }
+    
     /**
      * Get the error messages for the defined validation rules.
      *
