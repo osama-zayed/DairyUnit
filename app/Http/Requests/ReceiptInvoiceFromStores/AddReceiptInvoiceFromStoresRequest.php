@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\ReceiptInvoiceFromStores;
 
+use App\Models\CollectingMilkFromFamily;
+use App\Models\ReceiptInvoiceFromStore;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -48,7 +50,29 @@ class AddReceiptInvoiceFromStoresRequest extends FormRequest
             'nots' => 'nullable',
         ];
     }
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $user = auth('sanctum')->user();
+          
+            $warehouseSummary = CollectingMilkFromFamily::where('user_id', $this->input('associations_branche_id'))
+            ->selectRaw('SUM(quantity) as total_quantity')
+            ->first();
 
+        $totalDeliveredQuantity = ReceiptInvoiceFromStore::where('associations_branche_id', $this->input('associations_branche_id'))
+            ->selectRaw('SUM(quantity) as total_delivered_quantity')
+            ->first()->total_delivered_quantity;
+
+        $availableQuantity = $warehouseSummary->total_quantity - $totalDeliveredQuantity;
+
+        // Check if the user has enough quantity available
+        if ($availableQuantity < $this->input('quantity')) {
+            $validator->errors()->add('quantity', 'لا يوجد لدى المجمع الكمية المطلوبة');
+        }
+
+
+        });
+    }
     /**
      * Get the error messages for the defined validation rules.
      */

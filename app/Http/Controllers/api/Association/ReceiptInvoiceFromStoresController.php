@@ -21,20 +21,6 @@ class ReceiptInvoiceFromStoresController extends Controller
         try {
             DB::transaction(function () use ($request) {
                 $user = auth('sanctum')->user();
-                $warehouseSummary = CollectingMilkFromFamily::where('user_id', $request->input('associations_branche_id'))
-                    ->selectRaw('SUM(quantity) as total_quantity')
-                    ->first();
-
-                $totalDeliveredQuantity = ReceiptInvoiceFromStore::where('associations_branche_id', $request->input('associations_branche_id'))
-                    ->selectRaw('SUM(quantity) as total_delivered_quantity')
-                    ->first()->total_delivered_quantity;
-
-                $availableQuantity = $warehouseSummary->total_quantity - $totalDeliveredQuantity;
-
-                // Check if the user has enough quantity available
-                if ($availableQuantity < $request->input('quantity')) {
-                    return $this->responseError('لا يوجد لدى المجمع الكمية المطلوبة');
-                }
 
                 $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::create([
                     'date_and_time' => $request->input('date_and_time'),
@@ -56,7 +42,6 @@ class ReceiptInvoiceFromStoresController extends Controller
                     'اضافة عملية توريد حليب ',
                     $ReceiptInvoiceFromStore,
                     ' بتوريد حليب من فرع الجمعية ' . $ReceiptInvoiceFromStore->associationsBranche->name .
-                        ' جمعية ' . $user->name .
                         ' الكمية ' . $ReceiptInvoiceFromStore->quantity,
                     'جمعية'
                 );
@@ -157,7 +142,6 @@ class ReceiptInvoiceFromStoresController extends Controller
                     'تعديل عملية توريد الحليب ',
                     $ReceiptInvoiceFromStore,
                     ' تعديل عملية توريد الحليب من المجمع ' . $ReceiptInvoiceFromStore->associationsBranche->name .
-                        ' جمعية ' . $user->name .
                         ' رقم العلمية ' . $ReceiptInvoiceFromStore->id .
                         ' الكمية ' . $ReceiptInvoiceFromStore->quantity,
                     'جمعية'
