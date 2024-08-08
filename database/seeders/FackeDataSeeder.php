@@ -16,6 +16,12 @@ class FackeDataSeeder extends Seeder
      */
     public function run(): void
     {
+        $user = User::create([
+            'name' => 'وحدة الالبان',
+            'phone' => '777888999',
+            'user_type' => 'institution',
+            'password' => bcrypt('123123123'),
+        ]);
         //collector representative association institution
         $association1 = User::create([
             'name' => 'الجمعية 1',
