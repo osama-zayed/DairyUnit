@@ -51,7 +51,6 @@ class MilkCollectionController extends Controller
         try {
             DB::transaction(function () use ($request) {
                 $collectingMilkFromFamily = CollectingMilkFromFamily::findOrFail($request->input("id"));
-               
 
                 $collectingMilkFromFamily->update([
                     'collection_date_and_time' => $request->input('date_and_time'),
