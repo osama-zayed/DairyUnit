@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\TransferToFactory;
 
+use App\Models\AssemblyStore;
 use App\Models\Driver;
 use App\Models\ReceiptInvoiceFromStore;
 use App\Models\TransferToFactory;

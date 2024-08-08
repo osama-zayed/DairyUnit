@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\TransferToFactory;
 
+use App\Models\AssemblyStore;
 use App\Models\Driver;
 use App\Models\Factory;
 use App\Models\User;
@@ -52,7 +53,16 @@ class AddTransferToFactoryRequest extends FormRequest
             'notes' => 'nullable|string',
         ];
     }
-
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $user = auth('sanctum')->user();
+            $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
+            if ($AssemblyStore && $AssemblyStore->quantity  < $this->input('quantity')) {
+                $validator->errors()->add('quantity', 'لا يوجد لديك الكمية المطلوبة');
+            }
+        });
+    }
     /**
      * Get the error messages for the defined validation rules.
      */

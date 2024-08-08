@@ -35,16 +35,10 @@ class TransferToFactoryController extends Controller
     {
         try {
             DB::transaction(function () use ($request) {
-
                 $user = auth('sanctum')->user();
-                $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
-                if (is_null($AssemblyStore)) {
-                    return $this->responseError('لا يوجد لديك الكمية المطلوبة');
-                }
 
-                if ($AssemblyStore->quantity  < $request->input('quantity')) {
-                    return $this->responseError('لا يوجد لديك الكمية المطلوبة');
-                }
+                $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
+
 
                 $TransferToFactory = TransferToFactory::create([
                     'date_and_time' => $request->input('date_and_time'),
@@ -106,20 +100,22 @@ class TransferToFactoryController extends Controller
 
 
                 if (!$TransferToFactory->status) {
-                    return self::responseError('لا يمكن التعديل لانه تم الاستلام');
+                    throw new \Exception('لا يمكن التعديل لانه تم الاستلام');
+                    
                 }
-
+                
                 $createdAt = $TransferToFactory->created_at;
                 $now = now();
                 $diffInHours = $now->diffInHours($createdAt);
                 if ($diffInHours >= 2) {
-                    return self::responseError('لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
+                    throw new \Exception('لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
                 }
-
+                
                 $AssemblyStore = AssemblyStore::where('association_id', $user->id)->first();
                 if ($AssemblyStore->quantity + $TransferToFactory->quantity  < $request->input('quantity')) {
-                    return $this->responseError('لا يوجد لديك الكمية المطلوبة');
+                    throw new \Exception('لا يوجد لديك الكمية المطلوبة');
                 }
+
                 $AssemblyStore::updateOrCreate(
                     [
                         'association_id' => $user->id,
@@ -177,7 +173,7 @@ class TransferToFactoryController extends Controller
 
             return self::responseSuccess([], 'تمت العملية بنجاح');
         } catch (\Exception $e) {
-            return self::responseError('حدث خطأ أثناء تنفيذ العملية');
+            return self::responseError($e);
         }
     }
 
