@@ -29,40 +29,40 @@ class FamilyResource extends Resource
             ->schema([
                 Forms\Components\Section::make([
 
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->label('اسم الاسرة')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->required()
-                    ->label('رقم الهاتف')
-                    ->maxLength(255),
-                Forms\Components\Select::make('association_id')
-                    ->relationship('association', titleAttribute: 'name')
-                    ->label('الجمعية')
-                    ->searchable()
-                    ->preload()
-                    ->live()
-                    ->options(function () {
-                        return User::where('user_type', 'association')->pluck('name', 'id');
-                    })
-                    ->required(),
-                Forms\Components\Select::make('associations_branche_id')
-                    ->relationship('associationsBranche', titleAttribute: 'name')
-                    ->label('فرع الجمعية')
-                    ->searchable()
-                    ->preload()
-                    ->live()
-                    ->options(function () {
-                        return User::where('user_type', 'collector')->pluck('name', 'id');
-                    })
-                    ->required(),
-                Forms\Components\Toggle::make('status')
-                    ->default(1)
-                    ->label('حالة الاسرة')
-                    ->required(),
-                    ])->columns(2)->collapsed(2),
+                    Forms\Components\TextInput::make('name')
+                        ->required()
+                        ->label('اسم الاسرة')
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('phone')
+                        ->tel()
+                        ->required()
+                        ->label('رقم الهاتف')
+                        ->maxLength(255),
+                    Forms\Components\Select::make('association_id')
+                        ->relationship('association', titleAttribute: 'name')
+                        ->label('الجمعية')
+                        ->searchable()
+                        ->preload()
+                        ->live()
+                        ->options(function () {
+                            return User::where('user_type', 'association')->pluck('name', 'id');
+                        })
+                        ->required(),
+                    Forms\Components\Select::make('associations_branche_id')
+                        ->relationship('associationsBranche', titleAttribute: 'name')
+                        ->label('فرع الجمعية')
+                        ->searchable()
+                        ->preload()
+                        ->live()
+                        ->options(function () {
+                            return User::where('user_type', 'collector')->pluck('name', 'id');
+                        })
+                        ->required(),
+                    Forms\Components\Toggle::make('status')
+                        ->default(1)
+                        ->label('حالة الاسرة')
+                        ->required(),
+                ])->columns(2)->collapsed(2),
 
             ]);
     }
@@ -71,6 +71,10 @@ class FamilyResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->numeric()
+                    ->label('#')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('اسم الاسره')
                     ->searchable(),
@@ -109,18 +113,18 @@ class FamilyResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('association_id')
-                ->label('الجمعية')
-                ->multiple()
-                ->options(function () {
-                    return User::where('user_type', 'association')->pluck('name', 'id');
-                })
-                ->relationship('association', 'name'),
-            SelectFilter::make('user_id')
-                ->label('فرع الجمعية')
-                ->options(function () {
-                    return User::where('user_type', 'collector')->pluck('name', 'id');
-                })
-                ->relationship('associationsBranche', 'name')
+                    ->label('الجمعية')
+                    ->multiple()
+                    ->options(function () {
+                        return User::where('user_type', 'association')->pluck('name', 'id');
+                    })
+                    ->relationship('association', 'name'),
+                SelectFilter::make('user_id')
+                    ->label('فرع الجمعية')
+                    ->options(function () {
+                        return User::where('user_type', 'collector')->pluck('name', 'id');
+                    })
+                    ->relationship('associationsBranche', 'name')
             ])
             ->actions([
                 // Tables\Actions\ViewAction::make(),

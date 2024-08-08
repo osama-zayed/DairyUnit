@@ -74,6 +74,10 @@ class ReturnTheQuantityToAssociationResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->numeric()
+                    ->label('#')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('association.name')
                     ->numeric()
                     ->label('اسم الجمعية المردود لها')

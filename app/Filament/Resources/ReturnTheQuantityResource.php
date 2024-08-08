@@ -39,7 +39,7 @@ class ReturnTheQuantityResource extends Resource
                         ->relationship('factory', titleAttribute: 'name')
                         ->label('المصنع')
                         ->required(),
-            Forms\Components\DateTimePicker::make('created_at')
+                    Forms\Components\DateTimePicker::make('created_at')
                         ->label('الوقت والتاريخ')
                         ->required(),
                     Forms\Components\TextInput::make('defective_quantity_due_to_coagulation')
@@ -69,6 +69,10 @@ class ReturnTheQuantityResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->numeric()
+                    ->label('#')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->label('اسم المندوب')

@@ -67,44 +67,44 @@ class ReceiptFromAssociationResource extends Resource
                 ])->columns(2)->collapsed(2),
                 Forms\Components\Section::make([
 
-                Forms\Components\DateTimePicker::make('start_time_of_collection')
-                    ->label('وقت بدء الفحص')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('end_time_of_collection')
-                    ->label('وقت انتهاء الفحص')
-                    ->required(),
-                Forms\Components\Select::make('package_cleanliness')
-                    ->label('نظافة العبوات')
-                    ->options([
-                        "clean" => 'نظيفة',
-                        "somewhat_clean" => 'مقبولة',
-                        "not_clean" => 'سيئة',
-                    ])
-                    ->required(),
-                Forms\Components\Select::make('transport_cleanliness')
-                    ->label('نظافة وسيلة النقل')
-                    ->options([
-                        "clean" => 'نظيفة',
-                        "somewhat_clean" => 'مقبولة',
-                        "not_clean" => 'سيئة',
-                    ])
-                    ->required(),
-                Forms\Components\Select::make('driver_personal_hygiene')
-                    ->label('النظافة الشخصية للسائق')
-                    ->options([
-                        "clean" => 'نظيفة',
-                        "somewhat_clean" => 'مقبولة',
-                        "not_clean" => 'سيئة',
-                    ])
-                    ->required(),
-                Forms\Components\Select::make('ac_operation')
-                    ->label('تشغيل التكييف')
-                    ->options([
-                        "on" => 'يعمل',
-                        "off" => 'لا يعمل',
-                        "not_available" => 'لا يوجد',
-                    ])
-                    ->required(),
+                    Forms\Components\DateTimePicker::make('start_time_of_collection')
+                        ->label('وقت بدء الفحص')
+                        ->required(),
+                    Forms\Components\DateTimePicker::make('end_time_of_collection')
+                        ->label('وقت انتهاء الفحص')
+                        ->required(),
+                    Forms\Components\Select::make('package_cleanliness')
+                        ->label('نظافة العبوات')
+                        ->options([
+                            "clean" => 'نظيفة',
+                            "somewhat_clean" => 'مقبولة',
+                            "not_clean" => 'سيئة',
+                        ])
+                        ->required(),
+                    Forms\Components\Select::make('transport_cleanliness')
+                        ->label('نظافة وسيلة النقل')
+                        ->options([
+                            "clean" => 'نظيفة',
+                            "somewhat_clean" => 'مقبولة',
+                            "not_clean" => 'سيئة',
+                        ])
+                        ->required(),
+                    Forms\Components\Select::make('driver_personal_hygiene')
+                        ->label('النظافة الشخصية للسائق')
+                        ->options([
+                            "clean" => 'نظيفة',
+                            "somewhat_clean" => 'مقبولة',
+                            "not_clean" => 'سيئة',
+                        ])
+                        ->required(),
+                    Forms\Components\Select::make('ac_operation')
+                        ->label('تشغيل التكييف')
+                        ->options([
+                            "on" => 'يعمل',
+                            "off" => 'لا يعمل',
+                            "not_available" => 'لا يوجد',
+                        ])
+                        ->required(),
                 ])->columns(2)->collapsed(2),
 
             ]);
@@ -115,8 +115,8 @@ class ReceiptFromAssociationResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
+                    ->numeric()
                     ->label('#')
-                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('association.name')
                     ->label('اسم الجمعية')
@@ -228,16 +228,16 @@ class ReceiptFromAssociationResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     // Tables\Actions\DeleteBulkAction::make(),
-                        // BulkAction::make('print_pdf')
-                        //     ->label('طباعة ك PDF')
-                        //     ->action(function ($records) {
-                        //         $html = view('report.index', [
-                        //             'data' => $records,
-                        //             'today' => Carbon::now()->format('Y / m / d'),
-                        //         ])->render();
-                        //         return  self::printPdf($html);
-                        //     })
-                        //     ->requiresConfirmation(),
+                    // BulkAction::make('print_pdf')
+                    //     ->label('طباعة ك PDF')
+                    //     ->action(function ($records) {
+                    //         $html = view('report.index', [
+                    //             'data' => $records,
+                    //             'today' => Carbon::now()->format('Y / m / d'),
+                    //         ])->render();
+                    //         return  self::printPdf($html);
+                    //     })
+                    //     ->requiresConfirmation(),
                 ]),
             ])
             ->emptyStateActions([
