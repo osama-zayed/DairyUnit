@@ -67,50 +67,59 @@ class UpdateReceiptInvoiceFromStoresRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-
             $user = auth('sanctum')->user();
+    
+            // Get the latest TransferToFactory record for the user
             $lastTransferToFactory = TransferToFactory::where('association_id', $user->id)
                 ->select('updated_at')
                 ->latest()
                 ->first();
-
+    
+            // Get the latest ReceiptInvoiceFromStore record for the user
             $lastReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('association_id', $user->id)
                 ->select('created_at')
                 ->latest()
                 ->first();
-
+    
+            // Get the ReceiptInvoiceFromStore record being updated
             $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::where('id', $this->input("id"))
                 ->where('association_id', $user->id)
                 ->first();
+    
+            // Check if the user is the owner of the record
             if ($ReceiptInvoiceFromStore->association_id !== auth('sanctum')->user()->id) {
                 $validator->errors()->add('id', 'لم تقم انت باضافة هذه العملية');
             }
+    
+            // Check if the record is being updated after a later record was created
             if ($ReceiptInvoiceFromStore && (
-                ($ReceiptInvoiceFromStore->created_at < $lastReceiptInvoiceFromStore->created_at) ||
-                ($ReceiptInvoiceFromStore->created_at < $lastTransferToFactory->updated_at)
+                ($ReceiptInvoiceFromStore->created_at > $lastReceiptInvoiceFromStore->created_at) ||
+                ($lastTransferToFactory !== null && $ReceiptInvoiceFromStore->created_at > $lastTransferToFactory->updated_at)
             )) {
-                $validator->errors()->add('created_at', 'لا يمكن التعديل لأنه حصل عملية في وقت لاحق');
+                $validator->errors()->add('date_and_time', 'لا يمكن التعديل لأنه حصل عملية في وقت لاحق');
             }
+    
             // Check if the user is trying to update the record after 2 hours of creation
             $createdAt = $ReceiptInvoiceFromStore->created_at;
             $now = now();
             $diffInHours = $now->diffInHours($createdAt);
             if ($diffInHours >= 2) {
-                $validator->errors()->add('created_at', 'لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
+                $validator->errors()->add('date_and_time', 'لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
             }
-
+    
+            // Calculate the available quantity in the warehouse
             $warehouseSummary = CollectingMilkFromFamily::where('user_id', $this->input('associations_branche_id'))
                 ->selectRaw('SUM(quantity) as total_quantity')
                 ->first();
-
+    
             $totalDeliveredQuantity = ReceiptInvoiceFromStore::where('associations_branche_id', $this->input('associations_branche_id'))
                 ->selectRaw('SUM(quantity) as total_delivered_quantity')
                 ->first()->total_delivered_quantity;
-
+    
             $availableQuantity = $warehouseSummary->total_quantity - $totalDeliveredQuantity + $ReceiptInvoiceFromStore->quantity;
-
+    
             // Check if the user has enough quantity available
-            if ($availableQuantity  < $this->input('quantity')) {
+            if ($availableQuantity < $this->input('quantity')) {
                 $validator->errors()->add('quantity', 'لا يوجد لدى المجمع الكمية المطلوبة');
             }
         });
