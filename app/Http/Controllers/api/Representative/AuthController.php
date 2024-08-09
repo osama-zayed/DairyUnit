@@ -32,12 +32,11 @@ class AuthController extends UserController
     
         $returnToAssociation = $returnData['association'] ?? 0;
         $returnToInstitution = $returnData['institution'] ?? 0;
-    
         return self::responseSuccess([
             'id' => $user->id,
             'name' => $user->name,
             'phone_number' => $user->phone,
-            'total_quantity' => $receiptFromAssociation->total_quantity - $returnToInstitution - $returnToInstitution ?? 0,
+            'total_quantity' => ($receiptFromAssociation->total_quantity - $returnToAssociation - $returnToInstitution) ?? 0,
             'receipt_quantity' => $receiptFromAssociation->total_quantity ?? 0,
             'return_to_association' => $returnToAssociation,
             'return_to_institution' => $returnToInstitution,

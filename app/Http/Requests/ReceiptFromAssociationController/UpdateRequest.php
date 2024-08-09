@@ -131,9 +131,7 @@ class UpdateRequest extends FormRequest
                 // تحقق من وجود معرف التحويل
                 if ($transferToFactoryId) {
                     $transferToFactory = TransferToFactory::find($transferToFactoryId);
-
                     if ($transferToFactory) {
-
                         if ($quantity > $transferToFactory->quantity) {
                             $validator->errors()->add('quantity', 'لا يمكن أن تكون الكمية في الاستلام أكبر من الكمية في التحويل');
                         }
