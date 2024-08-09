@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DriverResource\Pages;
 use App\Filament\Resources\DriverResource\RelationManagers;
 use App\Models\Driver;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -91,7 +92,10 @@ class DriverResource extends Resource
             ->filters([
                 SelectFilter::make('association_id')
                     ->label('الجمعية')
-                    ->relationship('Association', 'name'),
+                    ->multiple()
+                    ->options(function () {
+                        return User::where('user_type', 'association')->pluck('name', 'id');
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

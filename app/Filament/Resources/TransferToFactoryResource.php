@@ -132,8 +132,11 @@ class TransferToFactoryResource extends Resource
                     ->multiple()
                     ->options(function () {
                         return User::where('user_type', 'association')->pluck('name', 'id');
-                    })
-                    ->relationship('association', 'name'),
+                    }),
+                    SelectFilter::make('factory_id')
+                    ->label('المصنع')
+                    ->multiple()
+                    ->relationship('factory', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

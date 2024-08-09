@@ -5,10 +5,12 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ReturnTheQuantityToAssociationResource\Pages;
 use App\Filament\Resources\ReturnTheQuantityToAssociationResource\RelationManagers;
 use App\Models\ReturnTheQuantity;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -127,7 +129,22 @@ class ReturnTheQuantityToAssociationResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('association_id')
+                    ->label('الجمعية')
+                    ->multiple()
+                    ->options(function () {
+                        return User::where('user_type', 'association')->pluck('name', 'id');
+                    }),
+                SelectFilter::make('factory_id')
+                    ->label('المصنع')
+                    ->multiple()
+                    ->relationship('factory', 'name'),
+                SelectFilter::make('user_id')
+                    ->label('المندوب')
+                    ->multiple()
+                    ->options(function () {
+                        return User::where('user_type', 'representative')->pluck('name', 'id');
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

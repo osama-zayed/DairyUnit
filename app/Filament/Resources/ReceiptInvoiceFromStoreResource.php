@@ -42,7 +42,7 @@ class ReceiptInvoiceFromStoreResource extends Resource
                             return User::where('user_type', 'association')->pluck('name', 'id');
                         })
                         ->required(),
-                    Forms\Components\Select::make('user_id')
+                    Forms\Components\Select::make('associations_branche_id')
                         ->relationship('associationsBranche', titleAttribute: 'name')
                         ->label('فرع الجمعية')
                         ->searchable()
@@ -112,14 +112,13 @@ class ReceiptInvoiceFromStoreResource extends Resource
                     ->multiple()
                     ->options(function () {
                         return User::where('user_type', 'association')->pluck('name', 'id');
-                    })
-                    ->relationship('association', 'name'),
-                SelectFilter::make('user_id')
+                    }),
+                    SelectFilter::make('associations_branche_id')
+                    ->multiple()
                     ->label('فرع الجمعية')
                     ->options(function () {
                         return User::where('user_type', 'collector')->pluck('name', 'id');
                     })
-                    ->relationship('associationsBranche', 'name')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

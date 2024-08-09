@@ -117,14 +117,13 @@ class FamilyResource extends Resource
                     ->multiple()
                     ->options(function () {
                         return User::where('user_type', 'association')->pluck('name', 'id');
-                    })
-                    ->relationship('association', 'name'),
-                SelectFilter::make('user_id')
+                    }),
+                SelectFilter::make('associations_branche_id')
+                    ->multiple()
                     ->label('فرع الجمعية')
                     ->options(function () {
                         return User::where('user_type', 'collector')->pluck('name', 'id');
                     })
-                    ->relationship('associationsBranche', 'name')
             ])
             ->actions([
                 // Tables\Actions\ViewAction::make(),

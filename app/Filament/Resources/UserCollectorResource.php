@@ -35,42 +35,42 @@ class UserCollectorResource extends Resource
             ->schema([
                 Forms\Components\Section::make([
 
-                Forms\Components\TextInput::make('name')
-                    ->label('اسم المجمع')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->label('رقم الموبايل')
-                    ->required()
-                    ->unique('users', 'phone')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->confirmed()
-                    ->label('الرمز')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('password_confirmation')
-                    ->password()
-                    ->required()
-                    ->label('تأكيد الرمز')
-                    ->maxLength(255),
-                Forms\Components\Select::make('association_id')
-                    ->relationship('association', titleAttribute: 'name')
-                    ->label('الجمعية')
-                    ->searchable()
-                    ->preload()
-                    ->live()
-                    ->options(function () {
-                        return User::where('user_type', 'association')->pluck('name', 'id');
-                    })
-                    ->required(),
-                Forms\Components\Toggle::make('status')
-                    ->default(1)
-                    ->label('حالة المجمع')
-                    ->required(),
-                    ])->columns(2)->collapsed(2),
+                    Forms\Components\TextInput::make('name')
+                        ->label('اسم المجمع')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('phone')
+                        ->tel()
+                        ->label('رقم الموبايل')
+                        ->required()
+                        ->unique('users', 'phone')
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('password')
+                        ->password()
+                        ->required()
+                        ->confirmed()
+                        ->label('الرمز')
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('password_confirmation')
+                        ->password()
+                        ->required()
+                        ->label('تأكيد الرمز')
+                        ->maxLength(255),
+                    Forms\Components\Select::make('association_id')
+                        ->relationship('association', titleAttribute: 'name')
+                        ->label('الجمعية')
+                        ->searchable()
+                        ->preload()
+                        ->live()
+                        ->options(function () {
+                            return User::where('user_type', 'association')->pluck('name', 'id');
+                        })
+                        ->required(),
+                    Forms\Components\Toggle::make('status')
+                        ->default(1)
+                        ->label('حالة المجمع')
+                        ->required(),
+                ])->columns(2)->collapsed(2),
 
             ]);
     }
@@ -112,12 +112,11 @@ class UserCollectorResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('association_id')
-                ->label('الجمعية')
-                ->multiple()
-                ->options(function () {
-                    return User::where('user_type', 'association')->pluck('name', 'id');
-                })
-                ->relationship('association', 'name'),
+                    ->label('الجمعية')
+                    ->multiple()
+                    ->options(function () {
+                        return User::where('user_type', 'association')->pluck('name', 'id');
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
