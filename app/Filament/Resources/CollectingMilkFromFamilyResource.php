@@ -33,49 +33,49 @@ class CollectingMilkFromFamilyResource extends Resource
             ->schema([
                 Forms\Components\Section::make([
 
-                Forms\Components\Select::make('association_id')
-                    ->relationship('association', titleAttribute: 'name')
-                    ->label('الجمعية')
-                    ->searchable()
-                    ->preload()
-                    ->live()
-                    ->options(function () {
-                        return User::where('user_type', 'association')->pluck('name', 'id');
-                    })
-                    ->required(),
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', titleAttribute: 'name')
-                    ->label('فرع الجمعية')
-                    ->searchable()
-                    ->preload()
-                    ->live()
-                    ->options(function () {
-                        return User::where('user_type', 'collector')->pluck('name', 'id');
-                    })
-                    ->required(),
-                Forms\Components\Select::make('family_id')
-                    ->relationship('family', titleAttribute: 'name')
-                    ->searchable()
-                    ->preload()
-                    ->label('اسم الاسرة')
-                    ->live(),
-                Forms\Components\DateTimePicker::make('collection_date_and_time')
-                    ->label('وقت التجميع')
-                    ->required(),
-                Forms\Components\TextInput::make('quantity')
-                    ->required()
-                    ->label('الكمية')
-                    ->numeric(),
-                    
-                    ])->columns(2)->collapsed(2),
-                    Forms\Components\Section::make([
-                        Forms\Components\Textarea::make('nots')
-                            ->label('الملاحظات')
-                            ->required()
-                            ->maxLength(65535)
-                            ->columnSpanFull(),
-                    ])->columns(2)->collapsed(2)
-    
+                    Forms\Components\Select::make('association_id')
+                        ->relationship('association', titleAttribute: 'name')
+                        ->label('الجمعية')
+                        ->searchable()
+                        ->preload()
+                        ->live()
+                        ->options(function () {
+                            return User::where('user_type', 'association')->pluck('name', 'id');
+                        })
+                        ->required(),
+                    Forms\Components\Select::make('user_id')
+                        ->relationship('user', titleAttribute: 'name')
+                        ->label('فرع الجمعية')
+                        ->searchable()
+                        ->preload()
+                        ->live()
+                        ->options(function () {
+                            return User::where('user_type', 'collector')->pluck('name', 'id');
+                        })
+                        ->required(),
+                    Forms\Components\Select::make('family_id')
+                        ->relationship('family', titleAttribute: 'name')
+                        ->searchable()
+                        ->preload()
+                        ->label('اسم الاسرة')
+                        ->live(),
+                    Forms\Components\DateTimePicker::make('collection_date_and_time')
+                        ->label('وقت التجميع')
+                        ->required(),
+                    Forms\Components\TextInput::make('quantity')
+                        ->required()
+                        ->label('الكمية')
+                        ->numeric(),
+
+                ])->columns(2)->collapsed(2),
+                Forms\Components\Section::make([
+                    Forms\Components\Textarea::make('nots')
+                        ->label('الملاحظات')
+                        ->required()
+                        ->maxLength(65535)
+                        ->columnSpanFull(),
+                ])->columns(2)->collapsed(2)
+
             ]);
     }
 
@@ -84,9 +84,9 @@ class CollectingMilkFromFamilyResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                ->numeric()
-                ->label('#')
-                ->sortable(),
+                    ->numeric()
+                    ->label('#')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('association.name')
                     ->numeric()
                     ->label('اسم الجمعية')
@@ -127,14 +127,17 @@ class CollectingMilkFromFamilyResource extends Resource
                     ->multiple()
                     ->options(function () {
                         return User::where('user_type', 'association')->pluck('name', 'id');
-                    })
-                    ->relationship('association', 'name'),
+                    }),
                 SelectFilter::make('user_id')
                     ->label('فرع الجمعية')
+                    ->multiple()
                     ->options(function () {
                         return User::where('user_type', 'collector')->pluck('name', 'id');
-                    })
-                    ->relationship('user', 'name')
+                    }),
+                SelectFilter::make('family_id')
+                    ->label('الاسرة')
+                    ->multiple()
+                    ->relationship('family', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
