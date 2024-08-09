@@ -148,11 +148,10 @@ class MilkCollectionController extends Controller
 
     public static function report(ReportMilkCollectionRequest $request)
     {
-        $user = auth('sanctum')->user();
         $fromDate = $request["start_date_and_time"];
         $toDate = $request["end_date_and_time"];
         $query = CollectingMilkFromFamily::whereBetween('collection_date_and_time', [$fromDate,  $toDate])
-        ->where('user_id',  $user->id);
+        ->where('user_id',  auth('sanctum')->user()->id);
         if ($request->has('family_id')) {
             $query->where('family_id', $request["family_id"]);
         }
