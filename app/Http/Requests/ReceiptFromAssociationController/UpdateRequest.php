@@ -3,6 +3,7 @@
 namespace App\Http\Requests\ReceiptFromAssociationController;
 
 use App\Models\ReceiptFromAssociation;
+use App\Models\ReturnTheQuantity;
 use App\Models\TransferToFactory;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -99,7 +100,8 @@ class UpdateRequest extends FormRequest
                     $validator->errors()->add('id', 'لا يمكن تعديل السجل بعد مرور ساعتين من إضافته');
                 }
 
-                $lastTransferToFactory = TransferToFactory::where('factory_id', $user->factory_id)
+                $lastReturnTheQuantity = ReturnTheQuantity::where('factory_id', $user->factory_id)
+                    ->where('user_id', $user->id)
                     ->select('created_at')
                     ->latest()
                     ->first();
@@ -111,7 +113,7 @@ class UpdateRequest extends FormRequest
 
                 if ($receiptFromAssociation && (
                     ($receiptFromAssociation->created_at < $lastReceiptFromAssociation->created_at) ||
-                    ($receiptFromAssociation->created_at < $lastTransferToFactory->created_at)
+                    ($receiptFromAssociation->created_at < $lastReturnTheQuantity->created_at)
                 )) {
                     $validator->errors()->add('id', 'لا يمكن التعديل لأنه حصل عملية في وقت لاحق');
                 }
@@ -119,14 +121,14 @@ class UpdateRequest extends FormRequest
                 $quantity = $this->input('quantity');
                 $startTimeOfCollection = $this->input('start_time_of_collection');
                 $endTimeOfCollection = $this->input('end_time_of_collection');
-                
+
                 $start = \Carbon\Carbon::parse($startTimeOfCollection);
                 $end = \Carbon\Carbon::parse($endTimeOfCollection);
-                
+
                 if ($end->lessThan($start)) {
                     $validator->errors()->add('end_time_of_collection', 'يجب أن يكون تاريخ ووقت انتهاء الفحص بعد تاريخ ووقت بدء الفحص.');
                 }
-                
+
                 $transferToFactoryId = $receiptFromAssociation->transfer_to_factory_id;
                 // تحقق من وجود معرف التحويل
                 if ($transferToFactoryId) {
@@ -137,7 +139,7 @@ class UpdateRequest extends FormRequest
                         }
                     }
                 }
-            }else{
+            } else {
                 $validator->errors()->add('id', 'عملية الاستلام غير موجودة');
             }
         });
