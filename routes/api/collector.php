@@ -23,6 +23,7 @@ Route::prefix('family')->middleware(['auth:sanctum', 'Permission:collector','use
 });
 Route::prefix('milk')->middleware(['auth:sanctum', 'Permission:collector','userStatus'])->group(function () {
     Route::get('show/all', "MilkCollectionController@showAll");
+    Route::get('show/report', "MilkCollectionController@report");
     Route::get('show/{id}', "MilkCollectionController@showById");
     Route::post('collecting', "MilkCollectionController@collecting");
     Route::put('update', "MilkCollectionController@update");

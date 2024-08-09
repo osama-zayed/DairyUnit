@@ -5,14 +5,18 @@ namespace App\Http\Controllers\Api\Collector;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Collector\CollectingRequest;
 use App\Http\Requests\Collector\UpdateCollectingRequest;
+use App\Http\Requests\Report\ReportMilkCollectionRequest;
 use App\Models\CollectingMilkFromFamily;
 use App\Models\ReceiptInvoiceFromStore;
+use App\Traits\FormatData;
+use App\Traits\PdfTraits;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class MilkCollectionController extends Controller
 {
+    use FormatData, PdfTraits;
     public function collecting(CollectingRequest $request)
     {
         try {
@@ -139,41 +143,24 @@ class MilkCollectionController extends Controller
             ->where('id', $id)
             ->first();
 
-        return self::formatCollectingData($query);
-    }
-    private static function formatCollectingData($CollectingMilkFromFamily)
-    {
-        $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $CollectingMilkFromFamily->collection_date_and_time);
-        $formattedDate = $dateTime->format('d/m/Y');
-        $formattedTime = $dateTime->format('h:i A');
-        $dayPeriod = self::getDayPeriodArabic($dateTime->format('A'));
-        $dayOfWeek = self::getDayOfWeekArabic($dateTime->format('l'));
-
-        return [
-            'id' => $CollectingMilkFromFamily->id,
-            'collection_date_and_time' => $CollectingMilkFromFamily->collection_date_and_time,
-            'date' => $formattedDate,
-            'time' => $formattedTime,
-            'period' => $dayPeriod,
-            'day' => $dayOfWeek,
-            'quantity' => $CollectingMilkFromFamily->quantity,
-            'family_id' => $CollectingMilkFromFamily->family_id,
-            'family_name' => $CollectingMilkFromFamily->Family->name,
-            'association_name' => $CollectingMilkFromFamily->association->name,
-            'association_branch_name' => $CollectingMilkFromFamily->user->name,
-            'nots' => $CollectingMilkFromFamily->nots,
-        ];
+        return self::formatCollectingMilkFromFamilyData($query);
     }
 
-    public static function formatCollectingMilkFromFamilyDataForDisplay($collectingMilkFromFamily)
+    public static function report(ReportMilkCollectionRequest $request)
     {
-        return array_map(function ($collectingMilkFromFamily) {
-            return [
-                'id' => $collectingMilkFromFamily->id,
-                // 'date_and_time' => $collectingMilkFromFamily->collection_date_and_time,
-                'quantity' => $collectingMilkFromFamily->quantity,
-                'family_name' => $collectingMilkFromFamily->Family->name,
-            ];
-        }, $collectingMilkFromFamily);
+        $fromDate = $request["start_date_and_time"];
+        $toDate = $request["end_date_and_time"];
+        $query = CollectingMilkFromFamily::whereBetween('collection_date_and_time', [$fromDate,  $toDate]);
+        if ($request->has('family_id')) {
+            $query->where('family_id', $request["family_id"]);
+        }
+        $CollectingMilkFromFamily = $query->get();
+        $data = $CollectingMilkFromFamily->map(function ($query) {
+            return self::formatCollectingMilkFromFamilyData($query);
+        });
+        $html = view('report.collector.CollectingMilkFromFamily', [
+            'data' => $data,
+        ])->render();
+        return  self::printApiPdf($html);
     }
 }
