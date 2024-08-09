@@ -145,13 +145,23 @@ class MilkCollectionController extends Controller
 
         return self::formatCollectingMilkFromFamilyData($query);
     }
-
+    public static function formatCollectingMilkFromFamilyDataForDisplay($collectingMilkFromFamily)
+    {
+        return array_map(function ($collectingMilkFromFamily) {
+            return [
+                'id' => $collectingMilkFromFamily->id,
+                // 'date_and_time' => $collectingMilkFromFamily->collection_date_and_time,
+                'quantity' => $collectingMilkFromFamily->quantity,
+                'family_name' => $collectingMilkFromFamily->Family->name,
+            ];
+        }, $collectingMilkFromFamily);
+    }
     public static function report(ReportMilkCollectionRequest $request)
     {
         $fromDate = $request["start_date_and_time"];
         $toDate = $request["end_date_and_time"];
         $query = CollectingMilkFromFamily::whereBetween('collection_date_and_time', [$fromDate,  $toDate])
-        ->where('user_id',  auth('sanctum')->user()->id);
+            ->where('user_id',  auth('sanctum')->user()->id);
         if ($request->has('family_id')) {
             $query->where('family_id', $request["family_id"]);
         }

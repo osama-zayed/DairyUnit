@@ -29,16 +29,6 @@ trait FormatData
             'nots' => $CollectingMilkFromFamily->nots,
         ];
     }
-    public static function formatCollectingMilkFromFamilyDataForDisplay($collectingMilkFromFamily)
-    {
-        return array_map(function ($collectingMilkFromFamily) {
-            return [
-                'id' => $collectingMilkFromFamily->id,
-                // 'date_and_time' => $collectingMilkFromFamily->collection_date_and_time,
-                'quantity' => $collectingMilkFromFamily->quantity,
-                'family_name' => $collectingMilkFromFamily->Family->name,
-            ];
-        }, $collectingMilkFromFamily);
-    }
+    
     
 }
