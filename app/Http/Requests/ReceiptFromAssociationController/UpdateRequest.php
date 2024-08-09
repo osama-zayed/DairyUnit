@@ -133,9 +133,7 @@ class UpdateRequest extends FormRequest
                     $transferToFactory = TransferToFactory::find($transferToFactoryId);
 
                     if ($transferToFactory) {
-                        // if ($transferToFactory->status) {
-                        //     $validator->errors()->add('', 'لقد تم تاكيد استلام عملية التحويل من قبل');
-                        // }
+
                         if ($quantity > $transferToFactory->quantity) {
                             $validator->errors()->add('quantity', 'لا يمكن أن تكون الكمية في الاستلام أكبر من الكمية في التحويل');
                         }
