@@ -79,8 +79,8 @@
     <div class="header">
         <div class="left">
             <p>الرقم (&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</p>
-            {{-- <p>التاريخ : {{ $today }}</p>
-            <p>الموافق : {{ $hijriToday }}</p> --}}
+             <p>التاريخ : {{ $today }}</p>
+            {{-- <p>الموافق : {{ $hijriToday }}</p> --}} 
         </div>
         <div class="center">
             <p>بسم الله الرحمن الرحيم</p>

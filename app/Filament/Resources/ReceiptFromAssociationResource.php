@@ -225,17 +225,13 @@ class ReceiptFromAssociationResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
-                    // BulkAction::make('print_pdf')
-                    //     ->label('طباعة ك PDF')
-                    //     ->action(function ($records) {
-                    //         $html = view('report.index', [
-                    //             'data' => $records,
-                    //             'today' => Carbon::now()->format('Y / m / d'),
-                    //         ])->render();
-                    //         return  self::printPdf($html);
-                    //     })
-                    //     ->requiresConfirmation(),
+                    BulkAction::make('print_pdf')
+                        ->label('طباعة ك PDF')
+                        ->action(function ($records) {
+                            $recordIds = $records->pluck('id')->toArray();
+                            return redirect()->route('ReceiptFromAssociation', ['data' => $recordIds]);
+                        })
+                        ->requiresConfirmation(),
                 ]),
             ])
             ->emptyStateActions([

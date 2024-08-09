@@ -18,4 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect()->route('filament.admin.pages.dashboard');
 });
-Route::get('/api/report',[PdfHelperController::class,'data']);
+Route::prefix('report')->controller(PdfHelperController::class)->middleware('Permission:institution')->group(function(){
+    Route::get('ReceiptFromAssociation','ReceiptFromAssociation')->name('ReceiptFromAssociation');
+    Route::get('CollectingMilkFromFamily','CollectingMilkFromFamily')->name('CollectingMilkFromFamily');
+
+});

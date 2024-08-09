@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -144,9 +145,15 @@ class CollectingMilkFromFamilyResource extends Resource
                 // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //      Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                Tables\Actions\BulkActionGroup::make([
+                    BulkAction::make('print_pdf')
+                        ->label('طباعة ك PDF')
+                        ->action(function ($records) {
+                            $recordIds = $records->pluck('id')->toArray();
+                            return redirect()->route('CollectingMilkFromFamily', ['data' => $recordIds]);
+                        })
+                        ->requiresConfirmation(),
+                ]),
             ])
             ->emptyStateActions([
                 // Tables\Actions\CreateAction::make(),
