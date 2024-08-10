@@ -49,8 +49,10 @@ class PdfHelperController extends Controller
     }
     public static function ReceiptFromAssociation()
     {
-        $data = ReceiptFromAssociation::whereIn('id', request('data'))->get();
-
+        $ReceiptFromAssociation = ReceiptFromAssociation::whereIn('id', request('data'))->get();
+        $data = $ReceiptFromAssociation->map(function ($query) {
+            return self::formatReceiptFromAssociationData($query);
+        });
         $html = view('report.institution.ReceiptFromAssociation', [
             'data' => $data,
         ])->render();
