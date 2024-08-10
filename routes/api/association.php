@@ -37,6 +37,7 @@ Route::prefix('milk')->middleware(['auth:sanctum', 'Permission:association', 'us
     Route::get('show/{id}', "ReceiptInvoiceFromStoresController@showById");
     Route::post('AddReceiptInvoiceFromCollector', "ReceiptInvoiceFromStoresController@AddReceiptInvoiceFromCollector");
     Route::put('update', "ReceiptInvoiceFromStoresController@update");
+    Route::get('report', "ReceiptInvoiceFromStoresController@report");
 });
 Route::prefix('transfertofactory')->middleware(['auth:sanctum', 'Permission:association', 'userStatus'])->group(function () {
     Route::get('show/all', "TransferToFactoryController@index");

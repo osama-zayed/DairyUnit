@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CollectingMilkFromFamily;
 use App\Models\ReceiptFromAssociation;
+use App\Models\ReceiptInvoiceFromStore;
 use App\Models\ReturnTheQuantity;
 use App\Traits\FormatData;
 use App\Traits\PdfTraits;
@@ -12,15 +13,6 @@ use App\Traits\PdfTraits;
 class PdfHelperController extends Controller
 {
     use PdfTraits, FormatData;
-    public static function ReceiptFromAssociation()
-    {
-        $data = ReceiptFromAssociation::whereIn('id', request('data'))->get();
-
-        $html = view('report.institution.ReceiptFromAssociation', [
-            'data' => $data,
-        ])->render();
-        return  self::printPdf($html);
-    }
     public static function CollectingMilkFromFamily()
     {
         $CollectingMilkFromFamily = CollectingMilkFromFamily::whereIn('id', request('data'))->get();
@@ -28,6 +20,26 @@ class PdfHelperController extends Controller
             return self::formatCollectingMilkFromFamilyData($query);
         });
         $html = view('report.institution.CollectingMilkFromFamily', [
+            'data' => $data,
+        ])->render();
+        return  self::printPdf($html);
+    }
+    public static function ReceiptInvoiceFromStore()
+    {
+        $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::whereIn('id', request('data'))->get();
+        $data = $ReceiptInvoiceFromStore->map(function ($query) {
+            return self::formatReceiptInvoiceFromStoreData($query);
+        });
+        $html = view('report.institution.ReceiptInvoiceFromStore', [
+            'data' => $data,
+        ])->render();
+        return  self::printPdf($html);
+    }
+    public static function ReceiptFromAssociation()
+    {
+        $data = ReceiptFromAssociation::whereIn('id', request('data'))->get();
+
+        $html = view('report.institution.ReceiptFromAssociation', [
             'data' => $data,
         ])->render();
         return  self::printPdf($html);

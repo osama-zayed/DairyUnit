@@ -5,17 +5,21 @@ namespace App\Http\Controllers\Api\Association;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReceiptInvoiceFromStores\AddReceiptInvoiceFromStoresRequest;
 use App\Http\Requests\ReceiptInvoiceFromStores\UpdateReceiptInvoiceFromStoresRequest;
+use App\Http\Requests\Report\ReceiptInvoiceFromStoreRequest;
 use App\Models\AssemblyStore;
 use App\Models\CollectingMilkFromFamily;
 use App\Models\ReceiptInvoiceFromStore;
 use App\Models\TransferToFactory;
 use App\Models\User;
+use App\Traits\FormatData;
+use App\Traits\PdfTraits;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ReceiptInvoiceFromStoresController extends Controller
 {
+    use FormatData, PdfTraits;
     public function AddReceiptInvoiceFromCollector(AddReceiptInvoiceFromStoresRequest $request)
     {
         try {
@@ -180,30 +184,9 @@ class ReceiptInvoiceFromStoresController extends Controller
             ->where('id', $id)
             ->first();
 
-        return self::formatCollectingData($query);
+        return self::formatReceiptInvoiceFromStoreData($query);
     }
-    private static function formatCollectingData($ReceiptInvoiceFromStore)
-    {
-        $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $ReceiptInvoiceFromStore->date_and_time);
-        $formattedDate = $dateTime->format('d/m/Y');
-        $formattedTime = $dateTime->format('h:i A');
-        $dayPeriod = self::getDayPeriodArabic($dateTime->format('A'));
-        $dayOfWeek = self::getDayOfWeekArabic($dateTime->format('l'));
-        return [
-            'id' => $ReceiptInvoiceFromStore->id,
-            'date_and_time' => $ReceiptInvoiceFromStore->date_and_time,
-            'date' => $formattedDate,
-            'time' => $formattedTime,
-            'period' => $dayPeriod,
-            'day' => $dayOfWeek,
-            'quantity' => $ReceiptInvoiceFromStore->quantity,
-            'association_id' => $ReceiptInvoiceFromStore->association->id,
-            'association_name' => $ReceiptInvoiceFromStore->association->name,
-            'association_branch_id' => $ReceiptInvoiceFromStore->associationsBranche->id,
-            'association_branch_name' => $ReceiptInvoiceFromStore->associationsBranche->name,
-            'notes' => $ReceiptInvoiceFromStore->notes,
-        ];
-    }
+
     public static function formatReceiptInvoiceFromStoreDataForDisplay($ReceiptInvoiceFromStore)
     {
         return array_map(function ($ReceiptInvoiceFromStore) {
@@ -214,5 +197,23 @@ class ReceiptInvoiceFromStoresController extends Controller
                 'associations_branche_name' => $ReceiptInvoiceFromStore->associationsBranche->name,
             ];
         }, $ReceiptInvoiceFromStore);
+    }
+    public static function report(ReceiptInvoiceFromStoreRequest $request)
+    {
+        $fromDate = $request["start_date_and_time"];
+        $toDate = $request["end_date_and_time"];
+        $query = ReceiptInvoiceFromStore::whereBetween('date_and_time', [$fromDate,  $toDate])
+            ->where('association_id',  auth('sanctum')->user()->id);
+        if ($request->has('associations_branche_id')) {
+            $query->where('associations_branche_id', $request["associations_branche_id"]);
+        }
+        $ReceiptInvoiceFromStore = $query->get();
+        $data = $ReceiptInvoiceFromStore->map(function ($query) {
+            return self::formatReceiptInvoiceFromStoreData($query);
+        });
+        $html = view('report.association.ReceiptInvoiceFromStore', [
+            'data' => $data,
+        ])->render();
+        return  self::printApiPdf($html);
     }
 }

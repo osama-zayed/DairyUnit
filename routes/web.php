@@ -19,7 +19,8 @@ Route::get('/', function () {
     return redirect()->route('filament.admin.pages.dashboard');
 });
 Route::prefix('report')->controller(PdfHelperController::class)->middleware('Permission:institution')->group(function(){
-    Route::get('ReceiptFromAssociation','ReceiptFromAssociation')->name('ReceiptFromAssociation');
     Route::get('CollectingMilkFromFamily','CollectingMilkFromFamily')->name('CollectingMilkFromFamily');
+    Route::get('ReceiptInvoiceFromStore','ReceiptInvoiceFromStore')->name('ReceiptInvoiceFromStore');
+    Route::get('ReceiptFromAssociation','ReceiptFromAssociation')->name('ReceiptFromAssociation');
 
 });

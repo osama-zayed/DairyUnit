@@ -1,14 +1,13 @@
 @extends('report.layouts.app')
 @section('title')
-    تقرير تجميع الحليب من الاسر
+    تقرير توريد الحليب من المجمعين الى الجمعية
 @endsection
 @section('colspan')
-    10
+    9
 @endsection
 @section('thead')
     <tr>
         <th>#</th>
-        <th>أسم الاسرة</th>
         <th>فرع الجمعية</th>
         <th>أسم الجمعية</th>
         <th>اليوم</th>
@@ -23,7 +22,6 @@
     @foreach ($data as $item)
         <tr>
             <td>{{ $item['id'] }}</td>
-            <td>{{ $item['family_name'] }}</td>
             <td>{{ $item['association_branch_name'] }}</td>
             <td>{{ $item['association_name'] }}</td>
             <td>{{ $item['day'] }}</td>
@@ -31,7 +29,7 @@
             <td>{{ $item['time'] }}</td>
             <td>{{ $item['period'] }}</td>
             <td>{{ $item['quantity'] }}</td>
-            <td>{{ $item['nots'] }}</td>
+            <td>{{ $item['notes'] }}</td>
         </tr>
     @endforeach
 @endsection

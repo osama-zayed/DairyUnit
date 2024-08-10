@@ -29,6 +29,27 @@ trait FormatData
             'nots' => $CollectingMilkFromFamily->nots,
         ];
     }
-    
+    public static function formatReceiptInvoiceFromStoreData($ReceiptInvoiceFromStore)
+    {
+        $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $ReceiptInvoiceFromStore->date_and_time);
+        $formattedDate = $dateTime->format('d/m/Y');
+        $formattedTime = $dateTime->format('h:i A');
+        $dayPeriod = self::getDayPeriodArabic($dateTime->format('A'));
+        $dayOfWeek = self::getDayOfWeekArabic($dateTime->format('l'));
+        return [
+            'id' => $ReceiptInvoiceFromStore->id,
+            'date_and_time' => $ReceiptInvoiceFromStore->date_and_time,
+            'date' => $formattedDate,
+            'time' => $formattedTime,
+            'period' => $dayPeriod,
+            'day' => $dayOfWeek,
+            'quantity' => $ReceiptInvoiceFromStore->quantity,
+            'association_id' => $ReceiptInvoiceFromStore->association->id,
+            'association_name' => $ReceiptInvoiceFromStore->association->name,
+            'association_branch_id' => $ReceiptInvoiceFromStore->associationsBranche->id,
+            'association_branch_name' => $ReceiptInvoiceFromStore->associationsBranche->name,
+            'notes' => $ReceiptInvoiceFromStore->notes,
+        ];
+    }
     
 }
