@@ -9,13 +9,15 @@ use App\Models\AssemblyStore;
 use App\Models\ReceiptInvoiceFromStore;
 use App\Models\ReturnTheQuantity;
 use App\Models\User;
+use App\Traits\FormatData;
+use App\Traits\PdfTraits;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ReturnTheQuantityController extends Controller
 {
-
+    use FormatData, PdfTraits;
     /**
      * Display a listing of the resource.
      */

@@ -51,5 +51,32 @@ trait FormatData
             'notes' => $ReceiptInvoiceFromStore->notes,
         ];
     }
-    
+    public static function formatTransferToFactoryData($TransferToFactory)
+    {
+        $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $TransferToFactory->date_and_time);
+        $formattedDate = $dateTime->format('d/m/Y');
+        $formattedTime = $dateTime->format('h:i A');
+        $dayPeriod = self::getDayPeriodArabic($dateTime->format('A'));
+        $dayOfWeek = self::getDayOfWeekArabic($dateTime->format('l'));
+        return [
+            'id' => $TransferToFactory->id,
+            'date_and_time' => $TransferToFactory->date_and_time,
+            'date' => $formattedDate,
+            'time' => $formattedTime,
+            'period' => $dayPeriod,
+            'day' => $dayOfWeek,
+            'quantity' => $TransferToFactory->quantity,
+            'association_id' => $TransferToFactory->association->id,
+            'association_name' => $TransferToFactory->association->name,
+            'driver_id' => $TransferToFactory->driver_id,
+            'driver_name' => $TransferToFactory->driver->name,
+            'factory_id' => $TransferToFactory->factory_id,
+            'factory_name' => $TransferToFactory->factory->name,
+            'means_of_transportation' => $TransferToFactory->means_of_transportation,
+            'notes' => $TransferToFactory->notes,
+            'status' => $TransferToFactory->status,
+
+
+        ];
+    }
 }

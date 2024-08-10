@@ -9,6 +9,8 @@ use App\Models\AssemblyStore;
 use App\Models\ReceiptFromAssociation;
 use App\Models\TransferToFactory;
 use App\Models\User;
+use App\Traits\FormatData;
+use App\Traits\PdfTraits;
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -17,7 +19,7 @@ use Illuminate\Support\Facades\Log;
 
 class ReceiptFromAssociationController extends Controller
 {
-
+    use FormatData, PdfTraits;
     /**
      * Display a listing of the resource.
      */

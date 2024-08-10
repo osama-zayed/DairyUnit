@@ -6,6 +6,7 @@ use App\Models\CollectingMilkFromFamily;
 use App\Models\ReceiptFromAssociation;
 use App\Models\ReceiptInvoiceFromStore;
 use App\Models\ReturnTheQuantity;
+use App\Models\TransferToFactory;
 use App\Traits\FormatData;
 use App\Traits\PdfTraits;
 
@@ -31,6 +32,17 @@ class PdfHelperController extends Controller
             return self::formatReceiptInvoiceFromStoreData($query);
         });
         $html = view('report.institution.ReceiptInvoiceFromStore', [
+            'data' => $data,
+        ])->render();
+        return  self::printPdf($html);
+    }
+    public static function TransferToFactory()
+    {
+        $TransferToFactory = TransferToFactory::whereIn('id', request('data'))->get();
+        $data = $TransferToFactory->map(function ($query) {
+            return self::formatTransferToFactoryData($query);
+        });
+        $html = view('report.institution.TransferToFactory', [
             'data' => $data,
         ])->render();
         return  self::printPdf($html);

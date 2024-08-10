@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -143,7 +144,13 @@ class TransferToFactoryResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
+                    BulkAction::make('print_pdf')
+                    ->label('طباعة ك PDF')
+                    ->action(function ($records) {
+                        $recordIds = $records->pluck('id')->toArray();
+                        return redirect()->route('TransferToFactory', ['data' => $recordIds]);
+                    })
+                    ->requiresConfirmation(),
                 ]),
             ])
             ->emptyStateActions([

@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\Association\TransferToFactoryController as Transfer;
 use App\Models\ReceiptFromAssociation;
 use App\Models\TransferToFactory;
+use App\Traits\FormatData;
+use App\Traits\PdfTraits;
 use Illuminate\Http\Request;
 
 class TransferToFactoryController extends Transfer
 {
+    use FormatData, PdfTraits;
     public  function index(Request $request)
     {
         try {
@@ -68,6 +71,6 @@ class TransferToFactoryController extends Transfer
             ->where('id', $id)
             ->first();
 
-        return self::formatCollectingData($query);
+        return self::formatTransferToFactoryData($query);
     }
 }

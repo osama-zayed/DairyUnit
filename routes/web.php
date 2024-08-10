@@ -21,6 +21,7 @@ Route::get('/', function () {
 Route::prefix('report')->controller(PdfHelperController::class)->middleware('Permission:institution')->group(function(){
     Route::get('CollectingMilkFromFamily','CollectingMilkFromFamily')->name('CollectingMilkFromFamily');
     Route::get('ReceiptInvoiceFromStore','ReceiptInvoiceFromStore')->name('ReceiptInvoiceFromStore');
+    Route::get('TransferToFactory','TransferToFactory')->name('TransferToFactory');
     Route::get('ReceiptFromAssociation','ReceiptFromAssociation')->name('ReceiptFromAssociation');
 
 });
