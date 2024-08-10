@@ -20,7 +20,9 @@ Route::middleware(['auth:sanctum', 'Permission:representative', 'userStatus'])->
     Route::get('TransferToFactory/{id}', "TransferToFactoryController@show");
     Route::get('association', "AssociationController@index");
     Route::resource('ReceiptFromAssociation', ReceiptFromAssociationController::class);
+    Route::get('report/ReceiptFromAssociation', "ReceiptFromAssociationController@report");
     Route::post('ReceiptFromAssociation/store', "ReceiptFromAssociationController@store");
     Route::resource('ReturnTheQuantity', ReturnTheQuantityController::class);
     Route::post('ReturnTheQuantity/store', "ReturnTheQuantityController@store");
+
 });

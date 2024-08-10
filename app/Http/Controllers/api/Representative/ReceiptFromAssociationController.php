@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Representative;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReceiptFromAssociationController\StoreRequest;
 use App\Http\Requests\ReceiptFromAssociationController\UpdateRequest;
+use App\Http\Requests\Report\ReceiptFromAssociationRequest;
 use App\Models\AssemblyStore;
 use App\Models\ReceiptFromAssociation;
 use App\Models\TransferToFactory;
@@ -265,5 +266,22 @@ class ReceiptFromAssociationController extends Controller
             ];
         }, $ReceiptFromAssociation);
     }
-
+    public static function report(ReceiptFromAssociationRequest $request)
+    {
+        $fromDate = $request["start_date_and_time"];
+        $toDate = $request["end_date_and_time"];
+        $query = ReceiptFromAssociation::whereBetween('start_time_of_collection', [$fromDate,  $toDate])
+            ->where('user_id',  auth('sanctum')->user()->id);
+        if ($request->has('association_id')) {
+            $query->where('association_id', $request["association_id"]);
+        }
+        $ReceiptFromAssociation = $query->get();
+        $data = $ReceiptFromAssociation->map(function ($query) {
+            return self::formatReceiptFromAssociationData($query);
+        });
+        $html = view('report.representative.ReceiptFromAssociation', [
+            'data' => $data,
+        ])->render();
+        return  self::printApiPdf($html);
+    }
 }
