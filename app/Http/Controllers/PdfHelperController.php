@@ -17,11 +17,13 @@ class PdfHelperController extends Controller
     public static function CollectingMilkFromFamily()
     {
         $CollectingMilkFromFamily = CollectingMilkFromFamily::whereIn('id', request('data'))->get();
-        $data = $CollectingMilkFromFamily->map(function ($query) {
+        $quantity = $CollectingMilkFromFamily->sum('quantity');
+        $data = $CollectingMilkFromFamily->map(function ($query) use ($quantity) {
             return self::formatCollectingMilkFromFamilyData($query);
         });
         $html = view('report.institution.CollectingMilkFromFamily', [
             'data' => $data,
+            'quantity' => $quantity,
         ])->render();
         return  self::printPdf($html);
     }
@@ -31,6 +33,7 @@ class PdfHelperController extends Controller
         $data = $ReceiptInvoiceFromStore->map(function ($query) {
             return self::formatReceiptInvoiceFromStoreData($query);
         });
+
         $html = view('report.institution.ReceiptInvoiceFromStore', [
             'data' => $data,
         ])->render();
