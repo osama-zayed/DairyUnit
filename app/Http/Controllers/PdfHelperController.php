@@ -67,4 +67,30 @@ class PdfHelperController extends Controller
         ])->render();
         return  self::printPdf($html);
     }
+    public static function ReturnTheQuantity()
+    {
+        $ReturnTheQuantity = ReturnTheQuantity::whereIn('id', request('data'))->get();
+        $quantity = $ReturnTheQuantity->sum('quantity');
+        $data = $ReturnTheQuantity->map(function ($query) {
+            return self::formatReturnTheQuantityData($query);
+        });
+        $html = view('report.institution.ReturnTheQuantity', [
+            'data' => $data,
+            'quantity' => $quantity,
+        ])->render();
+        return  self::printPdf($html);
+    }
+    public static function ReturnTheQuantityToAssociation()
+    {
+        $ReturnTheQuantityToAssociation = ReceiptFromAssociation::whereIn('id', request('data'))->get();
+        $quantity = $ReturnTheQuantityToAssociation->sum('quantity');
+        $data = $ReturnTheQuantityToAssociation->map(function ($query) {
+            return self::formatReturnTheQuantityData($query);
+        });
+        $html = view('report.institution.ReturnTheQuantityToAssociation', [
+            'data' => $data,
+            'quantity' => $quantity,
+        ])->render();
+        return  self::printPdf($html);
+    }
 }

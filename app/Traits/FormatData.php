@@ -120,4 +120,36 @@ trait FormatData
             'notes' => $receiptFromAssociation->notes,
         ];
     }
+
+    public static function formatReturnTheQuantityData($ReturnTheQuantity)
+    {
+        $DateTime = DateTime::createFromFormat('Y-m-d H:i:s', $ReturnTheQuantity->created_at);
+        $FormattedDate = $DateTime->format('d/m/Y');
+        $FormattedTime = $DateTime->format('h:i A');
+        $DayPeriod = self::getDayPeriodArabic($DateTime->format('A'));
+        $DayOfWeek = self::getDayOfWeekArabic($DateTime->format('l'));
+
+        return [
+            'id' => $ReturnTheQuantity->id,
+            'date' => $FormattedDate,
+            'time' => $FormattedTime,
+            'period' => $DayPeriod,
+            'day' => $DayOfWeek,
+            'quantity' =>  $ReturnTheQuantity->defective_quantity_due_to_acidity +
+                $ReturnTheQuantity->defective_quantity_due_to_density +
+                $ReturnTheQuantity->defective_quantity_due_to_impurities +
+                $ReturnTheQuantity->defective_quantity_due_to_coagulation,
+            'return' => ($ReturnTheQuantity->return_to == "association") ? 'مردود الى جمعية ' . $ReturnTheQuantity->association->name :
+                'مردود الى المؤسسة',
+            'return_to' => $ReturnTheQuantity->return_to,
+
+            'association_id' => $ReturnTheQuantity->association_id,
+            'defective_quantity_due_to_coagulation' => $ReturnTheQuantity->defective_quantity_due_to_coagulation,
+            'defective_quantity_due_to_impurities' => $ReturnTheQuantity->defective_quantity_due_to_impurities,
+            'defective_quantity_due_to_density' => $ReturnTheQuantity->defective_quantity_due_to_density,
+            'defective_quantity_due_to_acidity' => $ReturnTheQuantity->defective_quantity_due_to_acidity,
+
+            'notes' => $ReturnTheQuantity->notes,
+        ];
+    }
 }
