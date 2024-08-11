@@ -135,19 +135,17 @@ trait FormatData
             'time' => $FormattedTime,
             'period' => $DayPeriod,
             'day' => $DayOfWeek,
-            'quantity' =>  $ReturnTheQuantity->defective_quantity_due_to_acidity +
-                $ReturnTheQuantity->defective_quantity_due_to_density +
-                $ReturnTheQuantity->defective_quantity_due_to_impurities +
-                $ReturnTheQuantity->defective_quantity_due_to_coagulation,
+            'quantity' =>  $ReturnTheQuantity->quantity,
             'return' => ($ReturnTheQuantity->return_to == "association") ? 'مردود الى جمعية ' . $ReturnTheQuantity->association->name :
                 'مردود الى المؤسسة',
             'return_to' => $ReturnTheQuantity->return_to,
-
             'association_id' => $ReturnTheQuantity->association_id,
             'defective_quantity_due_to_coagulation' => $ReturnTheQuantity->defective_quantity_due_to_coagulation,
             'defective_quantity_due_to_impurities' => $ReturnTheQuantity->defective_quantity_due_to_impurities,
             'defective_quantity_due_to_density' => $ReturnTheQuantity->defective_quantity_due_to_density,
             'defective_quantity_due_to_acidity' => $ReturnTheQuantity->defective_quantity_due_to_acidity,
+            'factory_name' => $ReturnTheQuantity->factory->name,
+            'user_name' => $ReturnTheQuantity->user->name,
 
             'notes' => $ReturnTheQuantity->notes,
         ];

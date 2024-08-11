@@ -153,17 +153,17 @@ class ReturnTheQuantityToAssociationResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
+                    BulkAction::make('print_pdf')
+                    ->label('طباعة ك PDF')
+                    ->action(function ($records) {
+                        $recordIds = $records->pluck('id')->toArray();
+                        return redirect()->route('ReturnTheQuantityToAssociation', ['data' => $recordIds]);
+                    })
+                    ->requiresConfirmation(),
                 ]),
             ])
             ->emptyStateActions([
-                BulkAction::make('print_pdf')
-                ->label('طباعة ك PDF')
-                ->action(function ($records) {
-                    $recordIds = $records->pluck('id')->toArray();
-                    return redirect()->route('ReturnTheQuantityToAssociation', ['data' => $recordIds]);
-                })
-                ->requiresConfirmation(),
+               
             ]);
     }
 

@@ -3,13 +3,11 @@
    تقرير مردود الحليب للمؤاسسة
 @endsection
 @section('colspan')
-    13
+    11
 @endsection
 @section('thead')
     <tr>
         <th>#</th>
-        <th>المصنع</th>
-        <th>المندوب</th>
         <th>اليوم</th>
         <th>التاريخ</th>
         <th>الوقت</th>
@@ -26,8 +24,6 @@
     @foreach ($data as $item)
         <tr>
             <td>{{ $item['id'] }}</td>
-            <td>{{ $item['factory_name'] }}</td>
-            <td>{{ $item['user_name'] }}</td>
             <td>{{ $item['day'] }}</td>
             <td>{{ $item['date'] }}</td>
             <td>{{ $item['time'] }}</td>
@@ -41,7 +37,7 @@
         </tr>
     @endforeach
     <tr >
-        <td colspan="6" style="text-align: center">الاجمالي</td>
-        <td colspan="7"  style="text-align: center">{{ $quantity }} لتر</td>
+        <td colspan="5" style="text-align: center">الاجمالي</td>
+        <td colspan="6"  style="text-align: center">{{ $quantity }} لتر</td>
     </tr>
 @endsection
