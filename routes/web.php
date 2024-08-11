@@ -23,5 +23,7 @@ Route::prefix('report')->controller(PdfHelperController::class)->middleware('Per
     Route::get('ReceiptInvoiceFromStore','ReceiptInvoiceFromStore')->name('ReceiptInvoiceFromStore');
     Route::get('TransferToFactory','TransferToFactory')->name('TransferToFactory');
     Route::get('ReceiptFromAssociation','ReceiptFromAssociation')->name('ReceiptFromAssociation');
+    Route::get('ReturnTheQuantity','ReturnTheQuantity')->name('ReturnTheQuantity');
+    Route::get('ReturnTheQuantityToAssociation','ReturnTheQuantityToAssociation')->name('ReturnTheQuantityToAssociation');
 
 });
