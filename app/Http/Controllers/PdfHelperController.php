@@ -69,7 +69,7 @@ class PdfHelperController extends Controller
     }
     public static function ReturnTheQuantity()
     {
-        $ReturnTheQuantity = ReturnTheQuantity::whereIn('id', request('data'))->where('return_to', '!=', 'association')->get();
+        $ReturnTheQuantity = ReturnTheQuantity::whereIn('id', request('data'))->where('return_to', 'institution')->get();
         $quantity = $ReturnTheQuantity->sum('quantity');
         $data = $ReturnTheQuantity->map(function ($query) {
             return self::formatReturnTheQuantityData($query);
@@ -82,7 +82,7 @@ class PdfHelperController extends Controller
     }
     public static function ReturnTheQuantityToAssociation()
     {
-        $ReturnTheQuantityToAssociation = ReceiptFromAssociation::whereIn('id', request('data'))->where('return_to', 'association')->get();
+        $ReturnTheQuantityToAssociation = ReturnTheQuantity::whereIn('id', request('data'))->where('return_to', 'association')->get();
         $quantity = $ReturnTheQuantityToAssociation->sum('quantity');
         $data = $ReturnTheQuantityToAssociation->map(function ($query) {
             return self::formatReturnTheQuantityData($query);
