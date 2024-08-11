@@ -39,7 +39,7 @@
         </tr>
     @endforeach
     <tr >
-        <td colspan="5" style="text-align: center">الاجمالي</td>
-        <td colspan="7"  style="text-align: center">{{ $quantity }} لتر</td>
+        <td colspan="6" style="text-align: center">الاجمالي</td>
+        <td colspan="6"  style="text-align: center">{{ $quantity }} لتر</td>
     </tr>
 @endsection

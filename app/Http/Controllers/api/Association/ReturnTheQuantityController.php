@@ -3,19 +3,22 @@
 namespace App\Http\Controllers\Api\Association;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Report\ReturnTheQuantityToInstitutionRequest;
 use App\Http\Requests\ReturnTheQuantityController\StoreRequest;
 use App\Http\Requests\ReturnTheQuantityController\UpdateRequest;
 use App\Models\AssemblyStore;
 use App\Models\ReceiptInvoiceFromStore;
 use App\Models\ReturnTheQuantity;
 use App\Models\User;
+use App\Traits\FormatData;
+use App\Traits\PdfTraits;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ReturnTheQuantityController extends Controller
 {
-
+    use FormatData, PdfTraits;
     /**
      * Display a listing of the resource.
      */
@@ -109,5 +112,23 @@ class ReturnTheQuantityController extends Controller
 
             'notes' => $ReturnTheQuantity->notes,
         ];
+    }
+    public static function report(ReturnTheQuantityToInstitutionRequest $request)
+    {
+        $fromDate = $request["start_date_and_time"];
+        $toDate = $request["end_date_and_time"];
+        $query = ReturnTheQuantity::whereBetween('created_at', [$fromDate,  $toDate])
+            ->where('return_to', 'association')
+            ->where('association_id',  auth('sanctum')->user()->id);
+        $ReturnTheQuantityToAssociation = $query->get();
+        $quantity = $ReturnTheQuantityToAssociation->sum('quantity');
+        $data = $ReturnTheQuantityToAssociation->map(function ($query) {
+            return self::formatReturnTheQuantityData($query);
+        });
+        $html = view('report.association.ReturnTheQuantityToAssociation', [
+            'data' => $data,
+            'quantity' => $quantity,
+        ])->render();
+        return  self::printApiPdf($html);
     }
 }

@@ -47,3 +47,4 @@ Route::prefix('transfertofactory')->middleware(['auth:sanctum', 'Permission:asso
     Route::get('report', "TransferToFactoryController@report");
 });
 Route::resource('ReturnTheQuantity', ReturnTheQuantityController::class)->middleware(['auth:sanctum', 'Permission:association', 'userStatus']);
+Route::get('report/ReturnTheQuantity', "ReturnTheQuantityController@report")->middleware(['auth:sanctum', 'Permission:association', 'userStatus']);
