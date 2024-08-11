@@ -13,7 +13,7 @@ class RemoveTimedPDF extends Command
      *
      * @var string
      */
-    protected $signature = 'pdf:remove-timed-pdf';
+    protected $signature = 'app:remove-timed-pdf';
 
     /**
      * The console command description.
@@ -27,17 +27,17 @@ class RemoveTimedPDF extends Command
      */
     public function handle()
     {
-        // $filesystem = new Filesystem();
-        // $pdfDirectory = '/pdf';
-        Storage::delete('public/pdf/report_2024-08-04_00-55-05.pdf');
-        // if ($filesystem->exists($pdfDirectory)) {
-        //     $files = $filesystem->files($pdfDirectory);
-        //     foreach ($files as $file) {
-        //         $filesystem->delete($file);
-        //     }
-        //     $this->info('The timed PDF files have been removed successfully.');
-        // } else {
-        //     $this->info('No PDF files found in the directory.');
-        // }
+
+        $filesystem = new Filesystem();
+        $pdfDirectory = public_path('storage/pdf');
+        if ($filesystem->exists($pdfDirectory)) {
+            $files = $filesystem->files($pdfDirectory);
+            foreach ($files as $file) {
+                $filesystem->delete($file);
+            }
+            dd('The timed PDF files have been removed successfully.');
+        } else {
+            dd('No PDF files found in the directory.');
+        }
     }
 }
