@@ -52,4 +52,8 @@
             <td>{{ $item['notes'] }}</td>
         </tr>
     @endforeach
+    <tr >
+        <td colspan="9" style="text-align: center">الاجمالي</td>
+        <td colspan="10"  style="text-align: center">{{ $quantity }} لتر</td>
+    </tr>
 @endsection

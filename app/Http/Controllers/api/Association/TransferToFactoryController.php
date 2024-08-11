@@ -220,11 +220,13 @@ class TransferToFactoryController extends Controller
             $query->where('driver_id', $request["driver_id"]);
         }
         $TransferToFactory = $query->get();
+        $quantity = $TransferToFactory->sum('quantity');
         $data = $TransferToFactory->map(function ($query) {
             return self::formatTransferToFactoryData($query);
         });
         $html = view('report.association.TransferToFactory', [
             'data' => $data,
+            'quantity' => $quantity,
         ])->render();
         return  self::printApiPdf($html);
     }

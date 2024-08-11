@@ -276,11 +276,13 @@ class ReceiptFromAssociationController extends Controller
             $query->where('association_id', $request["association_id"]);
         }
         $ReceiptFromAssociation = $query->get();
+        $quantity = $ReceiptFromAssociation->sum('quantity');
         $data = $ReceiptFromAssociation->map(function ($query) {
             return self::formatReceiptFromAssociationData($query);
         });
         $html = view('report.representative.ReceiptFromAssociation', [
             'data' => $data,
+            'quantity' => $quantity,
         ])->render();
         return  self::printApiPdf($html);
     }

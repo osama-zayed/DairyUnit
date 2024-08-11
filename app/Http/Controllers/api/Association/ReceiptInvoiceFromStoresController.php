@@ -208,11 +208,13 @@ class ReceiptInvoiceFromStoresController extends Controller
             $query->where('associations_branche_id', $request["associations_branche_id"]);
         }
         $ReceiptInvoiceFromStore = $query->get();
+        $quantity = $ReceiptInvoiceFromStore->sum('quantity');
         $data = $ReceiptInvoiceFromStore->map(function ($query) {
             return self::formatReceiptInvoiceFromStoreData($query);
         });
         $html = view('report.association.ReceiptInvoiceFromStore', [
             'data' => $data,
+            'quantity' => $quantity,
         ])->render();
         return  self::printApiPdf($html);
     }

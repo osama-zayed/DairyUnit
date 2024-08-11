@@ -166,11 +166,13 @@ class MilkCollectionController extends Controller
             $query->where('family_id', $request["family_id"]);
         }
         $CollectingMilkFromFamily = $query->get();
+        $quantity = $CollectingMilkFromFamily->sum('quantity');
         $data = $CollectingMilkFromFamily->map(function ($query) {
             return self::formatCollectingMilkFromFamilyData($query);
         });
         $html = view('report.collector.CollectingMilkFromFamily', [
             'data' => $data,
+            'quantity' => $quantity,
         ])->render();
         return  self::printApiPdf($html);
     }

@@ -30,34 +30,40 @@ class PdfHelperController extends Controller
     public static function ReceiptInvoiceFromStore()
     {
         $ReceiptInvoiceFromStore = ReceiptInvoiceFromStore::whereIn('id', request('data'))->get();
+        $quantity = $ReceiptInvoiceFromStore->sum('quantity');
         $data = $ReceiptInvoiceFromStore->map(function ($query) {
             return self::formatReceiptInvoiceFromStoreData($query);
         });
 
         $html = view('report.institution.ReceiptInvoiceFromStore', [
             'data' => $data,
+            'quantity' => $quantity,
         ])->render();
         return  self::printPdf($html);
     }
     public static function TransferToFactory()
     {
         $TransferToFactory = TransferToFactory::whereIn('id', request('data'))->get();
+        $quantity = $TransferToFactory->sum('quantity');
         $data = $TransferToFactory->map(function ($query) {
             return self::formatTransferToFactoryData($query);
         });
         $html = view('report.institution.TransferToFactory', [
             'data' => $data,
+            'quantity' => $quantity,
         ])->render();
         return  self::printPdf($html);
     }
     public static function ReceiptFromAssociation()
     {
         $ReceiptFromAssociation = ReceiptFromAssociation::whereIn('id', request('data'))->get();
+        $quantity = $ReceiptFromAssociation->sum('quantity');
         $data = $ReceiptFromAssociation->map(function ($query) {
             return self::formatReceiptFromAssociationData($query);
         });
         $html = view('report.institution.ReceiptFromAssociation', [
             'data' => $data,
+            'quantity' => $quantity,
         ])->render();
         return  self::printPdf($html);
     }
