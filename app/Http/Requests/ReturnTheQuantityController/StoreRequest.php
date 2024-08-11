@@ -45,34 +45,55 @@ class StoreRequest extends FormRequest
         $validator->after(function ($validator) {
             $user = auth('sanctum')->user();
             $returnTo = $this->input('return_to');
-            $receiptFromAssociationId = $this->input('association_id');
-
-            $receiptFromAssociation = ReceiptFromAssociation::where('user_id', $user->id)
-                ->selectRaw('SUM(quantity) as total_quantity')
-                ->first();
-
             $quantity = $this->input('defective_quantity_due_to_acidity') +
                 $this->input('defective_quantity_due_to_density') +
                 $this->input('defective_quantity_due_to_impurities') +
                 $this->input('defective_quantity_due_to_coagulation');
-            $returnData = ReturnTheQuantity::where('user_id', $user->id)
-                ->selectRaw('SUM(quantity) as quantity')
-                ->first();
-
-            $quantity += $returnData->quantity;
-
-            if ($quantity > $receiptFromAssociation->total_quantity) {
-                $validator->errors()->add('association_id', 'لا يوجد لديك الكمية');
-            }
+            if ($quantity == 0)
+                $validator->errors()->add('defective_quantity_due_to_coagulation', 'لا يمكن ان يكون اجمالي الكمية المردودة صفر');
 
             if ($returnTo == 'association') {
-                if (is_null($receiptFromAssociationId))
+                $receiptFromAssociationId = $this->input('association_id');
+                if (is_null($receiptFromAssociationId)) {
                     $validator->errors()->add('association_id', 'معرف الجمعية مطلوب');
+                } else {
+                    $association = User::where('id', $receiptFromAssociationId)
+                        ->where('user_type', 'association')->first();
+                    if ($association) {
+                        $receiptFromAssociation = ReceiptFromAssociation::where('user_id', $user->id)
+                            ->where('association_id', $receiptFromAssociationId)
+                            ->selectRaw('SUM(quantity) as total_quantity')
+                            ->first();
 
-                $association = User::where('id', $receiptFromAssociationId)
-                    ->where('user_type', 'association')->first();
-                if (!$association)
-                    $validator->errors()->add('association_id', ' الجمعية غير موجودة');
+                        $returnData = ReturnTheQuantity::where('user_id', $user->id)
+                            ->where('association_id', $receiptFromAssociationId)
+                            ->selectRaw('SUM(quantity) as quantity')
+                            ->first();
+
+                        $quantity += $returnData->quantity;
+
+                        if ($quantity > $receiptFromAssociation->total_quantity) {
+                            $validator->errors()->add('association_id', 'الكمية المردودة اكبر من الكمية المستلمة من هذه الجمعية');
+                        }
+                    } else {
+                        $validator->errors()->add('association_id', ' الجمعية غير موجودة');
+                    }
+                }
+            } else {
+
+                $receiptFromAssociation = ReceiptFromAssociation::where('user_id', $user->id)
+                    ->selectRaw('SUM(quantity) as total_quantity')
+                    ->first();
+
+                $returnData = ReturnTheQuantity::where('user_id', $user->id)
+                    ->selectRaw('SUM(quantity) as quantity')
+                    ->first();
+
+                $quantity += $returnData->quantity;
+
+                if ($quantity > $receiptFromAssociation->total_quantity) {
+                    $validator->errors()->add('association_id', 'لا يوجد لديك الكمية');
+                }
             }
         });
     }
