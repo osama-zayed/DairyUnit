@@ -31,7 +31,7 @@
             <td>{{ $item['time'] }}</td>
             <td>{{ $item['period'] }}</td>
             <td>{{ $item['quantity'] }}</td>
-            <td>{{ $item['nots'] }}</td>
+            <td>{{ $item['notes'] }}</td>
         </tr>
     @endforeach
 @endsection
