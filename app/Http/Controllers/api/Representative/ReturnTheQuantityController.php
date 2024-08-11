@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\Representative;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Report\ReturnTheQuantityToAssociationRequest;
+use App\Http\Requests\Report\ReturnTheQuantityToInstitutionRequest;
 use App\Http\Requests\ReturnTheQuantityController\StoreRequest;
 use App\Http\Requests\ReturnTheQuantityController\UpdateRequest;
 use App\Models\AssemblyStore;
@@ -195,21 +197,6 @@ class ReturnTheQuantityController extends Controller
         }
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     */
-
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(ReturnTheQuantity $ReturnTheQuantity)
-    {
-        //
-    }
-
     public function getReturnTheQuantityPaginated($request)
     {
         $perPage = $request->get('per_page');
@@ -252,6 +239,43 @@ class ReturnTheQuantityController extends Controller
             ];
         }, $ReturnTheQuantity);
     }
-
-
+    public static function reportReturnTheQuantityToInstitution(ReturnTheQuantityToInstitutionRequest $request)
+    {
+        $fromDate = $request["start_date_and_time"];
+        $toDate = $request["end_date_and_time"];
+        $query = ReturnTheQuantity::whereBetween('created_at', [$fromDate,  $toDate])
+            ->where('return_to', 'institution')
+            ->where('user_id',  auth('sanctum')->user()->id);
+        $ReturnTheQuantityToInstitution = $query->get();
+        $quantity = $ReturnTheQuantityToInstitution->sum('quantity');
+        $data = $ReturnTheQuantityToInstitution->map(function ($query) {
+            return self::formatReturnTheQuantityData($query);
+        });
+        $html = view('report.representative.ReturnTheQuantity', [
+            'data' => $data,
+            'quantity' => $quantity,
+        ])->render();
+        return  self::printApiPdf($html);
+    }
+    public static function reportReturnTheQuantityToAssociation(ReturnTheQuantityToAssociationRequest $request)
+    {
+        $fromDate = $request["start_date_and_time"];
+        $toDate = $request["end_date_and_time"];
+        $query = ReturnTheQuantity::whereBetween('created_at', [$fromDate,  $toDate])
+            ->where('return_to', 'association')
+            ->where('user_id',  auth('sanctum')->user()->id);
+        if ($request->has('association_id')) {
+            $query->where('association_id', $request["association_id"]);
+        }
+        $ReturnTheQuantityToInstitution = $query->get();
+        $quantity = $ReturnTheQuantityToInstitution->sum('quantity');
+        $data = $ReturnTheQuantityToInstitution->map(function ($query) {
+            return self::formatReturnTheQuantityData($query);
+        });
+        $html = view('report.representative.ReturnTheQuantityToAssociation', [
+            'data' => $data,
+            'quantity' => $quantity,
+        ])->render();
+        return  self::printApiPdf($html);
+    }
 }

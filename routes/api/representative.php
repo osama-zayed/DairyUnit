@@ -24,5 +24,7 @@ Route::middleware(['auth:sanctum', 'Permission:representative', 'userStatus'])->
     Route::post('ReceiptFromAssociation/store', "ReceiptFromAssociationController@store");
     Route::resource('ReturnTheQuantity', ReturnTheQuantityController::class);
     Route::post('ReturnTheQuantity/store', "ReturnTheQuantityController@store");
+    Route::get('report/ReturnQuantity/ToInstitution', "ReturnTheQuantityController@reportReturnTheQuantityToInstitution");
+    Route::get('report/ReturnQuantity/ToAssociation', "ReturnTheQuantityController@reportReturnTheQuantityToAssociation");
 
 });
