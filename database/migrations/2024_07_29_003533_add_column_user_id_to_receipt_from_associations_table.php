@@ -22,7 +22,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('associations', function (Blueprint $table) {
-            //
+            $table->dropColumn('user_id');
+
         });
     }
 };
