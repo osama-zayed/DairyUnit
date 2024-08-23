@@ -47,7 +47,7 @@ class ReturnTheQuantityToInstitutionRequest extends FormRequest
             if ($end->lessThan($now)) {
                 $validator->errors()->add('start_date_and_time', 'يجب أن لا يكون تاريخ ووقت انتهاء التقرير بعد الوقت الحالي');
             }
-            if ($start->lessThan($now)) {
+            if ($start->greaterThan($now)) {
                 $validator->errors()->add('end_date_and_time', 'يجب أن لا يكون تاريخ ووقت بدء التقرير بعد الوقت الحالي.');
             }
             if ($end->lessThan($start)) {
