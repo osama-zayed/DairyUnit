@@ -46,10 +46,10 @@ class ReturnTheQuantityToAssociationRequest extends FormRequest
             $now = \Carbon\Carbon::now();
             $start = \Carbon\Carbon::parse($startdateOfCollection);
             $end = \Carbon\Carbon::parse($enddateOfCollection);
-            if ($end->greaterThan($now)) {
+            if ($end->lessThan($now)) {
                 $validator->errors()->add('start_date_and_time', 'يجب أن لا يكون تاريخ ووقت انتهاء التقرير بعد الوقت الحالي');
             }
-            if ($start->greaterThan($now)) {
+            if ($start->lessThan($now)) {
                 $validator->errors()->add('end_date_and_time', 'يجب أن لا يكون تاريخ ووقت بدء التقرير بعد الوقت الحالي.');
             }
             if ($end->lessThan($start)) {
