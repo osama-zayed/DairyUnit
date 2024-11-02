@@ -31,4 +31,5 @@ Route::prefix('milk')->middleware(['auth:sanctum', 'Permission:collector','userS
 
 Route::prefix('location')->middleware(['auth:sanctum', 'userStatus'])->group(function () {
     Route::get('governorate', "LocationController@governorate");
+    Route::get('directorate', "LocationController@directorate");
 });
