@@ -11,35 +11,64 @@ use Illuminate\Support\Facades\DB;
 
 class FamilyController extends Controller
 {
-
     public function showByAssociationBranche()
     {
-        $Family  = Family::select(
+        $families = Family::select(
             'id',
             'name',
-            'status',
+            'status'
         )
             ->orderByDesc('id')
             ->where('association_id', auth('sanctum')->user()->association_id)
             ->where('associations_branche_id', auth('sanctum')->user()->id)
             ->get();
-        return self::responseSuccess($Family);
+
+        return self::responseSuccess($families);
     }
 
     public function showById($id)
     {
-        $Family  = Family::select(
-            'id',
-            'name',
-            'phone',
-            'number_of_cows_produced',
-            'number_of_cows_unproductive',
-        )
+        $family = Family::with(['governorate', 'directorate', 'isolation', 'village']) // استخدام علاقات Eloquent
+            ->select(
+                'id',
+                'name',
+                'phone',
+                'local_cows_producing',
+                'local_cows_non_producing',
+                'born_cows_producing',
+                'born_cows_non_producing',
+                'imported_cows_producing',
+                'imported_cows_non_producing',
+                'governorate_id',
+                'directorate_id',
+                'isolation_id',
+                'village_id'
+            )
             ->where("id", $id)
             ->where('association_id', auth('sanctum')->user()->association_id)
             ->where('associations_branche_id', auth('sanctum')->user()->id)
             ->first();
-        return self::responseSuccess($Family);
+    
+        if (!$family) {
+            return self::responseError('الأسرة المحددة غير موجودة');
+        }
+    
+        // تحويل الأرقام إلى أسماء
+        return self::responseSuccess([
+            'id' => $family->id,
+            'name' => $family->name,
+            'phone' => $family->phone,
+            'local_cows_producing' => $family->local_cows_producing,
+            'local_cows_non_producing' => $family->local_cows_non_producing,
+            'born_cows_producing' => $family->born_cows_producing,
+            'born_cows_non_producing' => $family->born_cows_non_producing,
+            'imported_cows_producing' => $family->imported_cows_producing,
+            'imported_cows_non_producing' => $family->imported_cows_non_producing,
+            'governorate' => $family->governorate->name ?? null, // استخدام العلاقة لجلب الاسم
+            'directorate' => $family->directorate->name ?? null,
+            'isolation' => $family->isolation->name ?? null,
+            'village' => $family->village->name ?? null,
+        ]);
     }
 
     public function add(AddFamilyRequest $request)
@@ -49,8 +78,16 @@ class FamilyController extends Controller
                 $family = Family::create([
                     'name' => $request->input('name'),
                     'phone' => $request->input('phone'),
-                    'number_of_cows_produced' => $request->input('number_of_cows_produced'),
-                    'number_of_cows_unproductive' => $request->input('number_of_cows_unproductive'),
+                    'local_cows_producing' => $request->input('local_cows_producing'),
+                    'local_cows_non_producing' => $request->input('local_cows_non_producing'),
+                    'born_cows_producing' => $request->input('born_cows_producing'),
+                    'born_cows_non_producing' => $request->input('born_cows_non_producing'),
+                    'imported_cows_producing' => $request->input('imported_cows_producing'),
+                    'imported_cows_non_producing' => $request->input('imported_cows_non_producing'),
+                    'governorate_id' => $request->input('governorate_id'),
+                    'directorate_id' => $request->input('directorate_id'),
+                    'isolation_id' => $request->input('isolation_id'),
+                    'village_id' => $request->input('village_id'),
                     'association_id' => auth('sanctum')->user()->association_id,
                     'associations_branche_id' => auth('sanctum')->user()->id,
                 ]);
@@ -58,14 +95,14 @@ class FamilyController extends Controller
                 self::userActivity(
                     'اضافة اسره جديدة',
                     $family,
-                    ' باضافة اسرة جديدة ' . $family->name .
-                        ' جمعية ' . $family->association->name,
-                    ' فرع الجمعية'
+                    'بإضافة أسرة جديدة ' . $family->name .
+                    ' جمعية ' . $family->association->name,
+                    'فرع الجمعية'
                 );
 
                 self::userNotification(
                     auth('sanctum')->user(),
-                    ' لقد قمت باضافة اسرة جديدة باسم ' . $family->name
+                    'لقد قمت بإضافة أسرة جديدة باسم ' . $family->name
                 );
             });
 
@@ -74,6 +111,7 @@ class FamilyController extends Controller
             return self::responseError('حدث خطأ أثناء تنفيذ العملية');
         }
     }
+
     public function update(UpdateFamilyRequest $request)
     {
         try {
@@ -82,11 +120,23 @@ class FamilyController extends Controller
                     ->where('associations_branche_id', auth('sanctum')->user()->id)
                     ->first();
 
+                if (!$family) {
+                    return self::responseError('الأسرة المحددة غير موجودة');
+                }
+
                 $family->update([
                     'name' => $request->input('name'),
                     'phone' => $request->input('phone'),
-                    'number_of_cows_produced' => $request->input('number_of_cows_produced'),
-                    'number_of_cows_unproductive' => $request->input('number_of_cows_unproductive'),
+                    'local_cows_producing' => $request->input('local_cows_producing'),
+                    'local_cows_non_producing' => $request->input('local_cows_non_producing'),
+                    'born_cows_producing' => $request->input('born_cows_producing'),
+                    'born_cows_non_producing' => $request->input('born_cows_non_producing'),
+                    'imported_cows_producing' => $request->input('imported_cows_producing'),
+                    'imported_cows_non_producing' => $request->input('imported_cows_non_producing'),
+                    'governorate_id' => $request->input('governorate_id'),
+                    'directorate_id' => $request->input('directorate_id'),
+                    'isolation_id' => $request->input('isolation_id'),
+                    'village_id' => $request->input('village_id'),
                     'association_id' => auth('sanctum')->user()->association_id,
                     'associations_branche_id' => auth('sanctum')->user()->id,
                 ]);
@@ -94,13 +144,13 @@ class FamilyController extends Controller
                 $this->userActivity(
                     'تعديل اسرة',
                     $family,
-                    ' بتعديل بيانات اسرة ' . $family->name . ' جمعية ' . $family->association->name,
-                    ' فرع الجمعية '
+                    'بتعديل بيانات أسرة ' . $family->name . ' جمعية ' . $family->association->name,
+                    'فرع الجمعية'
                 );
 
                 $this->userNotification(
                     auth('sanctum')->user(),
-                    ' لقد قمت بتعديل بيانات اسرة باسم ' . $family->name
+                    'لقد قمت بتعديل بيانات أسرة باسم ' . $family->name
                 );
             });
 
@@ -109,17 +159,16 @@ class FamilyController extends Controller
             return self::responseError('حدث خطأ أثناء تنفيذ العملية');
         }
     }
+
     public function updateStatus(StatusRequest $request)
     {
-
         $family = Family::where('id', $request->input('id'))
             ->where('associations_branche_id', auth('sanctum')->user()->id)
             ->first();
 
         if (empty($family)) {
-            return $this->responseError('الاسرة غير موجود');
+            return $this->responseError('الأسرة غير موجودة');
         }
-
 
         $family->update([
             'status' => $request->input('status'),
@@ -128,13 +177,13 @@ class FamilyController extends Controller
         $this->userActivity(
             'تعديل حالة اسرة',
             $family,
-            ' بتعديل حالة الاسرة ' . $family->name . ' جمعية ' . $family->association->name,
+            'بتعديل حالة الأسرة ' . $family->name . ' جمعية ' . $family->association->name,
             'فرع الجمعية'
         );
 
         $this->userNotification(
             auth('sanctum')->user(),
-            'لقد قمت بتعديل حالة الاسرة باسم ' . $family->name
+            'لقد قمت بتعديل حالة الأسرة باسم ' . $family->name
         );
 
         return $this->responseSuccess([], 'تمت العملية بنجاح');
