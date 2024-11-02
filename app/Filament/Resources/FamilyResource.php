@@ -235,6 +235,30 @@ class FamilyResource extends Resource
                     ->options(function () {
                         return User::where('user_type', 'collector')->pluck('name', 'id');
                     }),
+                SelectFilter::make('governorate_id') // فلتر المحافظة
+                    ->label('المحافظة')
+                    ->multiple()
+                    ->options(function () {
+                        return Governorate::pluck('name', 'id'); // تأكد من وجود موديل Governorate
+                    }),
+                SelectFilter::make('directorate_id') // فلتر المديرية
+                    ->label('المديرية')
+                    ->multiple()
+                    ->options(function () {
+                        return Directorate::pluck('name', 'id'); // تأكد من وجود موديل Directorate
+                    }),
+                SelectFilter::make('isolation_id') // فلتر العزلة
+                    ->label('العزلة')
+                    ->multiple()
+                    ->options(function () {
+                        return Isolation::pluck('name', 'id'); // تأكد من وجود موديل Isolation
+                    }),
+                SelectFilter::make('village_id') // فلتر القرية
+                    ->label('القرية')
+                    ->multiple()
+                    ->options(function () {
+                        return Village::pluck('name', 'id'); // تأكد من وجود موديل Village
+                    }),
             ])
             ->actions([
                 // Tables\Actions\ViewAction::make(),
