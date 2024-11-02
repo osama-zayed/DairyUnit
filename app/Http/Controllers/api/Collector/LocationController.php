@@ -13,13 +13,13 @@ class LocationController extends Controller
 {
     public function governorate()
     {
-        $governorates = Governorate::select('name')->get();
+        $governorates = Governorate::select('id','name')->get();
         return self::responseSuccess($governorates);
     }
     public function directorate(Request $request)
     {
         $governorateId = $request->input('governorate_id');
-        $governorates = Directorate::select('name')
+        $governorates = Directorate::select('id','name')
             ->where('governorate_id', $governorateId)
             ->get();
         return self::responseSuccess($governorates);
@@ -27,7 +27,7 @@ class LocationController extends Controller
     public function isolation(Request $request)
     {
         $directorateId = $request->input('directorate_id');
-        $governorates = Isolation::select('name')
+        $governorates = Isolation::select('id','name')
             ->where('directorate_id', $directorateId)
             ->get();
         return self::responseSuccess($governorates);
@@ -35,7 +35,7 @@ class LocationController extends Controller
     public function village(Request $request)
     {
         $villageId = $request->input('isolation_id');
-        $governorates = Village::select('name')
+        $governorates = Village::select('id','name')
             ->where('isolation_id', $villageId)
             ->get();
         return self::responseSuccess($governorates);
