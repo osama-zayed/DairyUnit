@@ -22,14 +22,11 @@ class Family extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'id',
         'name',
         'phone',
         'status',
         'association_id',
         'associations_branche_id',
-        'number_of_cows_produced',
-        'number_of_cows_unproductive',
         'governorate_id',
         'directorate_id',
         'isolation_id',
@@ -49,9 +46,33 @@ class Family extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the association branch associated with the Family.
+     */
     public function associationsBranche()
     {
-        return $this->belongsTo(User::class,'associations_branche_id');
+        return $this->belongsTo(User::class, 'associations_branche_id');
     }
 
+    // إضافة علاقات للموديلات الأخرى بناءً على معرفاتها
+    public function governorate()
+    {
+        return $this->belongsTo(Governorate::class);
+    }
+
+    public function directorate()
+    {
+        return $this->belongsTo(Directorate::class);
+    }
+
+    public function isolation()
+    {
+        return $this->belongsTo(Isolation::class);
+    }
+
+    public function village()
+    {
+        return $this->belongsTo(Village::class);
+    }
 }

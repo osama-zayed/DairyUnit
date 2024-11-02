@@ -16,8 +16,7 @@ class UpdateFamilyRequest extends FormRequest
      */
     public function authorize()
     {
-        // Implement your authorization logic here
-        return true;
+        return true; // يمكنك إضافة منطق التفويض الخاص بك هنا
     }
 
     /**
@@ -29,19 +28,28 @@ class UpdateFamilyRequest extends FormRequest
     {
         return [
             'id' => [
-                'required','integer',
+                'required',
+                'integer',
                 'exists:families,id',
                 function ($attribute, $value, $fail) {
-                    $family =Family::findOrFail($value)->associations_branche_id;
-                    if ( $family !== auth('sanctum')->user()->id) {
+                    $family = Family::findOrFail($value)->associations_branche_id;
+                    if ($family !== auth('sanctum')->user()->id) {
                         $fail('لم تقم أنت بإضافة هذه الأسرة');
                     }
                 },
             ],
             'name' => 'required|string|max:255',
-            'phone' => 'required|regex:/^[0-9]{9}$/|unique:families,phone,'.$this->id,
-            'number_of_cows_produced' => 'required|integer',
-            'number_of_cows_unproductive' => 'required|integer',
+            'phone' => 'required|regex:/^[0-9]{9}$/|unique:families,phone,' . $this->id,
+            'local_cows_producing' => 'required|integer|min:0',
+            'local_cows_non_producing' => 'required|integer|min:0',
+            'born_cows_producing' => 'required|integer|min:0',
+            'born_cows_non_producing' => 'required|integer|min:0',
+            'imported_cows_producing' => 'required|integer|min:0',
+            'imported_cows_non_producing' => 'required|integer|min:0',
+            'governorate_id' => 'required|exists:governorates,id',
+            'directorate_id' => 'required|exists:directorates,id',
+            'isolation_id' => 'required|exists:isolations,id',
+            'village_id' => 'required|exists:villages,id',
         ];
     }
 
@@ -53,20 +61,42 @@ class UpdateFamilyRequest extends FormRequest
     public function messages()
     {
         return [
-            'id.required' => 'معرف الاسرة مطلوب',
-            'id.exists' => 'الاسرة المحددة غير موجودة',
+            'id.required' => 'معرف الأسرة مطلوب',
+            'id.exists' => 'الأسرة المحددة غير موجودة',
             'name.required' => 'اسم العائلة مطلوب',
-            'name.string' => 'اسم العائلة يجب ان يكون نص',
-            'name.max' => 'اسم العائلة يجب الا يتجاوز 255 حرف',
+            'name.string' => 'اسم العائلة يجب أن يكون نصًا',
+            'name.max' => 'اسم العائلة يجب ألا يتجاوز 255 حرفًا',
             'phone.required' => 'رقم الهاتف مطلوب',
             'phone.regex' => 'رقم الهاتف يجب أن يكون 9 أرقام',
             'phone.unique' => 'رقم الهاتف مستخدم بالفعل',
-            'number_of_cows_produced.required' => 'عدد الابقار المنتجة مطلوب',
-            'number_of_cows_produced.integer' =>  'عدد الابقار المنتجة يجب ان يكون رقم',
-            'number_of_cows_unproductive.required' =>  'عدد الابقار الغير منتجة مطلوب',
-            'number_of_cows_unproductive.integer' =>  'عدد الابقار الغير منتجة يجب ان يكون رقم',
+            'local_cows_producing.required' => 'عدد الأبقار المنتجة مطلوب',
+            'local_cows_producing.integer' => 'عدد الأبقار المنتجة يجب أن يكون رقمًا',
+            'local_cows_non_producing.required' => 'عدد الأبقار غير المنتجة مطلوب',
+            'local_cows_non_producing.integer' => 'عدد الأبقار غير المنتجة يجب أن يكون رقمًا',
+            'born_cows_producing.required' => 'عدد الأبقار المولدة المنتجة مطلوب',
+            'born_cows_producing.integer' => 'عدد الأبقار المولدة المنتجة يجب أن يكون رقمًا',
+            'born_cows_non_producing.required' => 'عدد الأبقار المولدة غير المنتجة مطلوب',
+            'born_cows_non_producing.integer' => 'عدد الأبقار المولدة غير المنتجة يجب أن يكون رقمًا',
+            'imported_cows_producing.required' => 'عدد الأبقار الخارجية المنتجة مطلوب',
+            'imported_cows_producing.integer' => 'عدد الأبقار الخارجية المنتجة يجب أن يكون رقمًا',
+            'imported_cows_non_producing.required' => 'عدد الأبقار الخارجية غير المنتجة مطلوب',
+            'imported_cows_non_producing.integer' => 'عدد الأبقار الخارجية غير المنتجة يجب أن يكون رقمًا',
+            'governorate_id.required' => 'معرف المحافظة مطلوب',
+            'governorate_id.exists' => 'المحافظة المحددة غير موجودة',
+            'directorate_id.required' => 'معرف المديرية مطلوب',
+            'directorate_id.exists' => 'المديرية المحددة غير موجودة',
+            'isolation_id.required' => 'معرف العزلة مطلوب',
+            'isolation_id.exists' => 'العزلة المحددة غير موجودة',
+            'village_id.required' => 'معرف القرية مطلوب',
+            'village_id.exists' => 'القرية المحددة غير موجودة',
         ];
     }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     */
     protected function failedValidation(Validator $validator)
     {
         $errorMessages = [];
