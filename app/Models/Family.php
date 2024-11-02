@@ -30,6 +30,16 @@ class Family extends Model
         'associations_branche_id',
         'number_of_cows_produced',
         'number_of_cows_unproductive',
+        'governorate_id',
+        'directorate_id',
+        'isolation_id',
+        'village_id',
+        'local_cows_producing',
+        'local_cows_non_producing',
+        'born_cows_producing',
+        'born_cows_non_producing',
+        'imported_cows_producing',
+        'imported_cows_non_producing',
     ];
 
     /**
