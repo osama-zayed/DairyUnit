@@ -16,6 +16,7 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "maatwebsite/excel": "^3.1",
         "mpdf/mpdf": "^8.2",
         "spatie/laravel-activitylog": "^4.8",
         "spatie/laravel-permission": "^6.7"

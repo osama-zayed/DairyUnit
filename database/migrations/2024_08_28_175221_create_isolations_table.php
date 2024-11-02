@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('isolations', function (Blueprint $table) {
             $table->id();
             $table->string('name');  // Add other fields as needed
-            $table->foreignId('governorate_id')->constrained()->onDelete('cascade');
             $table->foreignId('directorate_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

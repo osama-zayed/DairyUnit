@@ -9,7 +9,9 @@ class Isolation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'directorate_id', 'governorate_id'];  
+    protected $table = 'isolations';
+
+    protected $fillable = ['name', 'directorate_id'];
 
     /**
      * Get the directorate that owns the isolation.
@@ -18,10 +20,7 @@ class Isolation extends Model
     {
         return $this->belongsTo(Directorate::class);
     }
-    public function governorate()
-    {
-        return $this->belongsTo(Governorate::class);
-    }
+
     /**
      * Get the villages for the isolation.
      */

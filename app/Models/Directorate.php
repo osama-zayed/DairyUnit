@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Directorate extends Model
 {
     use HasFactory;
+    protected $table = 'directorates';
 
-    protected $fillable = ['name', 'governorate_id'];  
+    protected $fillable = ['name', 'governorate_id'];
 
     /**
      * Get the governorate that owns the directorate.

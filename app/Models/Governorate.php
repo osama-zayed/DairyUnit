@@ -9,7 +9,8 @@ class Governorate extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];  
+    protected $table = 'governorates';
+    protected $fillable = ['name']; 
 
     /**
      * Get the directorates for the governorate.
