@@ -60,34 +60,58 @@ class FackeDataSeeder extends Seeder
         $family = Family::create([
             'name' => "الاسره 1",
             'phone' => "777888990",
-            'number_of_cows_produced' => 5,
-            'number_of_cows_unproductive' => 6,
+            'local_cows_producing' => 5,
+            'local_cows_non_producing' => 5,
+            'born_cows_producing' => 5,
+            'born_cows_non_producing' => 5,
+            'imported_cows_producing' => 5,
+            'imported_cows_non_producing' => 5,
+            'governorate_id' => 1,
+            'directorate_id' => 1,
+            'isolation_id' => 1,
+            'village_id' => 1,
             'association_id' => $association1->id,
             'associations_branche_id' =>  $collector1->id,
         ]);
         $family = Family::create([
             'name' => "الاسره 2",
             'phone' => "777888999",
-            'number_of_cows_produced' => 5,
-            'number_of_cows_unproductive' => 6,
+            'local_cows_producing' => 5,
+            'local_cows_non_producing' => 5,
+            'born_cows_producing' => 5,
+            'born_cows_non_producing' => 5,
+            'imported_cows_producing' => 5,
+            'imported_cows_non_producing' => 5,
+            'governorate_id' => 1,
+            'directorate_id' => 1,
+            'isolation_id' => 1,
+            'village_id' => 1,
             'association_id' => $association1->id,
             'associations_branche_id' =>  $collector2->id,
         ]);
         $family = Family::create([
             'name' => "الاسره 3",
             'phone' => "777888995",
-            'number_of_cows_produced' => 5,
-            'number_of_cows_unproductive' => 6,
+            'local_cows_producing' => 5,
+            'local_cows_non_producing' => 5,
+            'born_cows_producing' => 5,
+            'born_cows_non_producing' => 5,
+            'imported_cows_producing' => 5,
+            'imported_cows_non_producing' => 5,
+            'governorate_id' => 1,
+            'directorate_id' => 1,
+            'isolation_id' => 1,
+            'village_id' => 1,
             'association_id' => $association2->id,
             'associations_branche_id' =>  $collector3->id,
         ]);
 
 
         $Factory1 = Factory::create([
-            'name'=>"المصنع 1",
+            'name' => "المصنع 1",
         ]);
         $Factory2 = Factory::create([
-            'name'=>"المصنع 2",
+            'name' => "المصنع 2",
         ]);
         $representative1 = User::create([
             'name' => 'المندوب 1',
@@ -120,6 +144,5 @@ class FackeDataSeeder extends Seeder
             'phone' => "777888950",
             'association_id' => $association2->id,
         ]);
-      
     }
 }
