@@ -28,3 +28,7 @@ Route::prefix('milk')->middleware(['auth:sanctum', 'Permission:collector','userS
     Route::post('collecting', "MilkCollectionController@collecting");
     Route::put('update', "MilkCollectionController@update");
 });
+
+Route::prefix('location')->middleware(['auth:sanctum', 'userStatus'])->group(function () {
+    Route::get('governorate', "LocationController@governorate");
+});
