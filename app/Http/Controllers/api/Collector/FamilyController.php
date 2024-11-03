@@ -68,6 +68,10 @@ class FamilyController extends Controller
             'directorate' => $family->directorate->name ?? null,
             'isolation' => $family->isolation->name ?? null,
             'village' => $family->village->name ?? null,
+            'governorate_id'=> $family->governorate_id,
+            'directorate_id'=> $family->directorate_id,
+            'isolation_id'=> $family->isolation_id,
+            'village_id'=> $family->village_id,
         ]);
     }
 
