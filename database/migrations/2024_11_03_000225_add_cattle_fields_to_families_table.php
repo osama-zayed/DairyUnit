@@ -10,10 +10,10 @@ class AddCattleFieldsToFamiliesTable extends Migration
     {
         Schema::table('families', function (Blueprint $table) {
             // إضافة الحقول المطلوبة
-            $table->foreignId('governorate_id')->constrained()->onDelete('cascade');
-            $table->foreignId('directorate_id')->constrained()->onDelete('cascade');
-            $table->foreignId('isolation_id')->constrained()->onDelete('cascade');
-            $table->foreignId('village_id')->constrained()->onDelete('cascade');
+            $table->foreignId('governorate_id')->default(1)->constrained()->onDelete('cascade');
+            $table->foreignId('directorate_id')->default(1)->constrained()->onDelete('cascade');
+            $table->foreignId('isolation_id')->default(1)->constrained()->onDelete('cascade');
+            $table->foreignId('village_id')->default(1)->constrained()->onDelete('cascade');
             $table->integer('local_cows_producing')->default(0);
             $table->integer('local_cows_non_producing')->default(0);
             $table->integer('born_cows_producing')->default(0);
