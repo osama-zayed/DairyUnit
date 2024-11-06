@@ -8,6 +8,7 @@ use App\Http\Requests\Collector\UpdateCollectingRequest;
 use App\Http\Requests\Report\ReportMilkCollectionRequest;
 use App\Models\CollectingMilkFromFamily;
 use App\Models\ReceiptInvoiceFromStore;
+use App\Models\User;
 use App\Traits\FormatData;
 use App\Traits\PdfTraits;
 use DateTime;
@@ -41,6 +42,14 @@ class MilkCollectionController extends Controller
                     auth('sanctum')->user(),
                     'لقد قمت ب ' .
                         ' تجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
+                        ' الكمية ' . $collectingMilkFromFamily->quantity,
+                );
+                $user = User::find(auth('sanctum')->user()->association_id);
+                self::userNotification(
+                    $user,
+                    'لقد قام المجمع ' .
+                        auth('sanctum')->user()->name .
+                        ' بتجميع حليب من الاسره ' . $collectingMilkFromFamily->family->name .
                         ' الكمية ' . $collectingMilkFromFamily->quantity,
                 );
             });
