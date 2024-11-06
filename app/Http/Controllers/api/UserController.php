@@ -58,7 +58,13 @@ class UserController extends Controller
     {
         try {
             $user = Auth::user();
-            $notifications = $user->notifications()->take(2000)->get()->toArray();
+            
+            $notifications = $user->notifications()->take(200)->get();
+    
+            foreach ($notifications as $notification) {
+                $notification->update(['read_at' => now()]); // تعيين الوقت الحالي كوقت القراءة
+            }
+    
             $data = [];
             foreach ($notifications as $notification) {
                 $notificationData = [
@@ -67,6 +73,7 @@ class UserController extends Controller
                 ];
                 $data[] = $notificationData;
             }
+            
             return self::responseSuccess($data);
         } catch (Exception $e) {
             return self::responseError($e);

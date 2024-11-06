@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
@@ -15,7 +16,7 @@ class Notifications extends Notification
     }
     public function via(object $notifiable): array
     {
-        return $notifiable->prefers_sms ? ['vonage'] : [ 'database'];
+        return $notifiable->prefers_sms ? ['vonage'] : ['database'];
     }
     public function toDatabase($notifiable)
     {

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api\Collector;
 
 use App\Http\Controllers\Api\UserController;
 use App\Models\CollectingMilkFromFamily;
+use App\Models\Notification;
 use App\Models\ReceiptInvoiceFromStore;
+use App\Models\User;
 
 class AuthController extends UserController
 {
@@ -24,6 +26,11 @@ class AuthController extends UserController
 
         $warehouseSummary = $totalQuantity->total_quantity - $exchangeSummary;
 
+        $unreadNotificationsCount = Notification::where('notifiable_type', User::class) 
+        ->where('notifiable_id', $user->id)
+        ->where('read_at', null)
+        ->count();
+        
         return self::responseSuccess([
             'id' => $user->id,
             'name' => $user->name,
@@ -32,6 +39,8 @@ class AuthController extends UserController
             'the_remaining_quiantity' => $warehouseSummary ?? 0,
             'quiantity_spent' => $exchangeSummary ?? 0,
             'the_remaining_quiantity_day' => $warehouseSummaryDay->total_quantity_day ?? 0,
+            'unread_notifications_count' => $unreadNotificationsCount,
+
         ]);
     }
 }
