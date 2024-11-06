@@ -73,6 +73,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Activitylog::class,'causer_id');
     }
+    public function CollectingMilk()
+    {
+        return $this->hasMany(CollectingMilkFromFamily::class,'user_id','id');
+    }
     public function assemblyStore()
     {
         return $this->hasOne(AssemblyStore::class,'association_id');
